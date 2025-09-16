@@ -12,7 +12,7 @@ export default function TopBar() {
                     <div className='w-max flex items-center gap-1'>
                         <Image src='/images/svg/mail.svg' alt='Email Now' width={16} height={16} />
                         <a href='mailto:info@gmail.com' className='lg:text-sm md:text-[12px] text-white'>
-                            info@gmail.com.com
+                            info@gmail.com
                         </a>
                     </div>
                     <div className='w-max flex items-center gap-1'>
