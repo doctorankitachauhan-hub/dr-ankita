@@ -2,7 +2,7 @@ import { Heading, Section, Subheading, Wrapper } from '@/utils/Section'
 import { BadgeCheck } from 'lucide-react'
 import Image from 'next/image'
 
-export default function page() {
+export default function Laparoscopic() {
     const list: string[] = [
         'Small Incisions',
         'Laparoscope',
