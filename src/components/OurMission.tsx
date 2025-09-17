@@ -18,10 +18,10 @@ export default function OurMission() {
                             Our goal is to give women at every stage of life with outstanding, caring, and all-encompassing gynecological treatment. By providing individualized, evidence-based medical care, we are committed to advancing the health and wellness of women. Our dedication goes beyond our knowledge of medicine to include compassion, decency, and a welcoming atmosphere for every patient.
                         </Subheading>
                         <Subheading className='mt-3'>
-                            Our goal is to lead the way in women's healthcare innovation and excellence. Our vision is a world in which all women receive individualized, sensitive, and easily available gynecological care, enabling them to live long, healthy lives. We see a community in which women actively participate in their healthcare journeys, are well-informed, and receive assistance.
+                            Our goal is to lead the way in women&apos;s healthcare innovation and excellence. Our vision is a world in which all women receive individualized, sensitive, and easily available gynecological care, enabling them to live long, healthy lives. We see a community in which women actively participate in their healthcare journeys, are well-informed, and receive assistance.
                         </Subheading>
                         <Subheading className='mt-3'>
-                            Our Values are Compassion, Excellence, Respect, Patient-Centered Care, Integrity, Innovation, Collaboration, Advocacy for Women's Health, Accessibility, Continuous Learning and Empowerment.
+                            Our Values are Compassion, Excellence, Respect, Patient-Centered Care, Integrity, Innovation, Collaboration, Advocacy for Women&apos;s Health, Accessibility, Continuous Learning and Empowerment.
                         </Subheading>
                     </div>
                     <div className="w-full h-full relative flex items-center md:order-2 order-1">

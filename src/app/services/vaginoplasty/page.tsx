@@ -48,7 +48,7 @@ export default function page() {
                                 <span className='!font-open-sans text-primary-color'>Vaginoplasty </span> for safe you and your baby.
                             </Heading>
                             <Subheading className='mt-5'>
-                                Reconstruction or tightening of the vaginal canal is the surgical surgery known as vaginaloplasty. In addition to treating vaginal laxity, this elective cosmetic procedure also improves sexual satisfaction and addresses issues with the vagina's appearance and functionality. It is significant to remember that vaginoplasty differs from hymenoplasty, which focuses on hymen reconstruction alone. Important details about vaginoplasty are as follows:
+                                Reconstruction or tightening of the vaginal canal is the surgical surgery known as vaginaloplasty. In addition to treating vaginal laxity, this elective cosmetic procedure also improves sexual satisfaction and addresses issues with the vagina&apos;s appearance and functionality. It is significant to remember that vaginoplasty differs from hymenoplasty, which focuses on hymen reconstruction alone. Important details about vaginoplasty are as follows:
                             </Subheading>
 
                             <h2 className='mt-3 font-bold lg:text-xl text-secondry-color'>

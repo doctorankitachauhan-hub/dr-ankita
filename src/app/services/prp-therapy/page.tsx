@@ -32,7 +32,7 @@ export default function page() {
                                 <span className='!font-open-sans text-primary-color'>PRP Theraphy for Vaginal Dryness</span> for safe you and your baby.
                             </Heading>
                             <Subheading className='mt-5'>
-                                Platelet-rich plasma (PRP) therapy, sometimes referred to as "vampire therapy," is a medical treatment that involves using a patient's own blood plasma enriched with platelets to stimulate healing and tissue regeneration. While PRP therapy has been used in various medical fields, including orthopedics and dermatology, it has gained attention in recent years for its potential applications in addressing vaginal dryness and improving sexual function. Here's an overview of PRP therapy for vaginal dryness:
+                                Platelet-rich plasma (PRP) therapy, sometimes referred to as vampire therapy, is a medical treatment that involves using a patient&apos;s own blood plasma enriched with platelets to stimulate healing and tissue regeneration. While PRP therapy has been used in various medical fields, including orthopedics and dermatology, it has gained attention in recent years for its potential applications in addressing vaginal dryness and improving sexual function. Here&apos;s an overview of PRP therapy for vaginal dryness:
                             </Subheading>
 
                             <h2 className='mt-3 font-bold lg:text-xl text-secondry-color'>
@@ -40,7 +40,7 @@ export default function page() {
                             </h2>
 
                             <Subheading className='mt-5'>
-                                The source of PRP is the patient's own blood. Usually from the arm, a little volume of blood is extracted, and the platelets are then concentrated through processing. In order to promote tissue regeneration, the resulting PRP—which is abundant in growth factors and other bioactive substances—is injected or applied to the desired location.
+                                The source of PRP is the patient&apos;s own blood. Usually from the arm, a little volume of blood is extracted, and the platelets are then concentrated through processing. In order to promote tissue regeneration, the resulting PRP—which is abundant in growth factors and other bioactive substances—is injected or applied to the desired location.
                             </Subheading>
 
                             <h2 className='mt-3 font-bold lg:text-xl text-secondry-color'>

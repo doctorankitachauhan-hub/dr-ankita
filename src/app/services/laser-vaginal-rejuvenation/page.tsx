@@ -21,7 +21,7 @@ export default function Laser() {
                                 <span className='!font-open-sans text-primary-color'>Laser Vaginal Rejuvenation</span> for safe you and your baby.
                             </Heading>
                             <Subheading className='mt-5'>
-                                A non-surgical cosmetic procedure called laser vaginal rejuvenation—also referred to as laser vaginal therapy or laser vaginal tightening—is intended to address a number of disorders pertaining to the vulvar and vaginal tissues. It entails stimulating collagen synthesis, improving tissue tone, and improving the vaginal area's overall appearance and usefulness with the use of laser technology. It is noteworthy that varying views exist within the medical profession regarding the effectiveness and safety of these operations.
+                                A non-surgical cosmetic procedure called laser vaginal rejuvenation—also referred to as laser vaginal therapy or laser vaginal tightening—is intended to address a number of disorders pertaining to the vulvar and vaginal tissues. It entails stimulating collagen synthesis, improving tissue tone, and improving the vaginal area&apos;s overall appearance and usefulness with the use of laser technology. It is noteworthy that varying views exist within the medical profession regarding the effectiveness and safety of these operations.
                             </Subheading>
                             <span className='mt-2 block text-sm text-secondry-color font-medium'>Here are key points about laser vaginal rejuvenation:</span>
 

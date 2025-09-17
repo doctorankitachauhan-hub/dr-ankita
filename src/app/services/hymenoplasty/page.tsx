@@ -32,7 +32,7 @@ export default function Hymenoplasty() {
                                 <span className='!font-open-sans text-primary-color'>Hymenoplasty </span> for safe you and your baby.
                             </Heading>
                             <Subheading className='mt-5'>
-                                A hymenoplasty is a surgical technique in which the hymen, a thin membrane that partially covers the vaginal entrance, is repaired or rebuilt. This technique, commonly known as hymenorrhaphy or hymen repair surgery, is frequently carried out for cultural, religious, or personal reasons. It's crucial to remember that the hymen can naturally deteriorate over time for a variety of reasons, and that having or not having an intact hymen does not always mean someone is virgin.
+                                A hymenoplasty is a surgical technique in which the hymen, a thin membrane that partially covers the vaginal entrance, is repaired or rebuilt. This technique, commonly known as hymenorrhaphy or hymen repair surgery, is frequently carried out for cultural, religious, or personal reasons. It&apos;s crucial to remember that the hymen can naturally deteriorate over time for a variety of reasons, and that having or not having an intact hymen does not always mean someone is virgin.
                             </Subheading>
                             <span className='mt-2 block text-base text-secondry-color font-medium'>Here are key points about hymenoplasty:</span>
 
