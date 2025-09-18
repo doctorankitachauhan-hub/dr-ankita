@@ -57,7 +57,7 @@ export default function Hymenoplasty() {
                             </Subheading>
                         </div>
                         <div className="w-full h-full relative flex items-center md:items-start md:justify-end justify-center md:order-2 order-1">
-                            <Image src={'/images/treatments/img-8.jpg'} alt='Infertility Treatment' width={500} height={400} className='' />
+                            <Image src={'/images/treatments/img-8.jpg'} alt='Infertility Treatment' width={500} height={400} className='w-full h-auto' />
                         </div>
                     </div>
                 </Wrapper>
