@@ -7,7 +7,7 @@ export default function Background({ hoveredIndex, idx }: { hoveredIndex: number
         <AnimatePresence>
             {hoveredIndex === idx && (
                 <motion.span
-                    className="absolute inset-0 rounded-2xl bg-[#FFEDFA] -z-0"
+                    className="absolute inset-0 rounded-2xl bg-[#f3f4fa] -z-0"
                     layoutId="hoverBackground"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}

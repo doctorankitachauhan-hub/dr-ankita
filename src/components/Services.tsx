@@ -91,7 +91,7 @@ export default function Services() {
             <Wrapper>
                 <div className='relative w-full flex flex-col lg:gap-14 md:gap-10 gap-8'>
                     <div className='flex-1 text-center'>
-                        <span className='text-base text-blue-500 font-medium block mb-1'>
+                        <span className='text-base text-[#e11d48] font-medium block mb-1'>
                             OUR SERVICES
                         </span>
                         <Heading>
@@ -111,7 +111,7 @@ export default function Services() {
                                     onMouseLeave={() => setHoveredIndex(null)}
                                 >
                                     <div className='bg-white w-full h-full relative p-5 border border-neutral-200 rounded-2xl z-20'>
-                                        <div className='bg-[#FFEDFA] w-20 h-20 rounded-full flex items-center justify-center'>
+                                        <div className='bg-[#e8ebf7] w-20 h-20 rounded-full flex items-center justify-center'>
                                             <Image src={items.icon} width={52} height={52} alt={items.name} />
                                         </div>
                                         <div className='relative w-full mt-7 flex flex-col gap-3'>

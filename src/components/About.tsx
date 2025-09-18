@@ -42,7 +42,7 @@ export default function About() {
                             className='max-h-[550px] w-auto h-full' />
                     </div>
                     <div className='w-full h-full relative'>
-                        <span className='text-base font-medium text-blue-500 '>
+                        <span className='text-base font-medium text-[#e11d48] '>
                             ABOUT OUR DOCTOR
                         </span>
                         <Heading className='mt-2'>
@@ -59,7 +59,7 @@ export default function About() {
                             {
                                 content.map((items) => (
                                     <div key={items.name} className='w-full h-full flex gap-2 items-start'>
-                                        <div className='shrink-0 w-12 h-12 rounded-lg bg-[#FFE4E6] flex items-center justify-center'>
+                                        <div className='shrink-0 w-12 h-12 rounded-lg bg-[#e8ebf7] flex items-center justify-center'>
                                             <Image src={items.icon} width={32} height={32} alt={items.name} className='w-8 h-8' />
                                         </div>
                                         <div className='flex-1 flex flex-col gap-2'>

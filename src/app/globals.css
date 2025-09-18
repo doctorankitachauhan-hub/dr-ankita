@@ -2,8 +2,10 @@
 @import "tw-animate-css";
 
 :root {
-  --primary-color: #e11d48;
-  --primary-hover: #f43f67;
+  /* --primary-color: #e11d48; */
+  /* --primary-hover: #f43f67; */
+  --primary-color: #827FC6;
+  --primary-hover: #695fa3;
   --secondry-color: #111827;
   --secondry-hover: #253555;
   --montserrat: "Montserrat", sans-serif;

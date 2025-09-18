@@ -8,7 +8,7 @@ export default function OurMission() {
             <Wrapper>
                 <div className='relative w-full flex-1 grid md:grid-cols-2 grid-cols-1 gap-8'>
                     <div className="w-full h-full relative md:order-1 order-2">
-                        <span className='text-xl font-medium text-blue-500 '>
+                        <span className='text-xl font-medium text-[#e11d48] '>
                             OUR GOAL
                         </span>
                         <Heading>

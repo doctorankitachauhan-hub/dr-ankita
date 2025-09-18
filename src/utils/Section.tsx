@@ -45,7 +45,7 @@ export function ButtonPrimary({ children, className, style, ...rest }: BtnProps)
             {...rest}
             style={style}>
             {children}
-        </button>
+        </button>   
     )
 }
 export function ButtonSecondry({ children, className, style, ...rest }: BtnProps) {

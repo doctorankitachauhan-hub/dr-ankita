@@ -91,7 +91,7 @@ export default function Footer() {
     ]
 
     return (
-        <footer className='bg-secondry-color lg:!pt-20 md:!pt-16 pt-11 w-full relative pb-5'>
+        <footer className='bg-[#2a283e] lg:!pt-20 md:!pt-16 pt-11 w-full relative pb-5'>
             <div className='w-full max-w-7xl relative mx-auto px-6 grid lg:grid-cols-[450px_200px_1fr_1fr] md:grid-cols-2 grid-cols-1 gap-5 mb-10'>
                 <div className="w-full h-full relative flex flex-col">
                     <Image src='/images/logo/logo-2.png' alt='' width={300} height={200} />

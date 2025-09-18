@@ -41,7 +41,7 @@ export default function Contact() {
             <Wrapper>
                 <div className='relative w-full flex flex-col lg:gap-14 md:gap-10 gap-8'>
                     <div className='flex-1 text-center'>
-                        <span className='text-base font-medium text-blue-500' >CONTACT US</span>
+                        <span className='text-base font-medium text-[#e11d48]' >CONTACT US</span>
                         <Heading>
                             Get in <span className='!font-open-sans text-primary-color'>Touch with us Now</span>
                         </Heading>
