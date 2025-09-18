@@ -1,7 +1,6 @@
 import { Section, Subheading, Wrapper } from '@/utils/Section'
 import { Calendar, User } from 'lucide-react'
 import Image from 'next/image'
-import React from 'react'
 
 export default function BlogOne() {
     const lstOne = [
@@ -160,7 +159,7 @@ export default function BlogOne() {
                                 Final Thoughts
                             </h2>
                             <Subheading className='mt-3'>
-                                Period pain is often a normal part of menstruation, but it should not be ignored—especially if it’s severe, getting worse, or affecting your daily life. Recognizing what might be causing the pain is the first step toward relief. For those in Hyderabad or nearby, Dr. Nikila Reddy is available for consultations, examinations, and tailored treatment plans. Don’t suffer in silence—comfort and help are possible.
+                                Period pain is often a normal part of menstruation, but it should not be ignored—especially if it&apos;s severe, getting worse, or affecting your daily life. Recognizing what might be causing the pain is the first step toward relief. For those in Hyderabad or nearby, Dr. Nikila Reddy is available for consultations, examinations, and tailored treatment plans. Don&apos;t suffer in silence—comfort and help are possible.
                             </Subheading>
 
                         </div>
