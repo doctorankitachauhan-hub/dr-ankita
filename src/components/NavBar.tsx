@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation'
 import React, { Fragment, useEffect, useState } from 'react'
+import BookAppointment from './BookAppointment';
 
 interface MenuItem {
     key: string;
@@ -106,6 +107,7 @@ export default function NavBar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { stopScroll, startScroll } = useLenisControl();
     const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
+    const [openForm, setOpenForm] = useState<boolean>(false);
 
     const toggleSubMenu = (key: string) => {
         setOpenSubMenu((prev) => (prev === key ? null : key));
@@ -255,6 +257,7 @@ export default function NavBar() {
                     </div>
                 </div>
             </div>
+            {/* <BookAppointment /> */}
         </header>
     )
 }

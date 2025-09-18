@@ -11,38 +11,48 @@ interface Blog {
     link: string;
     date: string;
 }
-
 export default function Blogs() {
     const blog: Blog[] = [
         {
-            title: 'Understanding PCOS: Symptoms, Diagnosis, and Treatment Options',
-            content: 'Polycystic Ovary Syndrome affects millions of women worldwide. Learn about the symptoms, how it\'s diagnosed, and the various treatment approaches available to manage this condition effectively.',
-            image: '/images/blog/blog-1.png',
-            link: '#',
+            title: 'What Causes Period Pain — Understanding the Pain with Clarity',
+            content: 'Period pain, also called menstrual cramps or dysmenorrhea, is something many women experience every month. Sometimes the pain is mild and manageable. Other times it can be very strong and affect daily life. Dr. Nikila Reddy, senior gynaecologist in Hyderabad, explains why period pain occurs, what might make it worse, and when to see a doctor.',
+            image: '/images/blog/img-1.jpg',
+            link: '/blogs/what-causes-period-pain',
             date: 'June 15, 2025'
         },
         {
-            title: 'Preparing for Pregnancy: A Complete Preconception Checklist',
-            content: 'Getting ready to welcome a new life begins long before conception. This guide walks you through essential health checks, lifestyle tips, and emotional readiness steps to ensure a healthy pregnancy journey......',
-            image: '/images/blog/blog-2.png',
-            link: '#',
+            title: 'Understanding Repeated Miscarriages: Causes, Symptoms & Hope',
+            content: 'Repeated miscarriages, also called recurrent pregnancy loss, is when a woman has two or more miscarriages. This situation is painful emotionally and physically, and many couples want to understand why it’s happening and what can be done. Dr. Nikila Reddy, senior gynaecologist in Hyderabad, explains causes, what to look for, and how to move forward with hope.',
+            image: '/images/blog/img-2.jpg',
+            link: '/blogs/understanding-repeated-miscarriages',
             date: 'June 15, 2025'
         },
         {
-            title: 'Postpartum Care: Why Healing After Birth Deserves More Attention',
-            content: 'Recovery after childbirth is just as important as prenatal care. Discover how post-delivery rehabilitation supports physical healing, emotional well-being, and a smoother transition into motherhood.........',
-            image: '/images/blog/blog-3.png',
-            link: '#',
+            title: 'Symptoms of Silent PCOS',
+            content: 'Polycystic Ovary Syndrome (PCOS) is a common health condition that affects many women. While some women experience clear signs like irregular periods or weight gain, others may have what is called silent PCOS. In this condition, the symptoms are not very obvious, and many women may not realize they have it until they face issues with fertility or undergo routine health check-ups.',
+            image: '/images/blog/img-3.jpg',
+            link: '/blogs/symptoms-of-silent-pcos',
             date: 'June 15, 2025'
         },
         {
-            title: '5 Early Signs of Fertility Issues You Shouldn’t Ignore',
-            content: 'Fertility challenges are more common than many realize, and early detection can make a significant difference. In this post, we explore the subtle signs that may indicate fertility concerns—and when it’s time to consult a specialist.......',
-            image: '/images/blog/blog-4.png',
-            link: '#',
+            title: 'Understanding Postpartum Depression: Signs, Causes & Hope',
+            content: 'After giving birth, many new mothers feel overwhelmed, tired or emotional. These feelings are common. But when sadness, anxiety, or hopelessness lasts longer than it should, it might be postpartum depression. Dr. Nikila Reddy, senior gynecologist in Hyderabad, shares what postpartum depression is, its signs, causes, and how to find help.',
+            image: '/images/blog/img-4.jpg',
+            link: '/blogs/understanding-postpartum-depression',
             date: 'June 15, 2025'
         },
     ]
+
+    function TrimText(id: number, limit: number = 250) {
+        if (id == null || id < 0 || id >= blog.length) {
+            alert('Invalid blog id');
+            return '';
+        }
+
+        const content = blog[id].content;
+        const txt = content.length <= limit ? content : content.slice(0, limit);
+        return txt;
+    }
 
     return (
         <section className='bg-[#F9FAFB]'>
@@ -60,7 +70,7 @@ export default function Blogs() {
                     <div className='bg-white relative w-full grid lg:grid-cols-[500px_1fr] lg:gap-5 md:grid-cols-[300px_1fr] grid-cols-1 gap-1 md:gap-3 shadow rounded-2xl overflow-hidden'>
                         <div className="w-full h-full">
                             <Image src={blog[0].image} width={500} height={500} alt='blog'
-                                className='w-full h-[400px] object-cover object-center'
+                                className='w-full h-[450px] object-cover object-center'
                             />
                         </div>
                         <div className="w-full h-full md:p-10 p-4 ">
@@ -103,7 +113,9 @@ export default function Blogs() {
                                                 {blog.title}
                                             </Link>
                                             <Subheading className='!font-normal'>
-                                                {blog.content}
+                                                {
+                                                    TrimText(idx, 200) + '...'
+                                                }
                                             </Subheading>
                                             <div className='mt-5 w-full flex items-center gap-8'>
                                                 <div className='relative flex gap-2 items-center'>
