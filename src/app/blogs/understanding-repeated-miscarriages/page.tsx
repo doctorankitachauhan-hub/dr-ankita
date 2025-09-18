@@ -28,7 +28,7 @@ export default function BlogTwo() {
     const lstTwo = [
         'Two or more pregnancy losses, especially early (first trimester) miscarriages.',
         'Difficulty getting pregnant again.',
-        'Unusual bleeding, severe cramps, or pains beyond what you’ve had in earlier pregnancies.',
+        'Unusual bleeding, severe cramps, or pains beyond what you&apos;ve had in earlier pregnancies.',
         'History of medical issues such as thyroid disease, diabetes, or blood clotting disorders.',
         'Age over 35, or a partner with known fertility/genetic issues.'
     ]
@@ -133,7 +133,7 @@ export default function BlogTwo() {
                                 Tests, treatments & hope
                             </h2>
                             <Subheading className='mt-1'>
-                                Even though repeated miscarriage is very distressing, there is hope. Many women who have had such losses go on to have successful pregnancies. Here’s what can be done:
+                                Even though repeated miscarriage is very distressing, there is hope. Many women who have had such losses go on to have successful pregnancies. Here&apos;s what can be done:
                             </Subheading>
                             <ul className='mt-3 flex flex-col gap-1 list-disc pl-8 text-zinc-700'>
                                 {
