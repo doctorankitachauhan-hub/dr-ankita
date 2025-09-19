@@ -114,13 +114,13 @@ export default function NavBar() {
     };
 
     useEffect(() => {
-        if (isMenuOpen) {
+        if (isMenuOpen || openForm) {
             stopScroll();
         } else {
             startScroll();
         }
         return () => startScroll();
-    }, [isMenuOpen, stopScroll, startScroll]);
+    }, [isMenuOpen, stopScroll, startScroll, openForm]);
 
     return (
         <header className='relative w-full z-30'>
@@ -168,7 +168,7 @@ export default function NavBar() {
                 </div>
 
                 <div className='lg:flex flex-col items-end hidden relative w-max'>
-                    <ButtonPrimary>
+                    <ButtonPrimary onClick={()=>setOpenForm(true)}>
                         Book Appointment
                     </ButtonPrimary>
                 </div>
@@ -257,7 +257,7 @@ export default function NavBar() {
                     </div>
                 </div>
             </div>
-            {/* <BookAppointment /> */}
+            <BookAppointment openForm={openForm} closeForm={setOpenForm} />
         </header>
     )
 }

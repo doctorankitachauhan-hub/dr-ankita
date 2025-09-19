@@ -4,7 +4,7 @@
 :root {
   /* --primary-color: #e11d48; */
   /* --primary-hover: #f43f67; */
-  --primary-color: #827FC6;
+  --primary-color: #827fc6;
   --primary-hover: #695fa3;
   --secondry-color: #111827;
   --secondry-hover: #253555;
@@ -70,4 +70,43 @@ span,
 button,
 li {
   font-family: var(--montserrat);
+}
+
+.labels {
+  position: absolute;
+  top: 50%;
+  left: 8px;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: #6b7280;
+  background: white;
+  padding: 0 6px;
+  pointer-events: none;
+  transition: all 0.3s ease-in-out;
+}
+.label {
+  position: absolute;
+  top: 14px;
+  left: 8px;
+  font-size: 1rem;
+  color: #6b7280;
+  background: white;
+  padding: 0 6px;
+  pointer-events: none;
+  transition: all 0.3s ease-in-out;
+}
+
+input:focus ~ .labels, input:not(:placeholder-shown) ~ .labels {
+  top: -10px;
+  left: 6px;
+  font-size: 0.85rem;
+  color: var(--primary-hover);
+  transform: translateY(0);
+}
+textarea:focus ~ .label, textarea:not(:placeholder-shown) ~ .label {
+  top: -10px;
+  left: 6px;
+  font-size: 0.85rem;
+  color: var(--primary-hover);
+  transform: translateY(0);
 }
