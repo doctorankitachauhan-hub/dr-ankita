@@ -55,7 +55,7 @@ export default function About() {
                             Her areas of expertise include managing a wide range of issues, primarily related to infertility and surgery; these include recurrent abortions, total laparoscopic hysterectomy, surgical management of uterine fibroids, and various other general gynecological issues, such as polycystic ovarian disease (PCOD), bleeding disorders in women, menopausal symptoms, hormone replacement therapy, etc. In addition, her has a great deal of experience handling obstetric and gynecological situations.
                         </Subheading>
 
-                        <div className='relative w-full mt-10 grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-5 '>
+                        <div className='relative w-full mt-10 grid md:grid-cols-2 grid-cols-1 gap-5 gap-y-8'>
                             {
                                 content.map((items) => (
                                     <div key={items.name} className='w-full h-full flex gap-2 items-start'>
