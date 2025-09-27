@@ -58,9 +58,9 @@ export default function Footer() {
             link: 'tel:+916309683030'
         },
         {
-            name: 'info@gmail.com',
+            name: 'vswomenclinic24@gmail.com',
             icon: '/images/footer/mail-white.svg',
-            link: 'mailto:info@gmail.com'
+            link: 'mailto:vswomenclinic24@gmail.com'
         },
     ]
     const socialMedia: SocialIcons[] = [
@@ -83,10 +83,10 @@ export default function Footer() {
             <div className='w-full max-w-7xl relative mx-auto px-6 grid lg:grid-cols-[450px_200px_1fr_1fr] md:grid-cols-2 grid-cols-1 gap-5 mb-10'>
                 <div className="w-full h-full relative flex flex-col">
                     <Image src='/images/logo/footer.svg' alt='' width={400} height={200} />
-                    <Subheading className='text-left mt-5 !text-white'>
-                        Our goal is to give women at every stage of life with outstanding, caring, and all-encompassing gynecological treatment. By providing individualized, evidence-based medical care, we are committed to advancing the health and wellness of women. Our dedication goes beyond our knowledge of medicine to include compassion, decency, and a welcoming atmosphere for every patient.
+                    <Subheading className='text-left mt-5 !text-white !text-sm font-normal'>
+                        Dedicated to women&apos;s health at every stage of life, with compassionate and personalized gynecological care. We combine medical expertise with a supportive, welcoming environment.
                     </Subheading>
-                    <div className='mt-5 w-full relative flex items-center gap-2'>
+                    <div className='mt-5 w-full relative flex items-center gap-3'>
                         {
                             socialMedia.map((item, idx) => (
                                 <Link key={idx} href={item.link} target='_blank'>
@@ -100,11 +100,11 @@ export default function Footer() {
                 <div className="w-full h-full p-2 relative">
                     <h3 className='font-bold text-white text-2xl'>Quick Links</h3>
 
-                    <div className='relative mt-5 flex flex-col gap-1'>
+                    <div className='relative mt-5 flex flex-col gap-3'>
                         {
                             menuItems.map(item => (
-                                <Link href={item.path} key={item.key} className='uppercase font-normal text-white !font-montserrat flex items-center gap-1 text-sm'>
-                                    <Image src={'/images/footer/link.svg'} width={18} height={18} alt={item.name} />
+                                <Link href={item.path} key={item.key} className='uppercase font-normal text-white !font-montserrat flex items-center gap-2 text-sm'>
+                                    <Image src={'/images/footer/link.svg'} width={14} height={14} alt={item.name} />
                                     {item.name}
                                 </Link>
                             ))
