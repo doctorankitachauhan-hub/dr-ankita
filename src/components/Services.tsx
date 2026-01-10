@@ -5,91 +5,120 @@ import Image from 'next/image';
 import { motion } from "motion/react";
 import React, { useState } from 'react'
 import Link from 'next/link';
-import { ExternalLink, MoveUpRight } from 'lucide-react';
+import { ChevronsRight, ExternalLink, MoveUpRight } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 interface Services {
     name: string;
     summary: string;
     icon: string;
-    link: string;
+    treatment: {
+        name: string
+        path: string;
+    }[]
 }
 
 export default function Services() {
     const currentPath = usePathname()
     const services: Services[] = [
         {
-            name: 'Infertility Treatment',
-            summary: 'Personalized fertility treatments using advanced diagnostics and compassionate care to achieve the dream of parenthood.',
-            icon: '/images/services/icon-1.svg',
-            link: '/services/infertility-treatment'
+            name: 'Pregnancy & Obstetric Care',
+            summary: 'Comprehensive care before, during, and after pregnancy. Focused on the safety and well-being of both mother and baby.',
+            icon: '/images/services/new-icon-1.svg',
+            treatment: [
+                {
+                    name: "Preconception counselling & planning",
+                    path: "/pregnancy_&_obstetric_care/preconception_counselling_&_planning"
+                },
+                {
+                    name: "Antenatal and postnatal care",
+                    path: "/pregnancy_&_obstetric_care/antenatal_and_postnatal_care"
+                },
+                {
+                    name: "Normal and caesarean delivery",
+                    path: "/pregnancy_&_obstetric_care/normal_and_caesarean_delivery"
+                },
+                {
+                    name: "High-risk pregnancy management",
+                    path: "/pregnancy_&_obstetric_care/high-risk_pregnancy_management"
+                },
+            ]
         },
         {
-            name: 'Pre Natal Care & Delivery',
-            summary: 'Comprehensive prenatal care and safe delivery services to ensure the health, comfort, and confidence of both mother and baby.',
-            icon: '/images/services/icon-2.svg',
-            link: '/services/pre-natal-care-and-delivery'
+            name: 'Gynecology Care',
+            summary: 'Expert care for menstrual, hormonal, and reproductive health concerns. Supportive treatment for women at every stage of life.',
+            icon: '/images/services/new-icon-2.svg',
+            treatment: [
+                {
+                    name: "Menstrual problems & irregular periods",
+                    path: "/gynecology_care/menstrual_problems_&_irregular_periods"
+                },
+                {
+                    name: "PCOS management",
+                    path: "/gynecology_care/PCOS-management"
+                },
+                {
+                    name: "Pelvic infections treatment",
+                    path: "/gynecology_care/pelvic_infections_treatment"
+                },
+                {
+                    name: "Menopause care & counselling",
+                    path: "/gynecology_care/menopause_care_&_counselling"
+                },
+            ]
         },
         {
-            name: 'Pregnancy Counselling',
-            summary: 'Supportive guidance for mothers and couples to address emotional, physical, and mental well-being throughout the stages of pregnancy.',
-            icon: '/images/services/icon-3.svg',
-            link: '/services/pregnancy-counselling'
+            name: 'Advanced Procedures & Surgeries',
+            summary: 'Minimally invasive procedures for various gynecological conditions. Designed for safety, accuracy, and faster recovery.',
+            icon: '/images/services/new-icon-3.svg',
+            treatment: [
+                {
+                    name: "Operative hysteroscopy",
+                    path: "/advanced_procedures_&_surgeries/operative_hysteroscopy"
+                },
+                {
+                    name: "Laparoscopic surgeries for fibroids, cysts & endometriosis",
+                    path: "/advanced_procedures_&_surgeries/laparoscopic_surgeries"
+                },
+                {
+                    name: "Laparoscopic & vaginal hysterectomy",
+                    path: "/advanced_procedures_&_surgeries/laparoscopic_&_vaginal_hysterectomy"
+                },
+                {
+                    name: "Perineal repair",
+                    path: "/advanced_procedures_&_surgeries/perineal_repair"
+                },
+            ]
         },
         {
-            name: 'Post Delivery Rehabilitation',
-            summary: 'Focused on physical recovery, emotional support, and helping mothers regain strength and balance after childbirth.',
-            icon: '/images/services/icon-4.svg',
-            link: '/services/post-delivery-rehabilitation'
-        },
-        {
-            name: 'Laparoscopic Surgery',
-            summary: 'Gynecological procedures for faster healing, less pain, and precise treatment of conditions like fibroids, cysts, and endometriosis.',
-            icon: '/images/services/icon-5.svg',
-            link: '/services/laparoscopic-surgery'
-        },
-        {
-            name: 'Laser Vaginal Rejuvenation',
-            summary: 'Non-surgical laser treatments to restore vaginal tone and elasticity, enhancing comfort and confidence for women at any stage of life.',
-            icon: '/images/services/icon-6.svg',
-            link: '/services/laser-vaginal-rejuvenation'
-        },
-        {
-            name: 'Vaginal Dryness',
-            summary: 'Advanced treatments to relieve vaginal dryness, restoring comfort, natural lubrication, and overall intimate wellness.',
-            icon: '/images/services/icon-7.svg',
-            link: '/services/vaginal-dryness'
-        },
-        {
-            name: 'Hymenoplasty',
-            summary: 'Safe and confidential surgical restoration of the hymen, performed with precision and utmost sensitivity.',
-            icon: '/images/services/icon-8.svg',
-            link: '/services/hymenoplasty'
-        },
-        {
-            name: 'Laser Vaginal Tightening',
-            summary: 'Cutting-edge laser procedures designed to improve vaginal tightness, strength, and function without invasive surgery.',
-            icon: '/images/services/icon-9.svg',
-            link: '/services/laser-vaginal-tightening'
-        },
-        {
-            name: 'PRP Therapy for Vaginal Dryness',
-            summary: 'Regenerative PRP (Platelet-Rich Plasma) therapy to naturally restore vaginal lubrication, sensitivity, and tissue health.',
-            icon: '/images/services/icon-10.svg',
-            link: '/services/prp-therapy'
-        },
-        {
-            name: 'Vaginoplasty',
-            summary: 'Reconstructive surgical procedure aimed at tightening vaginal muscles and tissues for enhanced function and confidence.',
-            icon: '/images/services/icon-11.svg',
-            link: '/services/vaginoplasty'
+            name: 'Cosmetic & Laser Gynecology',
+            summary: 'Modern laser treatments to improve comfort and intimate health. Focused on confidence, care, and long-term well-being.',
+            icon: '/images/services/new-icon-4.svg',
+            treatment: [
+                {
+                    name: "Laser treatment for stress urinary incontinence",
+                    path: "/cosmetic_&_laser_gynecology/laser_treatment_for_stress_urinary_incontinence"
+                },
+                {
+                    name: "Vaginal tightening procedures",
+                    path: "/cosmetic_&_laser_gynecology/vaginal_tightening_procedures"
+                },
+                {
+                    name: "Treatment for pigmentation",
+                    path: "/cosmetic_&_laser_gynecology/treatment_for_pigmentation"
+                },
+                {
+                    name: "Management of chronic infections",
+                    path: "/cosmetic_&_laser_gynecology/management_of_chronic_infections"
+                },
+            ]
         },
     ]
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
     return (
         <Section>
             <Wrapper>
-                <div className='relative w-full flex flex-col lg:gap-14 md:gap-10 gap-8'>
+                <div className='w-full flex flex-col lg:gap-14 md:gap-10 gap-8'>
                     <div className='flex-1 text-center'>
                         <span className='text-base text-[#e11d48] font-medium block mb-1'>
                             OUR SERVICES
@@ -102,19 +131,19 @@ export default function Services() {
                         </Subheading>
                     </div>
 
-                    <div className='flex-1 relative grid grid-cols-[repeat(auto-fit,minmax(310px,1fr))]'>
+                    <div className='flex-1 grid md:grid-cols-2 grid-cols-1'>
                         {
-                            (currentPath !== '/services' ? services.slice(0, 5) : services).map((items, idx) => (
+                            services.map((items, idx) => (
                                 <div className='relative w-full h-full p-2.5'
                                     key={idx}
                                     onMouseEnter={() => setHoveredIndex(idx)}
                                     onMouseLeave={() => setHoveredIndex(null)}
                                 >
-                                    <div className='bg-white w-full h-full relative p-5 border border-neutral-200 rounded-2xl z-20'>
+                                    <div className='bg-white w-full h-full relative p-5 border border-neutral-200 rounded-2xl z-20 shadow'>
                                         <div className='bg-[#e8ebf7] w-20 h-20 rounded-full flex items-center justify-center'>
                                             <Image src={items.icon} width={52} height={52} alt={items.name} />
                                         </div>
-                                        <div className='relative w-full mt-7 flex flex-col gap-3'>
+                                        <div className=' w-full mt-7 flex flex-col gap-3'>
                                             <h2 className='font-semibold text-secondry-color md:text-xl text-base'>
                                                 {items.name}
                                             </h2>
@@ -122,26 +151,28 @@ export default function Services() {
                                                 {items.summary}
                                             </Subheading>
                                         </div>
-                                        <Link href={items.link} className='mt-5 flex items-center gap-2 w-max ml-auto font-medium text-blue-500 '>
-                                            Know More
-                                            <ExternalLink size={14} />
-                                        </Link>
+                                        <div className='mt-3 w-full flex flex-col gap-3'>
+                                            <h3 className='text-base md:text-lg text-gray-700 font-medium'>
+                                                Treatments
+                                            </h3>
+                                            <ul className='pl-1 w-full flex flex-col gap-1'>
+                                                {
+                                                    items.treatment.map((treatment) => (
+                                                        <li key={treatment.name}>
+                                                            <Link href={treatment.path} className='group/link flex gap-2 items-center text-sm text-slate-700 transition-colors duration-200 ease-in-out hover:text-blue-600'>
+                                                                <ChevronsRight size={14} className='text-blue-600 group-hover/link:text-slate-800' />
+                                                                {treatment.name}
+                                                                <MoveUpRight size={12} className='text-blue-600 opacity-0 group-hover/link:opacity-100 transition-opacity duration-300 ' />
+                                                            </Link>
+                                                        </li>
+                                                    ))
+                                                }
+                                            </ul>
+                                        </div>
                                     </div>
                                     <Background hoveredIndex={hoveredIndex} idx={idx} />
                                 </div>
                             ))
-                        }
-                        {
-                            currentPath !== '/services' ? (
-                                <div className='relative w-full h-full p-2.5'>
-                                    <div className='bg-white w-full h-full relative p-5 flex items-center justify-center'>
-                                        <Link href={'/services'}
-                                            className='relative lg:w-[250px] lg:h-[250px] md:w-[180px] md:h-[180px] w-full h-full flex items-center justify-center text-center lg:text-2xl  font-medium text-primary-color border border-neutral-200 rounded-full'>
-                                            Explore All treatments
-                                        </Link>
-                                    </div>
-                                </div>
-                            ) : ''
                         }
                     </div>
                 </div>
