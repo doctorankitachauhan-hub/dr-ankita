@@ -30,7 +30,7 @@ export default function Academic() {
                                     Advanced clinical training and surgical expertise in obstetrics and gynecology.
                                 </Subheading>
 
-                                <ul className='relative w-full mt-3 flex flex-col gap-1.5'>
+                                <ul className='relative w-full mt-3 flex flex-col gap-1 list-disc pl-3'>
                                     <li className='text-sm text-zinc-500'>
                                         <strong className='text-dark-navy'>MBBS:</strong> – Bachelor of Medicine & Surgery
                                     </li>
@@ -55,7 +55,7 @@ export default function Academic() {
                                     Extensive expertise in both conservative and operative gynecology.
                                 </Subheading>
 
-                                <ul className='relative w-full mt-3 flex flex-col gap-1.5'>
+                                <ul className='relative w-full mt-3 flex flex-col gap-1 list-disc pl-3'>
                                     <li className='text-sm text-zinc-500'>
                                         Normal & Caesarean Deliveries
                                     </li>
@@ -88,9 +88,9 @@ export default function Academic() {
                                     Significant clinical experience across comprehensive women&apos;s health care.
                                 </Subheading>
 
-                                <ul className='relative w-full mt-3 flex flex-col gap-1.5'>
+                                <ul className='relative w-full mt-3 flex flex-col gap-1 list-disc pl-3'>
                                     <li className='text-sm text-zinc-500'>
-                                        Over 10 years of managing obstetric and gynecologic cases
+                                        Over 10+ years of managing obstetric and gynecologic cases
                                     </li>
                                     <li className='text-sm text-zinc-500'>
                                         Skilled in antenatal, postnatal, and high-risk pregnancy care
@@ -113,7 +113,7 @@ export default function Academic() {
                                     Focussed on safe, individualized care with attention to patient comfort.
                                 </Subheading>
 
-                                <ul className='relative w-full mt-3 flex flex-col gap-1.5'>
+                                <ul className='relative w-full mt-3 flex flex-col gap-1 list-disc pl-3'>
                                     <li className='text-sm text-zinc-500'>
                                         Personalized consultations and tailored treatment plans.
                                     </li>
