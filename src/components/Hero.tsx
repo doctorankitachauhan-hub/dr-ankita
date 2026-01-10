@@ -19,7 +19,7 @@ export default function Hero() {
         return () => startScroll();
     }, [stopScroll, startScroll, openForm]);
     return (
-        <Section className='bg-gradient-to-t from-primary-color/20 via-white to-transparent'>
+        <Section className='bg-gradient-to-t from-primary-color/20 via-white to-transparent pb-0!'>
             <Wrapper>
                 <div className='relative w-full grid md:grid-cols-2 grid-cols-1 gap-5'>
                     <div className="w-full h-full relative flex flex-col justify-center md:items-start items-center">
@@ -73,11 +73,11 @@ export default function Hero() {
 
                     <div className="w-full h-full relative flex items-center justify-center md:justify-end">
                         <Image
-                            src={'/images/hero/hero.png'}
+                            src={'/images/hero/hero-1.png'}
                             width={1920}
                             height={1080}
                             alt='Hero Image'
-                            className='w-full max-w-[400px] h-auto object-cover object-center rounded-2xl'
+                            className='w-full max-w-[400px] h-auto'
                         />
                     </div>
                 </div>

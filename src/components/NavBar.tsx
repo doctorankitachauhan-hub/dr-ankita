@@ -174,9 +174,9 @@ export default function NavBar() {
             <nav className='relative w-full max-w-7xl mx-auto px-5 flex items-center justify-between h-20'>
                 <div className='relative shrink-0 w-max'>
                     <Link href={'/'} className='flex items-center gap-2'>
-                        <Image src={'/images/logo/new-logo-1.png'} width={350} height={200} alt='Dr. Ankita Chauhan'
+                        <Image src={'/images/logo/new-logo-1.png'} width={350} height={60} alt='Dr. Ankita Chauhan'
                             className='md:w-[60px] w-[40px] h-auto' />
-                        <Image src={'/images/logo/new-logo-2.png'} width={500} height={500} alt='Dr. Ankita Chauhan'
+                        <Image src={'/images/logo/new-logo-2.png'} width={500} height={61} alt='Dr. Ankita Chauhan'
                             className='md:w-[280px] w-[200px] h-auto' />
                     </Link>
                 </div>

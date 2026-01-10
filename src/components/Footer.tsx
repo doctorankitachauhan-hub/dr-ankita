@@ -122,10 +122,10 @@ export default function Footer() {
                 <div className="w-full h-full relative flex flex-col">
                     <div className='flex gap-1 items-center'>
                         <Image src={'/images/logo/new-logo-1.png'} alt='Dr Ankita'
-                            width={400} height={100} className='w-14'
+                            width={400} height={56} className='w-14'
                         />
                         <Image src={'/images/logo/new-logo-2.png'} alt='Dr Ankita'
-                            width={400} height={100} className='w-54'
+                            width={400} height={56} className='w-54'
                         />
                     </div>
                     <Subheading className='text-left mt-5 !text-white !text-sm font-normal'>

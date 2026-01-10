@@ -13,22 +13,22 @@ export default function AdditionalDetails() {
         {
             title: '10+ Years',
             short: 'Experience',
-            icon: '/images/svg/stp-1.svg'
+            icon: '/images/svg/icon-1.svg'
         },
         {
-            title: '98% Success',
-            short: 'Rate',
-            icon: '/images/svg/stp-2.svg'
+            title: 'Personalized',
+            short: 'Women’s Care',
+            icon: '/images/svg/icon-2.svg'
         },
         {
-            title: '1K+ Happy',
-            short: 'Patient',
-            icon: '/images/svg/stp-3.svg'
+            title: 'Advanced & Safe',
+            short: 'Procedures',
+            icon: '/images/svg/icon-3.svg'
         },
         {
-            title: '50+ Variety',
-            short: 'Services',
-            icon: '/images/svg/stp-4.svg'
+            title: 'Patient-Focused',
+            short: 'Care',
+            icon: '/images/svg/icon-4.svg'
         },
 
     ]
@@ -40,7 +40,7 @@ export default function AdditionalDetails() {
                     <div className="relative w-full flex flex-wrap gap-5 items-center">
                         {
                             data.map((items, idx) => (
-                                <div className='flex-1 min-w-[200px] flex gap-3 items-center' key={idx}>
+                                <div className='flex-1 min-w-[250px] flex gap-3 items-center' key={idx}>
                                     <div className='shrink-0'>
                                         <Image src={items.icon} width={56} height={56} alt={items.title} />
                                     </div>

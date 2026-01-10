@@ -64,10 +64,10 @@ export default function BookAppointment({ openForm, closeForm, treatment }: Form
                             <div className='w-full flex items-center justify-between bg-primary-color md:p-5 p-2.5'>
                                 <div className='flex gap-1 items-center'>
                                     <Image src={'/images/logo/new-logo-1.png'} alt='Dr Ankita'
-                                        width={400} height={100} className='w-10'
+                                        width={400} height={44} className='w-10'
                                     />
                                     <Image src={'/images/logo/new-logo-2.png'} alt='Dr Ankita'
-                                        width={400} height={100} className='w-50'
+                                        width={400} height={44} className='w-50'
                                     />
                                 </div>
                                 <button role='button' className='shrink-0 md:w-11 md:h-11 h-9 w-9 rounded-full bg-zinc-900 text-white flex items-center justify-center cursor-pointer' onClick={() => closeForm(false)}>
