@@ -46,6 +46,48 @@ export default function Footer() {
             path: '/blogs'
         }
     ]
+    const treatmentMenu: MenuItem[] = [
+        {
+            key: "Preconception counselling & planning",
+            name: "Preconception counselling & planning",
+            path: "/pregnancy_&_obstetric_care/preconception_counselling_&_planning"
+        },
+        {
+            key: "Antenatal_and_postnatal_care",
+            name: "Antenatal and postnatal care",
+            path: "/pregnancy_&_obstetric_care/antenatal_and_postnatal_care"
+        },
+        {
+            key: "Menstrual problems & irregular periods",
+            name: "Menstrual problems & irregular periods",
+            path: "/gynecology_care/menstrual_problems_&_irregular_periods"
+        },
+        {
+            key: "PCOS management",
+            name: "PCOS management",
+            path: "/gynecology_care/PCOS-management"
+        },
+        {
+            key: "Operative hysteroscopy",
+            name: "Operative hysteroscopy",
+            path: "/advanced_procedures_&_surgeries/operative_hysteroscopy"
+        },
+        {
+            key: "Laparoscopic surgeries for fibroids, cysts & endometriosis",
+            name: "Laparoscopic surgeries for fibroids, cysts & endometriosis",
+            path: "/advanced_procedures_&_surgeries/laparoscopic_surgeries"
+        },
+        {
+            key: "Laser treatment for stress urinary incontinence",
+            name: "Laser treatment for stress urinary incontinence",
+            path: "/cosmetic_&_laser_gynecology/laser_treatment_for_stress_urinary_incontinence"
+        },
+        {
+            key: "Vaginal tightening procedures",
+            name: "Vaginal tightening procedures",
+            path: "/cosmetic_&_laser_gynecology/vaginal_tightening_procedures"
+        },
+    ]
     const contactInfo: Contact[] = [
         {
             name: '206 B, Botanical Garden Rd, Sri Ram Nagar, Gachibowli, Kondapur, Telangana 500084',
@@ -76,7 +118,7 @@ export default function Footer() {
 
     return (
         <footer className='bg-[#2a283e] lg:!pt-20 md:!pt-16 pt-11 w-full relative pb-5'>
-            <div className='w-full max-w-7xl relative mx-auto px-6 grid lg:grid-cols-[380px_200px_1fr_1fr] md:grid-cols-2 grid-cols-1 gap-5 mb-10'>
+            <div className='w-full max-w-7xl relative mx-auto px-6 grid lg:grid-cols-[350px_180px_1fr_250px] md:grid-cols-2 grid-cols-1 gap-5 mb-10'>
                 <div className="w-full h-full relative flex flex-col">
                     <div className='flex gap-1 items-center'>
                         <Image src={'/images/logo/new-logo-1.png'} alt='Dr Ankita'
@@ -103,10 +145,24 @@ export default function Footer() {
                 <div className="w-full h-full p-2 relative">
                     <h3 className='font-bold text-white text-2xl'>Quick Links</h3>
 
-                    <div className='relative mt-5 flex flex-col gap-3'>
+                    <div className='relative mt-5 flex flex-col gap-2'>
                         {
                             menuItems.map(item => (
-                                <Link href={item.path} key={item.key} className='uppercase font-normal text-white !font-montserrat flex items-center gap-2 text-sm'>
+                                <Link href={item.path} key={item.key} className='font-normal text-white !font-montserrat flex items-center gap-2 text-sm'>
+                                    <Image src={'/images/footer/link.svg'} width={14} height={14} alt={item.name} />
+                                    {item.name}
+                                </Link>
+                            ))
+                        }
+                    </div>
+                </div>
+
+                <div className="w-full h-full p-2 relative">
+                    <h3 className='font-bold text-white text-2xl'>Treatments</h3>
+                    <div className='relative mt-5 flex flex-col gap-2'>
+                        {
+                            treatmentMenu.map(item => (
+                                <Link href={item.path} key={item.key} className='font-normal text-white !font-montserrat flex items-center gap-2 text-sm'>
                                     <Image src={'/images/footer/link.svg'} width={14} height={14} alt={item.name} />
                                     {item.name}
                                 </Link>
@@ -128,15 +184,7 @@ export default function Footer() {
                         }
                     </div>
                 </div>
-                <div className="w-full h-full p-2 relative">
-                    <h3 className='font-bold text-white text-2xl'>Map</h3>
-                    <div className='relative mt-5 flex items-center justify-center'>
-                        <iframe
-                            className='rounded-xl h-52'
-                            src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15222.332737793133!2d78.5394945!3d17.479653!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb9b5665ee50c5%3A0xc392f00b5ab18c8a!2sV.%20S.%20Women%20Clinic!5e0!3m2!1sen!2sin!4v1758191807351!5m2!1sen!2sin" width="100%" height="100%" style={{ border: "0" }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade">
-                        </iframe>
-                    </div>
-                </div>
+
             </div>
 
             <div className='relative border-t border-neutral-100 pt-5'>
@@ -144,8 +192,8 @@ export default function Footer() {
                     <span className='md:text-sm text-[10px] font-normal text-white text-center'>
                         Copyright @ {new Date().getFullYear()} Dr. Ankita Chauhan Reddy. All rights reserved.
                     </span>
-                    <Link href={'#'} className='!font-montserrat md:text-sm text-[10px] font-normal text-white'>
-                        Made with by ❤ Wizards Next.
+                    <Link href={'https://wizards.co.in/'} target='_blank' className='!font-montserrat md:text-sm text-[10px] font-normal text-white'>
+                        Made with by ❤ <span className='italic'>Wizards Next.</span>
                     </Link>
                 </div>
             </div>
