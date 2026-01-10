@@ -1,8 +1,5 @@
-'use client';
 import { Heading, Section, Subheading, Wrapper } from '@/utils/Section'
 import Image from 'next/image'
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import React from 'react'
 
 interface Content {
@@ -10,8 +7,7 @@ interface Content {
     content: string;
     icon: string;
 }
-export default function About() {
-    const currentPath = usePathname()
+export default function AboutDesc() {
     const content: Content[] = [
         {
             name: 'Education',
@@ -35,30 +31,26 @@ export default function About() {
         },
     ]
     return (
-        <Section className={`${currentPath !== '/about' ? 'bg-[#F9FAFB]' : 'bg-transparent'} `}>
+        <Section>
             <Wrapper>
                 <div className='relative w-full grid lg:grid-cols-[450px_1fr] md:grid-cols-[380px_1fr] grid-cols-1 gap-8'>
                     <div className='relative w-full h-full flex md:justify-start justify-center'>
-                        <Image src='/images/about/doc-img.png' width={450} height={400} alt='Dr. Ankita Chauhan'
-                            className='max-h-[550px] w-auto h-full' />
+                        <Image src='/images/about/doc-img-2.png' width={450} height={400} alt='Dr. Ankita Chauhan'
+                            className='max-h-[500px] w-auto h-full' />
                     </div>
                     <div className='w-full h-full relative'>
                         <span className='text-base font-medium text-[#e11d48] '>
-                            ABOUT OUR DOCTOR
+                            Doctor Overview
                         </span>
                         <Heading className='mt-2'>
                             Dr. Ankita Chauhan
                         </Heading>
                         <Subheading>
-                            Dr. Ankita Chauhan is a highly experienced Consultant Obstetrician & Gynecologist dedicated to comprehensive women&apos;s healthcare. She holds an MBBS degree with distinction in Obstetrics & Gynecology, followed by an MS in Obstetrics & Gynecology and advanced fellowship training in laparoscopy.
+                            Dr. Ankita Chauhan is a Consultant Obstetrician and Gynecologist with extensive experience in managing a wide spectrum of women7apos;s health concerns. Her clinical practice focuses on providing comprehensive care across pregnancy, childbirth, and gynecological health, with special attention to individual patient needs.
                         </Subheading>
                         <Subheading className='mt-2'>
-                            With over 10+ years of expertise, Dr. Ankita specializes in pregnancy care, high-risk obstetrics, normal and caesarean deliveries, minimally invasive and laparoscopic gynecologic surgeries, and cosmetic gynecology. Patients trust her for compassionate care, accurate diagnosis, and personalized treatment plans.
+                            She is known for her calm approach, clear communication, and ability to guide patients through important health decisions with confidence. Dr. Ankita believes in combining medical expertise with empathy, ensuring every woman feels heard, supported, and cared for throughout her treatment journey.
                         </Subheading>
-
-                        <Link href={'/about'} className='px-4 py-2 bg-primary-color text-white text-sm rounded mt-4 block w-max ml-auto transition-colors duration-300 hover:bg-primary-hover'>
-                            Read More
-                        </Link>
 
                         <div className='relative w-full mt-10 grid md:grid-cols-2 grid-cols-1 gap-5 gap-y-8'>
                             {

@@ -13,24 +13,23 @@ export default function AboutPageStrip() {
         {
             title: '10+ Years',
             short: 'Experience',
-            icon: '/images/svg/stp-1.svg'
+            icon: '/images/svg/icon-1.svg'
         },
         {
-            title: '98% Success',
-            short: 'Rate',
-            icon: '/images/svg/stp-2.svg'
+            title: 'Personalized',
+            short: 'Women’s Care',
+            icon: '/images/svg/icon-2.svg'
         },
         {
-            title: '1K+ Happy',
-            short: 'Patient',
-            icon: '/images/svg/stp-3.svg'
+            title: 'Advanced & Safe',
+            short: 'Procedures',
+            icon: '/images/svg/icon-3.svg'
         },
         {
-            title: '50+ Variety',
-            short: 'Services',
-            icon: '/images/svg/stp-4.svg'
+            title: 'Patient-Focused',
+            short: 'Care',
+            icon: '/images/svg/icon-4.svg'
         },
-
     ]
     return (
         <Section className='!pt-0'>

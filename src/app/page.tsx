@@ -13,8 +13,8 @@ export default function Home() {
     <main>
       <Hero />
       <AdditionalDetails />
-      <Services />
       <About />
+      <Services />
       <OtherFacilityes />
       <MarqueeStrip />
       <Instagram />
