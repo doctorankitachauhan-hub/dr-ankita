@@ -12,7 +12,7 @@ export default function OurMission() {
                             OUR GOAL
                         </span>
                         <Heading>
-                            Dr. G. Nikila Reddy Best Cosmetic Gynaecologist.
+                            Dr. Ankita Chauhan Reddy Best Cosmetic Gynaecologist.
                         </Heading>
                         <Subheading className='mt-4'>
                             Our goal is to give women at every stage of life with outstanding, caring, and all-encompassing gynecological treatment. By providing individualized, evidence-based medical care, we are committed to advancing the health and wellness of women. Our dedication goes beyond our knowledge of medicine to include compassion, decency, and a welcoming atmosphere for every patient.

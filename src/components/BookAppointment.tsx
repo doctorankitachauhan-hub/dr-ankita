@@ -156,7 +156,7 @@ export default function BookAppointment({ openForm, closeForm }: FormProps) {
                                     <div className='relative w-full px-2 py-3 border border-primary-hover rounded-md bg-transparent '>
                                         <textarea name="message" id="message" className='relative w-full h-full border-none outline-none bg-transparent' placeholder='' rows={4} ></textarea>
                                         <label className='label'>
-                                            Contact No
+                                            Message
                                         </label>
                                     </div>
 

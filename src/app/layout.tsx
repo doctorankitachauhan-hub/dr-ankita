@@ -7,8 +7,8 @@ import Footer from "@/components/Footer";
 import Contact from "@/components/Contact";
 
 export const metadata: Metadata = {
-  title: "Dr. G. Nikila",
-  description: "Dr. G. Nikila",
+  title: "Dr. Ankita Chauhan",
+  description: "Dr. Ankita Chauhan",
 };
 
 export default function RootLayout({

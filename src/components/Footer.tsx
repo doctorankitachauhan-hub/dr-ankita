@@ -139,7 +139,7 @@ export default function Footer() {
             <div className='relative border-t border-neutral-100 pt-5'>
                 <div className='flex items-center md:justify-between justify-center md:flex-row flex-col gap-1 max-w-7xl relative mx-auto px-6 w-full'>
                     <span className='md:text-sm text-[10px] font-normal text-white text-center'>
-                        Copyright @ 2025 Dr. G. Nikila Reddy. All rights reserved.
+                        Copyright @ 2025 Dr. Ankita Chauhan Reddy. All rights reserved.
                     </span>
                     <Link href={'#'} className='!font-montserrat md:text-sm text-[10px] font-normal text-white'>
                         Made with by ❤ Wizards Next.

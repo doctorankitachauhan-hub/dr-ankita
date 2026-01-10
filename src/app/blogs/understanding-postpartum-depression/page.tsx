@@ -15,7 +15,7 @@ export default function BlogFour() {
                     <div className='mt-3 w-full flex items-center gap-4'>
                         <div className='relative flex gap-1 items-center'>
                             <User className='text-neutral-500 md:w-5 w-3' size={14} />
-                            <span className='text-xs text-light'>Dr. G. Nikila</span>
+                            <span className='text-xs text-light'>Dr. Ankita Chauhan</span>
                         </div>
                         <div className='relative flex gap-1 items-center'>
                             <Calendar className='text-neutral-500 md:w-5 w-3' size={14} />

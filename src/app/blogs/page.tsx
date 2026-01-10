@@ -66,7 +66,7 @@ export default function BlogPage() {
                     <div className='mt-5 w-full flex items-center gap-8'>
                       <div className='relative flex gap-2 items-center'>
                         <User className='text-neutral-500 md:w-5 w-3' />
-                        <span className='md:text-base text-xs text-light'>Dr. G. Nikila</span>
+                        <span className='md:text-base text-xs text-light'>Dr. Ankita Chauhan</span>
                       </div>
                       <div className='relative flex gap-2 items-center'>
                         <Calendar className='text-neutral-500 md:w-5 w-3' />
