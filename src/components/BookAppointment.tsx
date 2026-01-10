@@ -32,9 +32,10 @@ function isValidDate(date: Date | undefined) {
 interface FormProps {
     openForm: boolean;
     closeForm: Dispatch<React.SetStateAction<boolean>>;
+    treatment?: string
 }
 
-export default function BookAppointment({ openForm, closeForm }: FormProps) {
+export default function BookAppointment({ openForm, closeForm, treatment }: FormProps) {
     const [open, setOpen] = useState(false)
     const [date, setDate] = useState<Date | undefined>(
         new Date()
@@ -94,6 +95,16 @@ export default function BookAppointment({ openForm, closeForm }: FormProps) {
                                             Contact No
                                         </label>
                                     </div>
+                                    {
+                                        treatment && (
+                                            <div className='relative w-full px-2 py-3 border border-primary-hover rounded-md bg-transparent '>
+                                                <input type="tel" name="contact" id="contact" className='relative w-full h-full border-none outline-none bg-transparent' placeholder='' value={treatment} readOnly/>
+                                                <label className='labels'>
+                                                    Treatment
+                                                </label>
+                                            </div>
+                                        )
+                                    }
 
                                     <div className='relative w-full px-2 py-3 border border-primary-hover rounded-md bg-transparent '>
                                         <input
