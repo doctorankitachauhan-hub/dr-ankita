@@ -10,24 +10,24 @@ interface Content {
 export default function AboutDesc() {
     const content: Content[] = [
         {
-            name: 'Education',
-            content: 'MBBS, MS – Obstetrics & Gynecology Fellowship in Laparoscopy',
-            icon: '/images/about/icon-1.svg'
+            name: 'Clinical Focus',
+            content: 'High-Risk & Advanced Pregnancy Care & Experienced in managing complex pregnancies with a calm, evidence-based approach.',
+            icon: '/images/about/new-icon-1.svg'
         },
         {
-            name: 'Certifications',
-            content: 'Member of FOGSI & IMA Registered Medical Practitioner (MCI)',
-            icon: '/images/about/icon-2.svg'
+            name: 'Surgical Expertise',
+            content: 'Minimally Invasive Gynecological Procedures Skilled in laparoscopic and hysteroscopic surgeries for safer outcomes and faster recovery.',
+            icon: '/images/about/new-icon-2.svg'
         },
         {
-            name: 'Patients Served',
-            content: 'Trusted by women for comprehensive obstetric and gynecological care',
-            icon: '/images/about/icon-3.svg'
+            name: 'Women\'s Wellness',
+            content: 'Complete Care Across Life Stages Supporting women from adolescence to menopause with holistic gynecological care.',
+            icon: '/images/about/new-icon-3.svg'
         },
         {
-            name: 'Experience',
-            content: '10+ years of dedicated experience in women\'s healthcare',
-            icon: '/images/about/icon-4.svg'
+            name: 'Communication & Trust',
+            content: 'Clear Guidance at Every Step Known for explaining conditions and treatments in a simple, reassuring manner.',
+            icon: '/images/about/new-icon-4.svg'
         },
     ]
     return (
