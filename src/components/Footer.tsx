@@ -190,7 +190,7 @@ export default function Footer() {
             <div className='relative border-t border-neutral-100 pt-5'>
                 <div className='flex items-center md:justify-between justify-center md:flex-row flex-col gap-1 max-w-7xl relative mx-auto px-6 w-full'>
                     <span className='md:text-sm text-[10px] font-normal text-white text-center'>
-                        Copyright @ {new Date().getFullYear()} Dr. Ankita Chauhan Reddy. All rights reserved.
+                        Copyright @ {new Date().getFullYear()} Dr. Ankita Chauhan. All rights reserved.
                     </span>
                     <Link href={'https://wizards.co.in/'} target='_blank' className='!font-montserrat md:text-sm text-[10px] font-normal text-white'>
                         Made with by ❤ <span className='italic'>Wizards Next.</span>
