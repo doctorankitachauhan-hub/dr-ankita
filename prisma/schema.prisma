@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  DOCTOR
+  PATIENT
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+enum MeetingProvider {
+  GOOGLE_MEET
+}
+
+model User {
+  id       String  @id @default(cuid())
+  name     String
+  email    String  @unique
+  phone    String?
+  dob      String?
+  address  String?
+  password String?
+  
+  role     Role    @default(PATIENT)
+
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  doctorProfile DoctorProfile?
+  appointments  Appointment[]
+}
+
+model DoctorProfile {
+  id              String  @id @default(cuid())
+  userId          String  @unique
+  specialization  String
+  experience      Int
+  consultationFee Float
+  bio             String?
+
+  user  User       @relation(fields: [userId], references: [id])
+  slots TimeSlot[]
+}
+
+model TimeSlot {
+  id        String   @id @default(cuid())
+  doctorId  String
+  startTime DateTime
+  endTime   DateTime
+  isBooked  Boolean  @default(false)
+
+  doctor      DoctorProfile @relation(fields: [doctorId], references: [id])
+  appointment Appointment?
+}
+
+model Appointment {
+  id        String            @id @default(cuid())
+  patientId String
+  slotId    String            @unique
+  status    AppointmentStatus @default(PENDING)
+
+  reminder1Sent Boolean @default(false)
+  reminder2Sent Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  patient User     @relation(fields: [patientId], references: [id])
+  slot    TimeSlot @relation(fields: [slotId], references: [id])
+
+  payment Payment?
+  meeting Meeting?
+}
+
+model Payment {
+  id            String @id @default(cuid())
+  appointmentId String @unique
+
+  amount        Float
+  status        PaymentStatus
+  transactionId String?
+
+  createdAt DateTime @default(now())
+
+  appointment Appointment @relation(fields: [appointmentId], references: [id])
+}
+
+model Meeting {
+  id            String @id @default(cuid())
+  appointmentId String @unique
+
+  provider MeetingProvider @default(GOOGLE_MEET)
+
+  meetingLink   String
+  googleEventId String
+
+  startTime DateTime
+  endTime   DateTime
+
+  createdAt DateTime @default(now())
+
+  appointment Appointment @relation(fields: [appointmentId], references: [id])
+}
