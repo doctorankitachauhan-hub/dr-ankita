@@ -37,8 +37,8 @@ model User {
   dob      String?
   address  String?
   password String?
-  
-  role     Role    @default(PATIENT)
+
+  role Role @default(PATIENT)
 
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
@@ -115,4 +115,13 @@ model Meeting {
   createdAt DateTime @default(now())
 
   appointment Appointment @relation(fields: [appointmentId], references: [id])
+}
+
+model EmailOTP {
+  id        String   @id @default(cuid())
+  email     String
+  otpHash   String
+  expiresAt DateTime
+  attempts  Int      @default(0)
+  createdAt DateTime @default(now())
 }
