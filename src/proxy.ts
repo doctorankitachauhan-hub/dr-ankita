@@ -15,9 +15,11 @@ export default function proxy(req: NextRequest) {
 
 export const config = {
     matcher: [
-        // "/api/v1/:path*",
+        "/api/v1/:path*",
         "/login",
         "/forget-password",
         "/reset-password",
+        "/doctor/dashboard",
+        "/user/dashboard",
     ],
 };
