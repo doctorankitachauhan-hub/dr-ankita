@@ -240,7 +240,9 @@ export default function NavBar() {
                 </div>
 
                 <div className='lg:flex flex-col items-end hidden relative w-max'>
-                    <ButtonPrimary className='bg-white text-primary-color! hover:bg-gray-50! '>
+                    <ButtonPrimary
+                        onClick={() => setOpenLoginModal(true)}
+                        className='bg-white text-primary-color! hover:bg-gray-50! '>
                         Login/Register
                     </ButtonPrimary>
                 </div>
