@@ -27,6 +27,7 @@ export default function Login({ openLoginModal, closeLoginModal }: Props) {
     const router = useRouter()
     const [loginSuccess, setLoginSuccess] = useState(false)
     const [changeForm, setChangeForm] = useState<boolean>(false);
+    const [login, setLogin] = useState<boolean>(false)
     const [userData, setUserData] = useState<Info>({
         name: '',
         email: '',
@@ -137,7 +138,7 @@ export default function Login({ openLoginModal, closeLoginModal }: Props) {
 
                                 <div className="w-full bg-white overflow-hidden relative">
                                     <AnimatePresence mode="wait">
-                                        {!changeForm ? (
+                                        {(!changeForm && !login) ? (
                                             <motion.form
                                                 key="user-form"
                                                 onSubmit={handleSubmit}
@@ -186,6 +187,32 @@ export default function Login({ openLoginModal, closeLoginModal }: Props) {
                                                     </ButtonPrimary>
                                                 </div>
                                             </motion.form>
+                                        ) : (!changeForm && login) ? (
+
+                                            <motion.form
+                                                key="login-form"
+                                                // onSubmit={handleLogin}
+                                                initial={{ x: "100%", opacity: 0 }}
+                                                animate={{ x: 0, opacity: 1 }}
+                                                exit={{ x: "-100%", opacity: 0 }}
+                                                transition={{ duration: 0.35 }}
+                                            >
+                                                <div className='w-full relative mt-8 flex flex-col gap-5 text-zinc-700 font-montserrat font-medium text-lg md:p-5 p-2.5'>
+
+                                                    <div className='relative w-full px-2 py-3 border border-primary-hover rounded-md'>
+                                                        <input
+                                                            type="email"
+                                                            name="email"
+                                                            value={userData.email}
+                                                            onChange={handleChange}
+                                                            className='w-full bg-transparent outline-none'
+                                                        />
+                                                        <label className='labels'>Email</label>
+                                                    </div>
+
+                                                </div>
+                                            </motion.form>
+
                                         ) : (
                                             <AnimatePresence mode="wait">
                                                 {loginSuccess ? (
@@ -271,18 +298,20 @@ export default function Login({ openLoginModal, closeLoginModal }: Props) {
                                                     </motion.form>
                                                 )}
                                             </AnimatePresence>
-                                        )}
+                                        )
+                                        }
                                     </AnimatePresence>
                                 </div>
 
-                                <div className="py-5 flex items-center justify-center gap-1">
+                                {!changeForm && <div className="py-5 flex items-center justify-center gap-1">
                                     <span className="text-sm font-medium text-gray-600">
-                                        Already have an account?
+                                        {login ? "New User?" : "Already have an account?"}
                                     </span>
-                                    <button className="font-medium text-blue-500 cursor-pointer">
-                                        Login
+                                    <button className="font-medium text-blue-500 cursor-pointer"
+                                        onClick={() => setLogin(!login)}>
+                                        {login ? "Create Account" : "Login"}
                                     </button>
-                                </div>
+                                </div>}
                             </motion.div>
 
                         </div>
