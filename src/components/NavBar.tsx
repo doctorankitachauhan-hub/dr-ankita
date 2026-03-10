@@ -4,10 +4,9 @@ import { useLenisControl } from '@/utils/SmoothScroll';
 import { ChevronDown, ChevronRight, Menu, MoveUpRight, Phone, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation'
-import React, { Fragment, useEffect, useState } from 'react'
-import BookAppointment from './BookAppointment';
+import { useEffect, useState } from 'react'
 import MobileMenuItem from './MobileMenu';
+import Login from './auth/login';
 
 interface MenuItem {
     key: string;
@@ -17,7 +16,6 @@ interface MenuItem {
 }
 
 export default function NavBar() {
-    const currentPath = usePathname();
     const menuItems: MenuItem[] = [
         // {
         //     key: 'home',
@@ -154,20 +152,16 @@ export default function NavBar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { stopScroll, startScroll } = useLenisControl();
     const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
-    const [openForm, setOpenForm] = useState<boolean>(false);
-
-    const toggleSubMenu = (key: string) => {
-        setOpenSubMenu((prev) => (prev === key ? null : key));
-    };
+    const [openLoginModal, setOpenLoginModal] = useState<boolean>(false);
 
     useEffect(() => {
-        if (isMenuOpen || openForm) {
+        if (isMenuOpen || openLoginModal) {
             stopScroll();
         } else {
             startScroll();
         }
         return () => startScroll();
-    }, [isMenuOpen, stopScroll, startScroll, openForm]);
+    }, [isMenuOpen, stopScroll, startScroll, openLoginModal]);
 
     return (
         <header className='relative w-full z-30 bg-primary-color'>
@@ -246,8 +240,8 @@ export default function NavBar() {
                 </div>
 
                 <div className='lg:flex flex-col items-end hidden relative w-max'>
-                    <ButtonPrimary onClick={() => setOpenForm(true)} className='bg-white text-primary-color! hover:bg-gray-50! '>
-                        Book Appointment
+                    <ButtonPrimary className='bg-white text-primary-color! hover:bg-gray-50! '>
+                        Login/Register
                     </ButtonPrimary>
                 </div>
 
@@ -298,7 +292,7 @@ export default function NavBar() {
                     </div>
 
                     <div className='w-full absolute bottom-0 flex flex-col items-end'>
-                        <ButtonPrimary onClick={() => { setIsMenuOpen(false); setOpenForm(true); }}
+                        <ButtonPrimary
                             className='w-full bg-white text-primary-color! hover:bg-gray-50!'
                         >
                             Book Appointment
@@ -306,7 +300,11 @@ export default function NavBar() {
                     </div>
                 </div>
             </div>
-            <BookAppointment openForm={openForm} closeForm={setOpenForm} />
+
+            <Login
+                openLoginModal={openLoginModal}
+                closeLoginModal={() => setOpenLoginModal(false)}
+            />
         </header>
     )
 }

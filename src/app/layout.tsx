@@ -5,6 +5,7 @@ import TopBar from "@/components/TopBar";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import Contact from "@/components/Contact";
+import Providers from "@/lib/providers";
 
 export const metadata: Metadata = {
   title: "Dr. Ankita Chauhan",
@@ -25,13 +26,15 @@ export default function RootLayout({
         <link rel="shortcut icon" href="/images/logo/new-logo-1.png" type="image/x-icon" />
       </head>
       <body className="overflow-x-hidden">
-        <SmoothScrollProvider>
-          {/* <TopBar /> */}
-          <NavBar />
-          {children}
-          <Contact />
-          <Footer />
-        </SmoothScrollProvider>
+        <Providers>
+          <SmoothScrollProvider>
+            {/* <TopBar /> */}
+            <NavBar />
+            {children}
+            <Contact />
+            <Footer />
+          </SmoothScrollProvider>
+        </Providers>
       </body>
     </html>
   );

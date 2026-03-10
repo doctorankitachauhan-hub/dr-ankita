@@ -19,7 +19,7 @@ export const config = {
         "/login",
         "/forget-password",
         "/reset-password",
-        "/doctor/dashboard",
-        "/user/dashboard",
+        "/doctor/dashboard/:path*",
+        "/user/dashboard/:path*",
     ],
 };

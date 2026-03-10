@@ -70,7 +70,10 @@ export default function BookAppointment({ openForm, closeForm, treatment }: Form
                                         width={400} height={44} className='w-50'
                                     />
                                 </div>
-                                <button role='button' className='shrink-0 md:w-11 md:h-11 h-9 w-9 rounded-full bg-zinc-900 text-white flex items-center justify-center cursor-pointer' onClick={() => closeForm(false)}>
+                                <button
+                                    role='button'
+                                    className='shrink-0 md:w-11 md:h-11 h-9 w-9 rounded-full bg-white text-black flex items-center justify-center cursor-pointer'
+                                    onClick={() => closeForm(false)}>
                                     <X />
                                 </button>
                             </div>
@@ -98,7 +101,7 @@ export default function BookAppointment({ openForm, closeForm, treatment }: Form
                                     {
                                         treatment && (
                                             <div className='relative w-full px-2 py-3 border border-primary-hover rounded-md bg-transparent '>
-                                                <input type="tel" name="contact" id="contact" className='relative w-full h-full border-none outline-none bg-transparent' placeholder='' value={treatment} readOnly/>
+                                                <input type="tel" name="contact" id="contact" className='relative w-full h-full border-none outline-none bg-transparent' placeholder='' value={treatment} readOnly />
                                                 <label className='labels'>
                                                     Treatment
                                                 </label>
