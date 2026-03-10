@@ -1,3 +1,4 @@
+import { Role } from '@/generated/prisma/enums'
 import z from 'zod'
 
 export const userSchema = z.object({
@@ -32,14 +33,10 @@ export const userSchema = z.object({
         .optional(),
 
     dob: z
-        .string()
-        .datetime()
-        .transform((val) => new Date(val))
+        .iso.datetime()
         .optional(),
 
-    role: z
-        .enum(["USER", "DOCTOR",])
-        .default("USER"),
+    role: z.enum(Role).default(Role.PATIENT).optional()
 })
 
 export type UserInput = z.infer<typeof userSchema>

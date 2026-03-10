@@ -34,7 +34,7 @@ model User {
   name     String
   email    String  @unique
   phone    String?
-  dob      String?
+  dob      DateTime?
   address  String?
   password String?
 

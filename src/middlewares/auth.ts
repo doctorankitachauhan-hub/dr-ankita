@@ -36,7 +36,7 @@ function safeVerifyToken(token: string | null) {
 export async function authMiddleware(req: NextRequest) {
     const pathname = req.nextUrl.pathname;
 
-    const token = req.cookies.get("app_token")?.value || null;
+    const token = req.cookies.get("auth_token")?.value || null;
     const decoded = safeVerifyToken(token);
     const isPublic = PUBLIC_ROUTES.includes(pathname);
 

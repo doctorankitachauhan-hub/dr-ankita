@@ -1,4 +1,6 @@
+import { signToken } from "@/lib/jtw";
 import prisma from "@/lib/prisma";
+import { UserInput } from "@/types/user";
 import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
@@ -62,8 +64,40 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        
+        const userData: UserInput = record.userData as unknown as UserInput
 
+        const [user] = await prisma.$transaction([
+            prisma.user.create({
+                data: {
+                    ...userData
+                }
+            }),
+            prisma.emailOTP.deleteMany({
+                where: { email }
+            })
+        ])
+
+        const token = signToken({
+            sub: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role
+        })
+
+        const response = NextResponse.json(
+            { message: "Signup successful" },
+            { status: 201 }
+        )
+
+        response.cookies.set("auth_token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/",
+            maxAge: 60 * 60 * 24 * 7
+        })
+
+        return response
 
     } catch (error) {
         console.log("Error while verifying otp", error);
