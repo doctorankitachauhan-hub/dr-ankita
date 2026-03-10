@@ -4,16 +4,13 @@ import { randomInt } from "crypto"
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
 import { sendMail } from "@/lib/sendMail";
+import { userSchema } from "@/types/user";
 
-
-const ValidEmail = z.object({
-    email: z.email({ error: "Invalid email address" }).trim()
-})
 
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-        const { success, error, data } = ValidEmail.safeParse(body);
+        const { success, error, data } = userSchema.safeParse(body);
 
         if (!success) {
             return NextResponse.json({ error: z.prettifyError(error) }, { status: 400 })
@@ -33,6 +30,9 @@ export async function POST(req: NextRequest) {
             data: {
                 email,
                 otpHash,
+                userData: {
+                    ...data
+                },
                 expiresAt: new Date(Date.now() + 10 * 60 * 1000)
             }
         })

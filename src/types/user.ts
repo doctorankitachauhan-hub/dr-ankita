@@ -40,6 +40,6 @@ export const userSchema = z.object({
     role: z
         .enum(["USER", "DOCTOR",])
         .default("USER"),
-}).strict()
+})
 
 export type UserInput = z.infer<typeof userSchema>
