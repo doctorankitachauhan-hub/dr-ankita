@@ -17,7 +17,7 @@ export async function sendMail({ title, to, subject, html }: Props) {
         }
 
         const { error } = await resend.emails.send({
-            from: `${title} <leads@wizards.co.in>`,
+            from: `${title} <onboarding@resend.dev>`,
             to: to,
             subject: subject,
             html: html,

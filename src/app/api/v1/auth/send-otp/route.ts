@@ -20,6 +20,12 @@ export async function POST(req: NextRequest) {
         }
 
         const email = data.email.trim().toLowerCase();
+
+        const existingUser = await prisma.user.findUnique({ where: { email } })
+        if (existingUser) {
+            return NextResponse.json({ error: "This email is already in use, try different email." }, { status: 403 })
+        }
+
         const otp = randomInt(100000, 999999).toString();
         const otpHash = await bcrypt.hash(otp, 10)
 
