@@ -1,6 +1,5 @@
 import { signToken } from "@/lib/jtw";
 import prisma from "@/lib/prisma";
-import { UserInput } from "@/types/user";
 import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
@@ -8,7 +7,7 @@ import z from "zod";
 
 const otpSchema = z.object({
     email: z.email({ error: "Invalid email address" }).trim(),
-    otp: z.string({ error: "OTP is required." }).min(6, { error: "Invalid OTP" }).max(6, { error: "Invalid OTP" })
+    loginOtp: z.string({ error: "OTP is required." }).min(6, { error: "Invalid OTP" }).max(6, { error: "Invalid OTP" })
 })
 const MAX_ATTEMPTS = 3;
 
@@ -60,7 +59,7 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const isValid = await bcrypt.compare(data.otp, record.otpHash);
+        const isValid = await bcrypt.compare(data.loginOtp, record.otpHash);
 
         if (!isValid) {
             await prisma.emailOTP.update({
