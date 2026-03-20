@@ -85,7 +85,11 @@ export async function POST(req: NextRequest) {
         const response = NextResponse.json(
             { message: "Login successful" },
             { status: 201 }
+
         )
+        await prisma.emailOTP.deleteMany({
+            where: { email }
+        })
 
         response.cookies.set("auth_token", token, {
             httpOnly: true,
