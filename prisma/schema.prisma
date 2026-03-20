@@ -121,7 +121,7 @@ model EmailOTP {
   id        String   @id @default(cuid())
   email     String
   otpHash   String
-  userData  Json
+  userData  Json?
   expiresAt DateTime
   attempts  Int      @default(0)
   createdAt DateTime @default(now())
