@@ -1,12 +1,12 @@
 'use client'
 import { ButtonPrimary } from '@/utils/Section';
 import { useLenisControl } from '@/utils/SmoothScroll';
-import { ChevronDown, ChevronRight, Menu, MoveUpRight, Phone, X } from 'lucide-react';
+import { ChevronDown, ChevronRight, Menu, MoveUpRight, Phone, User, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react'
 import MobileMenuItem from './MobileMenu';
-import Login from './auth/login';
+import Signup from './auth/signup';
 
 interface MenuItem {
     key: string;
@@ -239,12 +239,15 @@ export default function NavBar() {
                     }
                 </div>
 
-                <div className='lg:flex flex-col items-end hidden relative w-max'>
+                <div className='lg:flex gap-2 items-center hidden relative'>
                     <ButtonPrimary
                         onClick={() => setOpenLoginModal(true)}
                         className='bg-white text-primary-color! hover:bg-gray-50! '>
-                        Login/Register
+                        Book Appointement
                     </ButtonPrimary>
+                    <Link href={"/login"} className='size-12 flex items-center justify-center'>
+                        <User className='text-white' />
+                    </Link>
                 </div>
 
                 <button onClick={() => setIsMenuOpen((prev) => !prev)} className='lg:hidden w-12 h-12 flex items-center justify-center cursor-pointer bg-primary rounded-full '>
@@ -303,7 +306,7 @@ export default function NavBar() {
                 </div>
             </div>
 
-            <Login
+            <Signup
                 openLoginModal={openLoginModal}
                 closeLoginModal={() => setOpenLoginModal(false)}
             />
