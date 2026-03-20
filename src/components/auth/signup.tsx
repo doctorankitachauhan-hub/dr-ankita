@@ -10,6 +10,7 @@ import { ChangeEvent, Dispatch, FormEvent, useEffect, useState } from "react";
 import axios, { AxiosError } from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
 import Spinner from "../ui/spinner";
+import { useAuth } from "@/hooks/useAuth";
 
 
 type Props = {
@@ -37,6 +38,7 @@ export default function Signup({ openLoginModal, closeLoginModal }: Props) {
     const [otp, setOtp] = useState<string>("")
     const [loginOtp, setLoginOtp] = useState<string>("");
     const [cooldown, setCooldown] = useState(0);
+    const { setUser } = useAuth()
 
     useEffect(() => {
         if (cooldown <= 0) return;
@@ -85,9 +87,8 @@ export default function Signup({ openLoginModal, closeLoginModal }: Props) {
         },
         onSuccess: (val) => {
             toast.success(val?.message)
-
+            setUser(val?.user)
             setLoginSuccess(true)
-
             setTimeout(() => {
                 handleClose()
                 router.push("/user/dashboard")
@@ -136,9 +137,8 @@ export default function Signup({ openLoginModal, closeLoginModal }: Props) {
         },
         onSuccess: (val) => {
             toast.success(val?.message)
-
             setLoginSuccess(true)
-
+            setUser(val?.user)
             setTimeout(() => {
                 handleClose()
                 router.push("/user/dashboard")

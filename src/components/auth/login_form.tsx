@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import Spinner from '../ui/spinner';
 import { useRouter } from 'next/navigation';
 import { CheckCircle } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function LoginForm() {
   const router = useRouter()
@@ -16,6 +17,7 @@ export default function LoginForm() {
   const [cooldown, setCooldown] = useState(0);
   const [verifyLoginOtp, setVerifyLoginOtp] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(false)
+  const { setUser } = useAuth()
 
 
   const loginMutation = useMutation({
@@ -50,7 +52,7 @@ export default function LoginForm() {
     },
     onSuccess: (val) => {
       toast.success(val?.message)
-
+      setUser(val?.user)
       setLoginSuccess(true)
 
       setTimeout(() => {

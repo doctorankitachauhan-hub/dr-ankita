@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react'
 import MobileMenuItem from './MobileMenu';
 import Signup from './auth/signup';
+import { useAuth } from '@/hooks/useAuth';
 
 interface MenuItem {
     key: string;
@@ -153,6 +154,7 @@ export default function NavBar() {
     const { stopScroll, startScroll } = useLenisControl();
     const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
     const [openLoginModal, setOpenLoginModal] = useState<boolean>(false);
+    const { isAuthenticated } = useAuth()
 
     useEffect(() => {
         if (isMenuOpen || openLoginModal) {
@@ -240,11 +242,13 @@ export default function NavBar() {
                 </div>
 
                 <div className='lg:flex gap-2 items-center hidden relative'>
-                    <ButtonPrimary
-                        onClick={() => setOpenLoginModal(true)}
-                        className='bg-white text-primary-color! hover:bg-gray-50! '>
-                        Book Appointement
-                    </ButtonPrimary>
+                    {
+                        !isAuthenticated && <ButtonPrimary
+                            onClick={() => setOpenLoginModal(true)}
+                            className='bg-white text-primary-color! hover:bg-gray-50! '>
+                            Book Appointement
+                        </ButtonPrimary>
+                    }
                     <Link href={"/login"} className='size-12 flex items-center justify-center'>
                         <User className='text-white' />
                     </Link>

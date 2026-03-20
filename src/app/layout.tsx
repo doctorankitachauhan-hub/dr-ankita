@@ -6,6 +6,7 @@ import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import Contact from "@/components/Contact";
 import Providers from "@/lib/providers";
+import AuthBoundary from "@/context/auth_boundry";
 
 export const metadata: Metadata = {
   title: "Dr. Ankita Chauhan",
@@ -27,13 +28,15 @@ export default function RootLayout({
       </head>
       <body className="overflow-x-hidden">
         <Providers>
-          <SmoothScrollProvider>
-            {/* <TopBar /> */}
-            <NavBar />
-            {children}
-            <Contact />
-            <Footer />
-          </SmoothScrollProvider>
+          <AuthBoundary>
+            <SmoothScrollProvider>
+              {/* <TopBar /> */}
+              <NavBar />
+              {children}
+              <Contact />
+              <Footer />
+            </SmoothScrollProvider>
+          </AuthBoundary>
         </Providers>
       </body>
     </html>
