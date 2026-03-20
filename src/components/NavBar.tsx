@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import MobileMenuItem from './MobileMenu';
 import Signup from './auth/signup';
 import { useAuth } from '@/hooks/useAuth';
+import { useRouter } from 'next/navigation';
 
 interface MenuItem {
     key: string;
@@ -17,6 +18,7 @@ interface MenuItem {
 }
 
 export default function NavBar() {
+    const router = useRouter()
     const menuItems: MenuItem[] = [
         // {
         //     key: 'home',
@@ -154,7 +156,7 @@ export default function NavBar() {
     const { stopScroll, startScroll } = useLenisControl();
     const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
     const [openLoginModal, setOpenLoginModal] = useState<boolean>(false);
-    const { isAuthenticated } = useAuth()
+    const { isAuthenticated, user } = useAuth()
 
     useEffect(() => {
         if (isMenuOpen || openLoginModal) {
@@ -249,9 +251,15 @@ export default function NavBar() {
                             Book Appointement
                         </ButtonPrimary>
                     }
-                    <Link href={"/login"} className='size-12 flex items-center justify-center'>
+                    <button
+                        onClick={() => isAuthenticated ? router.push("/user/dashboard") : router.push("/login")}
+                        className='flex flex-col items-center justify-center cursor-pointer'
+                    >
                         <User className='text-white' />
-                    </Link>
+                        <span className='text-xs text-white text-center'>
+                            {user?.name}
+                        </span>
+                    </button>
                 </div>
 
                 <button onClick={() => setIsMenuOpen((prev) => !prev)} className='lg:hidden w-12 h-12 flex items-center justify-center cursor-pointer bg-primary rounded-full '>
