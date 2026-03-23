@@ -29,10 +29,17 @@ enum MeetingProvider {
   GOOGLE_MEET
 }
 
+enum SlotStatus {
+  AVAILABLE
+  BOOKED
+  BLOCKED
+  CANCELLED
+}
+
 model User {
-  id       String  @id @default(cuid())
+  id       String    @id @default(cuid())
   name     String
-  email    String  @unique
+  email    String    @unique
   phone    String?
   dob      DateTime?
   address  String?
@@ -54,19 +61,26 @@ model DoctorProfile {
   consultationFee Float
   bio             String?
 
-  user  User       @relation(fields: [userId], references: [id])
-  slots TimeSlot[]
+  user                 User                 @relation(fields: [userId], references: [id])
+  slots                TimeSlot[]
+  doctorAvailabilities DoctorAvailability[]
 }
 
 model TimeSlot {
-  id        String   @id @default(cuid())
+  id        String     @id @default(cuid())
   doctorId  String
   startTime DateTime
   endTime   DateTime
-  isBooked  Boolean  @default(false)
+  status    SlotStatus @default(AVAILABLE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   doctor      DoctorProfile @relation(fields: [doctorId], references: [id])
   appointment Appointment?
+
+  @@unique([doctorId, startTime, endTime])
+  @@index([doctorId, startTime])
 }
 
 model Appointment {
@@ -125,4 +139,20 @@ model EmailOTP {
   expiresAt DateTime
   attempts  Int      @default(0)
   createdAt DateTime @default(now())
+}
+
+model DoctorAvailability {
+  id       String @id @default(cuid())
+  doctorId String
+
+  dayOfWeek    Int
+  startTime    String
+  endTime      String
+  slotDuration Int
+
+  isActive Boolean @default(true)
+
+  doctor DoctorProfile @relation(fields: [doctorId], references: [id])
+
+  @@index([doctorId, dayOfWeek])
 }
