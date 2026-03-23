@@ -1,3 +1,12 @@
+function createISTDate(date: Date, time: string) {
+    const [hours, minutes] = time.split(":").map(Number);
+
+    const d = new Date(date);
+    d.setHours(hours, minutes, 0, 0);
+
+    return d;
+}
+
 export function generateFromAvailability(availability: any[], totalDays: number) {
     const slots = [];
     const today = new Date();
@@ -14,13 +23,8 @@ export function generateFromAvailability(availability: any[], totalDays: number)
 
         if (!rule) continue;
 
-        let start = new Date(
-            `${currentDate.toISOString().split("T")[0]}T${rule.startTime}:00`
-        );
-
-        const end = new Date(
-            `${currentDate.toISOString().split("T")[0]}T${rule.endTime}:00`
-        );
+        let start = createISTDate(currentDate, rule.startTime);
+        const end = createISTDate(currentDate, rule.endTime);
 
         while (start < end) {
             const slotEnd = new Date(
