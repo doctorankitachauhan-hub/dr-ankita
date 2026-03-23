@@ -9,4 +9,9 @@ export const slotSchema = z.object({
     ).min(1, "At least one slot is required")
 });
 
+export const autoSlotSchema = z.object({
+    days: z.number().min(1, { error: "Minumim 1 day" }).max(30, { error: "Maximum 30 day only" })
+})
+
+
 export type SlotsSchemaType = z.infer<typeof slotSchema>
