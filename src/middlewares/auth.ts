@@ -47,6 +47,13 @@ export async function authMiddleware(req: NextRequest) {
         return NextResponse.next();
     }
 
+    const requestHeaders = new Headers(req.headers);
+    requestHeaders.set("x-user-id", decoded.sub);
+    requestHeaders.set("x-user-name", decoded.name);
+    requestHeaders.set("x-user-email", decoded.email);
+    requestHeaders.set("x-user-role", decoded.role);
+
+
     if (pathname === "/login") {
         if (decoded.role === "DOCTOR") {
             return NextResponse.redirect(
