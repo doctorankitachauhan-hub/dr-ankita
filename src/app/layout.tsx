@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import SmoothScrollProvider from "@/utils/SmoothScroll";
-import TopBar from "@/components/TopBar";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import Contact from "@/components/Contact";
@@ -30,11 +29,10 @@ export default function RootLayout({
         <Providers>
           <AuthBoundary>
             <SmoothScrollProvider>
-              {/* <TopBar /> */}
-              <NavBar />
+              {/* <NavBar /> */}
               {children}
-              <Contact />
-              <Footer />
+              {/* <Contact /> */}
+              {/* <Footer /> */}
             </SmoothScrollProvider>
           </AuthBoundary>
         </Providers>
