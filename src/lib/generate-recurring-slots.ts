@@ -5,13 +5,16 @@ function createISTDate(date: Date, time: string) {
     return fromZonedTime(`${dateStr} ${time}`, "Asia/Kolkata");
 }
 
-export function generateFromAvailability(availability: any[], totalDays: number) {
+export function generateFromAvailability(
+    availability: any[],
+    totalDays: number,
+    startDate: Date
+) {
     const slots = [];
-    const today = new Date();
 
     for (let i = 0; i < totalDays; i++) {
-        const currentDate = new Date();
-        currentDate.setDate(today.getDate() + i);
+        const currentDate = new Date(startDate);
+        currentDate.setDate(startDate.getDate() + i);
 
         const day = currentDate.getDay();
 

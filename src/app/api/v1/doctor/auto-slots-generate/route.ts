@@ -55,9 +55,24 @@ export async function POST(req: NextRequest) {
             );
         }
 
+        const lastSlot = await prisma.timeSlot.findFirst({
+            where: { doctorId: doctor.id },
+            orderBy: { startTime: "desc" }
+        });
+
+        let startDate = new Date();
+
+        if (lastSlot) {
+            startDate = new Date(lastSlot.startTime);
+            startDate.setDate(startDate.getDate() + 1);
+        }
+
+        startDate.setHours(0, 0, 0, 0);
+
         const slots = generateFromAvailability(
             availability,
-            parsed.data.days ?? 15
+            parsed.data.days ?? 15,
+            startDate
         );
 
         if (!slots.length) {
