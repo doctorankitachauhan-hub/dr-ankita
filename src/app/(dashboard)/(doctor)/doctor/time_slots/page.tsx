@@ -5,8 +5,8 @@ import Spinner from "@/components/ui/spinner";
 import { useSlots } from "@/hooks/useFetch";
 
 export default function TimeSlots() {
-    const { data, isLoading } = useSlots();
+    const { data, isLoading, isFetching } = useSlots();
 
-    if (isLoading) return <div className="w-full h-full flex items-center justify-center"><Spinner /></div>;
+    if (isLoading || isFetching) return <div className="w-full h-full flex items-center justify-center"><Spinner /></div>;
     return <DoctorCalendar slots={data} />;
 }

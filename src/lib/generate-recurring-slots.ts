@@ -16,10 +16,10 @@ export function generateFromAvailability(
         const currentDate = new Date(startDate);
         currentDate.setDate(startDate.getDate() + i);
 
-        const day = currentDate.getDay();
-
+        const day = currentDate.getDay(); 
+        
         const rules = availability.filter(
-            (a) => a.dayOfWeek === day && a.isActive
+            (a) => a.dayOfWeek === day
         );
 
         if (!rules.length) continue;

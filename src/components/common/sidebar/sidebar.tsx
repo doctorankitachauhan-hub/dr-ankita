@@ -43,7 +43,9 @@ export default function Sidebar() {
             </div>
             <div className='w-full h-px bg-[#685fa3]' />
 
-            <div className='w-full mt-8 overflow-y-auto flex flex-col'>
+            <div className='w-full h-full mt-2 overflow-y-auto flex flex-col pb-2' data-lenis-prevent
+                style={{ scrollbarWidth: "none" }}
+            >
                 {
                     filteredTabs.map((tabs, idx) => (
                         <Link

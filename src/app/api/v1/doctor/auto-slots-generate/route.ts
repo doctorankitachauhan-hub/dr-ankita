@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
 
         if (!availability.length) {
             return NextResponse.json(
-                { error: "No availability found" },
+                { error: "No availability is set." },
                 { status: 404 }
             );
         }
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
             startDate.setDate(startDate.getDate() + 1);
         }
 
-        startDate.setHours(0, 0, 0, 0);
+        startDate.setUTCHours(0, 0, 0, 0);
 
         const slots = generateFromAvailability(
             availability,

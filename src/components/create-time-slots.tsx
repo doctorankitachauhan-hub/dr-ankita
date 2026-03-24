@@ -208,7 +208,7 @@ export default function CreateSlots() {
 
                 <button
                     onClick={handleSubmit}
-                    className="w-full mt-8 bg-primary-color text-white py-3 rounded-lg hover:bg-primary-hover transition text-sm font-medium"
+                    className="w-full mt-8 bg-primary-color text-white py-3 rounded-lg hover:bg-primary-hover transition text-sm font-medium cursor-pointer"
                 >
                     {isPending ? <Spinner color /> : 'Save Slots'}
                 </button>
