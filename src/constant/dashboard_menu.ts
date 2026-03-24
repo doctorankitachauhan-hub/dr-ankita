@@ -13,7 +13,8 @@ import {
     FilePlus,
     CreditCard,
     BarChart3,
-    Settings
+    Settings,
+    ClockPlus
 } from "lucide-react";
 
 import { LucideIcon } from "lucide-react";
@@ -87,6 +88,12 @@ export const DoctorDashboardMenu: DashboardMenuType[] = [
         name: "Time Slots",
         page: "/doctor/time_slots",
         icon: CalendarClock,
+        access: ["DOCTOR"],
+    },
+    {
+        name: "Create Time Slots",
+        page: "/doctor/time_slots/create",
+        icon: ClockPlus,
         access: ["DOCTOR"],
     },
     {

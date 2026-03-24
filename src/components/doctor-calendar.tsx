@@ -33,6 +33,7 @@ export default function DoctorCalendar({ slots }: Props) {
             display: "block",
         };
     });
+
     return (
         <div className="bg-white p-4 rounded-xl shadow">
             <FullCalendar
@@ -54,6 +55,8 @@ export default function DoctorCalendar({ slots }: Props) {
                     center: 'title',
                     right: 'timeGridDay,dayGridMonth,timeGridWeek'
                 }}
+                // dateClick={(arg)=>console.log(arg)}
+                // eventClick={(arg)=>console.log(arg)}
             />
         </div>
     );

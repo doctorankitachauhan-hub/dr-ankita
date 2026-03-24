@@ -50,7 +50,7 @@ export default function Sidebar() {
                             key={tabs.name}
                             href={tabs.page}
                             className={cn('flex items-center gap-2 px-5 py-3 transition duration-300 ease-in-out font-medium',
-                                pathname.startsWith(tabs.page)
+                                pathname === tabs.page
                                     ? "bg-white text-primary-color"
                                     : "text-white hover:bg-primary-hover"
 
