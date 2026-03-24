@@ -76,5 +76,9 @@ export async function authMiddleware(req: NextRequest) {
             }
         }
     }
-    return null
+    return NextResponse.next({
+        request: {
+            headers: requestHeaders
+        }
+    });
 }

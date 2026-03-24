@@ -3,11 +3,11 @@ import { authMiddleware } from "./middlewares/auth";
 import { rateLimitMiddleware } from "./middlewares/limiter";
 
 
-export default function proxy(req: NextRequest) {
+export default async function proxy(req: NextRequest) {
     const rateLimit = rateLimitMiddleware(req);
     if (rateLimit) return rateLimit;
 
-    const auth = authMiddleware(req)
+    const auth = await authMiddleware(req)
     if (auth) return auth
 
     return NextResponse.next();

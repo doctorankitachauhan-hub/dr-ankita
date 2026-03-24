@@ -150,6 +150,8 @@ model DoctorAvailability {
   endTime      String
   slotDuration Int
 
+  shiftType String?
+
   isActive Boolean @default(true)
 
   doctor DoctorProfile @relation(fields: [doctorId], references: [id])

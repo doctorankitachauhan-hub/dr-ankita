@@ -84,8 +84,8 @@ export const DoctorDashboardMenu: DashboardMenuType[] = [
         access: ["DOCTOR"],
     },
     {
-        name: "Availability / Time Slots",
-        page: "/doctor/availability",
+        name: "Time Slots",
+        page: "/doctor/time_slots",
         icon: CalendarClock,
         access: ["DOCTOR"],
     },

@@ -1,10 +1,8 @@
+import { fromZonedTime } from "date-fns-tz";
+
 function createISTDate(date: Date, time: string) {
-    const [hours, minutes] = time.split(":").map(Number);
-
-    const d = new Date(date);
-    d.setHours(hours, minutes, 0, 0);
-
-    return d;
+    const dateStr = date.toISOString().split("T")[0];
+    return fromZonedTime(`${dateStr} ${time}`, "Asia/Kolkata");
 }
 
 export function generateFromAvailability(availability: any[], totalDays: number) {
@@ -17,28 +15,30 @@ export function generateFromAvailability(availability: any[], totalDays: number)
 
         const day = currentDate.getDay();
 
-        const rule = availability.find(
+        const rules = availability.filter(
             (a) => a.dayOfWeek === day && a.isActive
         );
 
-        if (!rule) continue;
+        if (!rules.length) continue;
 
-        let start = createISTDate(currentDate, rule.startTime);
-        const end = createISTDate(currentDate, rule.endTime);
+        for (const rule of rules) {
+            let start = createISTDate(currentDate, rule.startTime);
+            const end = createISTDate(currentDate, rule.endTime);
 
-        while (start < end) {
-            const slotEnd = new Date(
-                start.getTime() + rule.slotDuration * 60000
-            );
+            while (start < end) {
+                const slotEnd = new Date(
+                    start.getTime() + rule.slotDuration * 60000
+                );
 
-            if (slotEnd > end) break;
+                if (slotEnd > end) break;
 
-            slots.push({
-                startTime: new Date(start),
-                endTime: new Date(slotEnd)
-            });
+                slots.push({
+                    startTime: new Date(start),
+                    endTime: new Date(slotEnd)
+                });
 
-            start = slotEnd;
+                start = slotEnd;
+            }
         }
     }
 

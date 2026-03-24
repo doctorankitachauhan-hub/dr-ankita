@@ -5,6 +5,13 @@ import prisma from "@/lib/prisma";
 import { slotSchema } from "@/types/slots";
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
+import { fromZonedTime } from "date-fns-tz";
+
+
+function convertISTToUTC(dateTime: Date) {
+    return fromZonedTime(dateTime, "Asia/Kolkata");
+}
+
 
 export async function POST(req: NextRequest) {
     try {
@@ -80,9 +87,9 @@ export async function POST(req: NextRequest) {
             formattedSlots.map((slot) =>
                 prisma.timeSlot.create({
                     data: {
-                        doctorId: slot.doctorId,
-                        startTime: slot.startTime,
-                        endTime: slot.endTime
+                        doctorId: doctor.id,
+                        startTime: convertISTToUTC(slot.startTime),
+                        endTime: convertISTToUTC(slot.endTime)
                     }
                 })
             )
@@ -103,4 +110,68 @@ export async function POST(req: NextRequest) {
             { status: 500 }
         )
     }
-}   
+}
+
+export async function GET(req: NextRequest) {
+    try {
+        const user = getUser(req);
+
+        if (!user?.id) {
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            );
+        }
+
+        const { success, message, status } = authorize(req, [Role.DOCTOR, Role.PATIENT])
+        if (!success) {
+            return NextResponse.json({ error: message }, { status })
+        }
+
+        const { searchParams } = req.nextUrl
+        const date = searchParams.get("date")?.trim();
+
+        if (!date) {
+            return NextResponse.json(
+                { error: "Date is required" },
+                { status: 400 }
+            );
+        }
+
+        const startOfDay = new Date(`${date}T00:00:00.000Z`);
+        const endOfDay = new Date(`${date}T23:59:59.999Z`);
+
+        const slots = await prisma.timeSlot.findMany({
+            where: {
+                status: "AVAILABLE",
+                // startTime: {
+                //     gte: startOfDay,
+                //     lte: endOfDay
+                // }
+            },
+            orderBy: {
+                startTime: "asc"
+            },
+            select: {
+                id: true,
+                startTime: true,
+                endTime: true,
+                status: true,
+                appointment: {
+                    include: {
+                        patient: true
+                    }
+                }
+            }
+        });
+
+        return NextResponse.json(slots);
+
+    } catch (error) {
+        console.log("Error while fetching slots", error);
+        return NextResponse.json(
+            { error: "Something went wrong...!!" },
+            { status: 500 }
+        )
+    }
+}
