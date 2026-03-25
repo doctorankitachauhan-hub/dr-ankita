@@ -35,7 +35,7 @@ export const UserDashboardMenu: DashboardMenuType[] = [
     },
     {
         name: "Book Appointment",
-        page: "/user/appointments/book",
+        page: "/user/book-appointments",
         icon: CalendarPlus,
         access: ["PATIENT"],
     },
