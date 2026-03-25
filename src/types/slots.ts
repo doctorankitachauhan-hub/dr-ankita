@@ -1,3 +1,4 @@
+import { SlotStatus } from "@/generated/prisma/enums";
 import z from "zod";
 
 export const slotSchema = z.object({
@@ -15,3 +16,35 @@ export const autoSlotSchema = z.object({
 
 
 export type SlotsSchemaType = z.infer<typeof slotSchema>
+
+export const slotDetailsSchema = z.object({
+    id: z.string(),
+    status: z.enum(SlotStatus),
+    startTime: z.date(),
+    endTime: z.date(),
+
+    appointment: z
+        .object({
+            id: z.string(),
+            status: z.string(),
+
+            meeting: z
+                .object({
+                    id: z.string(),
+                    meetingLink: z.string()
+                })
+                .nullable(),
+
+            patient: z
+                .object({
+                    id: z.string(),
+                    name: z.string(),
+                    email: z.string(),
+                    phone: z.string()
+                })
+                .nullable()
+        })
+        .nullable()
+});
+
+export type SlotDetails = z.infer<typeof slotDetailsSchema>;

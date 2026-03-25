@@ -3,6 +3,7 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from '@fullcalendar/daygrid'
+import { useRouter } from "next/navigation";
 
 
 type Slot = {
@@ -17,6 +18,7 @@ type Props = {
 }
 
 export default function DoctorCalendar({ slots }: Props) {
+    const router = useRouter();
     const now = new Date();
     const events = slots?.map((slot) => {
         const start = new Date(slot.startTime);
@@ -33,6 +35,10 @@ export default function DoctorCalendar({ slots }: Props) {
             display: "block",
         };
     });
+
+    function handleEventClick(event_id: string) {
+        router.push(`?event_id=${event_id}`, { scroll: false })
+    }
 
     return (
         <div className="bg-white p-4 rounded-xl shadow">
@@ -56,7 +62,8 @@ export default function DoctorCalendar({ slots }: Props) {
                     right: 'timeGridDay,dayGridMonth,timeGridWeek'
                 }}
                 // dateClick={(arg)=>console.log(arg)}
-                // eventClick={(arg)=>console.log(arg)}
+                eventClick={(arg) => handleEventClick(arg.event.id)}
+                eventClassNames={"cursor-pointer"}
             />
         </div>
     );
