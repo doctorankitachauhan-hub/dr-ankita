@@ -4,6 +4,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from '@fullcalendar/daygrid'
 import { useRouter } from "next/navigation";
+import EventDetails from "./event_details";
 
 
 type Slot = {
@@ -65,6 +66,7 @@ export default function DoctorCalendar({ slots }: Props) {
                 eventClick={(arg) => handleEventClick(arg.event.id)}
                 eventClassNames={"cursor-pointer"}
             />
+            <EventDetails />
         </div>
     );
 }
