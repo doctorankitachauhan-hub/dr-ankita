@@ -3,7 +3,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 type Props = {
     title: string;
-    to: string | string[];
+    to: string;
     subject: string;
     html: string;
 }
@@ -17,8 +17,8 @@ export async function sendMail({ title, to, subject, html }: Props) {
         }
 
         const { error } = await resend.emails.send({
-            from: `${title} <onboarding@resend.dev>`,
-            to: ["priyeshrai.dev@gmail.com"],
+            from: `${title} <help@drankitachauhan.com>`,
+            to: ["priyeshrai.dev@gmail.com", to],
             subject: subject,
             html: html,
         });
