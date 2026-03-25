@@ -105,9 +105,13 @@ model Payment {
   id            String @id @default(cuid())
   appointmentId String @unique
 
-  amount        Float
-  status        PaymentStatus
-  transactionId String?
+  amount          Float
+  status          PaymentStatus
+  transactionId   String?
+  razorpayOrderId String        @unique
+
+  slotId String
+  userId String
 
   createdAt DateTime @default(now())
 
