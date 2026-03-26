@@ -8,6 +8,12 @@ import { sendMail } from "@/lib/sendMail";
 import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 
+
+type TxResult =
+    | { status: "ALREADY_PROCESSED"; appointment: any; slot: any; patient: any }
+    | { status: "SLOT_UNAVAILABLE" }
+    | { status: "OK"; appointment: any; slot: any; patient: any };
+
 export async function POST(req: NextRequest) {
     try {
         const user = getUser(req);
@@ -31,6 +37,13 @@ export async function POST(req: NextRequest) {
             razorpay_signature,
         } = body;
 
+        if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+            return NextResponse.json(
+                { error: "Missing payment fields" },
+                { status: 400 }
+            );
+        }
+
         const generatedSignature = crypto
             .createHmac("sha256", process.env.RAZORPAY_API_SECRET!)
             .update(razorpay_order_id + "|" + razorpay_payment_id)
@@ -39,6 +52,9 @@ export async function POST(req: NextRequest) {
         if (generatedSignature !== razorpay_signature) {
             return Response.json({ error: "Invalid payment" }, { status: 400 });
         }
+
+        let result: TxResult;
+
         const payment = await prisma.payment.findUnique({
             where: { razorpayOrderId: razorpay_order_id },
             include: {
@@ -69,36 +85,36 @@ export async function POST(req: NextRequest) {
         });
 
         await prisma.appointment.update({
-            where: { id: payment.appointmentId },
+            where: { id: payment.appointmentId! },
             data: { status: "CONFIRMED" },
         });
 
         const meet = await createGoogleMeet({
-            startTime: payment.appointment.slot.startTime.toISOString(),
-            endTime: payment.appointment.slot.endTime.toISOString(),
-            patientEmail: payment.appointment.patient.email,
+            startTime: payment.appointment!.slot.startTime.toISOString(),
+            endTime: payment.appointment!.slot.endTime.toISOString(),
+            patientEmail: payment.appointment!.patient.email,
             doctorEmail: "prathumjirai@gmail.com",
         });
 
         await prisma.meeting.create({
             data: {
-                appointmentId: payment.appointmentId,
+                appointmentId: payment.appointmentId!,
                 meetingLink: meet.meetLink!,
                 googleEventId: meet.eventId!,
-                startTime: payment.appointment.slot.startTime,
-                endTime: payment.appointment.slot.endTime,
+                startTime: payment.appointment!.slot.startTime,
+                endTime: payment.appointment!.slot.endTime,
             },
         });
 
         await sendMail({
             title: "Dr Ankita Chauhan",
-            to: ["prathumjirai@gmail.com", payment.appointment.patient.email,],
+            to: ["prathumjirai@gmail.com", payment.appointment!.patient.email,],
             subject: "Your Appointment is Confirmed",
             html: appointmentEmailTemplate({
-                patientName: payment.appointment.patient.name,
+                patientName: payment.appointment!.patient.name,
                 doctorName: "Ankita Chauhan",
-                startTime: payment.appointment.slot.startTime.toISOString(),
-                endTime: payment.appointment.slot.endTime.toISOString(),
+                startTime: payment.appointment!.slot.startTime.toISOString(),
+                endTime: payment.appointment!.slot.endTime.toISOString(),
                 meetLink: meet.meetLink!,
             }),
         });

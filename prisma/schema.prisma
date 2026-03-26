@@ -102,8 +102,8 @@ model Appointment {
 }
 
 model Payment {
-  id            String @id @default(cuid())
-  appointmentId String @unique
+  id            String  @id @default(cuid())
+  appointmentId String? @unique
 
   amount          Float
   status          PaymentStatus
@@ -115,7 +115,7 @@ model Payment {
 
   createdAt DateTime @default(now())
 
-  appointment Appointment @relation(fields: [appointmentId], references: [id])
+  appointment Appointment? @relation(fields: [appointmentId], references: [id])
 }
 
 model Meeting {

@@ -10,7 +10,6 @@ function verifyWebhookSignature(body: string, signature: string) {
         .createHmac("sha256", process.env.RAZORPAY_WEBHOOK_SECRET!)
         .update(body)
         .digest("hex");
-
     return expected === signature;
 }
 
@@ -29,125 +28,133 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ received: true });
         }
 
-        const payment = event.payload.payment.entity;
-
-        await handlePaymentCaptured(payment);
+        await handlePaymentCaptured(event.payload.payment.entity);
 
         return NextResponse.json({ success: true });
     } catch (error) {
-        console.error("🔥 Webhook Error:", error);
+        console.error("🔥 Webhook error:", error);
         return new NextResponse("Webhook error", { status: 500 });
     }
 }
 
 async function handlePaymentCaptured(payment: any) {
-    const orderId = payment.order_id;
-    const paymentId = payment.id;
+    const orderId = payment.order_id as string;
+    const paymentId = payment.id as string;
 
-    let appointment: any = null;
-    let slot: any = null;
-    let patient: any = null;
-
-    await prisma.$transaction(async (tx) => {
-        const dbPayment = await tx.payment.findUnique({
-            where: { razorpayOrderId: orderId },
-        });
-
-        if (!dbPayment) throw new Error("Payment not found");
-
-        if (dbPayment.status === "SUCCESS") return;
-
-        const updated = await tx.timeSlot.updateMany({
-            where: {
-                id: dbPayment.slotId,
-                status: "AVAILABLE",
-            },
-            data: { status: "BOOKED" },
-        });
-
-        if (updated.count === 0) {
-            return;
-        }
-
-        slot = await tx.timeSlot.findUnique({
-            where: { id: dbPayment.slotId },
-            include: { doctor: true },
-        });
-
-        try {
-            appointment = await tx.appointment.create({
-                data: {
-                    patientId: dbPayment.userId,
-                    slotId: dbPayment.slotId,
-                    status: "CONFIRMED",
-                },
-                include: { patient: true },
-            });
-
-            patient = appointment.patient;
-
-        } catch (err: any) {
-            if (err.code === "P2002") {
-                return;
-            }
-            throw err;
-        }
-
-        await tx.payment.update({
-            where: { id: dbPayment.id },
-            data: {
-                status: "SUCCESS",
-                transactionId: paymentId,
-                appointmentId: appointment.id,
-            },
-        });
+    const dbPayment = await prisma.payment.findUnique({
+        where: { razorpayOrderId: orderId },
     });
 
-    if (!appointment) {
-        await prisma.payment.update({
-            where: { razorpayOrderId: orderId },
+    if (!dbPayment) {
+        console.error(`❌ No payment row for order ${orderId}`);
+        return;
+    }
+
+    if (dbPayment.status === "SUCCESS") {
+        console.log(`⏭️  Already processed: ${orderId}`);
+        return;
+    }
+
+    const slotUpdate = await prisma.timeSlot.updateMany({
+        where: { id: dbPayment.slotId, status: "AVAILABLE" },
+        data: { status: "BOOKED" },
+    });
+
+    if (slotUpdate.count === 0) {
+        console.warn(`⚠️  Slot unavailable for order ${orderId}`);
+        await prisma.payment.updateMany({
+            where: { razorpayOrderId: orderId, status: { not: "SUCCESS" } },
             data: { status: "FAILED" },
         });
         return;
     }
 
-    if (!slot || !patient) return;
+    const slot = await prisma.timeSlot.findUnique({
+        where: { id: dbPayment.slotId },
+        include: { doctor: { include: { user: true } } },
+    });
 
-    let meetLink = "";
-    let eventId = "";
+    if (!slot) {
+        console.error(`❌ Slot not found after booking: ${dbPayment.slotId}`);
+        return;
+    }
+
+    let appointment: any;
 
     try {
-        const meet = await createGoogleMeet({
-            startTime: slot.startTime.toISOString(),
-            endTime: slot.endTime.toISOString(),
-            patientEmail: patient.email,
-            doctorEmail: "prathumjirai@gmail.com",
-        });
-
-        meetLink = meet.meetLink!;
-        eventId = meet.eventId!;
-
-        await prisma.meeting.create({
+        appointment = await prisma.appointment.create({
             data: {
-                appointmentId: appointment.id,
-                meetingLink: meetLink,
-                googleEventId: eventId,
-                startTime: slot.startTime,
-                endTime: slot.endTime,
+                patientId: dbPayment.userId,
+                slotId: dbPayment.slotId,
+                status: "CONFIRMED",
             },
+            include: { patient: true },
         });
+        // console.log(`Slot booked successfully: ${orderId}`);
+    } catch (err: any) {
+        if (err.code === "P2002") {
+            console.log(`⏭️  Appointment already exists for slot ${dbPayment.slotId}`);
+            return;
+        }
+        await prisma.payment.updateMany({
+            where: { razorpayOrderId: orderId, status: { not: "SUCCESS" } },
+            data: { status: "FAILED" },
+        });
+        throw err;
+    }
+
+    const patient = appointment.patient;
+
+    await prisma.payment.update({
+        where: { id: dbPayment.id },
+        data: {
+            status: "SUCCESS",
+            transactionId: paymentId,
+            appointmentId: appointment.id,
+        },
+    });
+
+    let meetLink = "";
+
+    try {
+        const existingMeeting = await prisma.meeting.findUnique({
+            where: { appointmentId: appointment.id },
+        });
+
+        if (existingMeeting) {
+            meetLink = existingMeeting.meetingLink;
+        } else {
+            const meet = await createGoogleMeet({
+                startTime: slot.startTime.toISOString(),
+                endTime: slot.endTime.toISOString(),
+                patientEmail: patient.email,
+                doctorEmail: "prathumjirai@gmail.com",
+            });
+
+            meetLink = meet.meetLink!;
+
+            await prisma.meeting.create({
+                data: {
+                    appointmentId: appointment.id,
+                    meetingLink: meetLink,
+                    googleEventId: meet.eventId!,
+                    startTime: slot.startTime,
+                    endTime: slot.endTime,
+                },
+            });
+        }
     } catch (err) {
         console.error("⚠️ Meet creation failed:", err);
     }
 
     try {
         await sendMail({
-            title: slot.doctor.name,
+            title: `${slot.doctor.user.name} Online Consultation`,
             to: [patient.email, "prathumjirai@gmail.com"],
             subject: "Appointment Confirmed",
             html: appointmentEmailTemplate({
                 patientName: patient.name,
-                doctorName: slot.doctor.name,
+                doctorName: slot.doctor.user.name,
                 startTime: slot.startTime.toISOString(),
                 endTime: slot.endTime.toISOString(),
                 meetLink,
