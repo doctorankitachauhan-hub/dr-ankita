@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
 
         const mail = await sendMail({
             title: "Verification Code",
-            to: email,
+            to: [email],
             subject: "Please verify your Email",
             html: otpTemplate(otp)
         });

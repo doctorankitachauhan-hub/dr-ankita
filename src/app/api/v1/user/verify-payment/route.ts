@@ -1,8 +1,10 @@
 import { Role } from "@/generated/prisma/enums";
+import { appointmentEmailTemplate } from "@/lib/appointmentEmailTemplate";
 import { authorize } from "@/lib/authorize";
 import { createGoogleMeet } from "@/lib/create_meeting";
 import { getUser } from "@/lib/get-user";
 import prisma from "@/lib/prisma";
+import { sendMail } from "@/lib/sendMail";
 import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -86,6 +88,19 @@ export async function POST(req: NextRequest) {
                 startTime: payment.appointment.slot.startTime,
                 endTime: payment.appointment.slot.endTime,
             },
+        });
+
+        await sendMail({
+            title: "Dr Ankita Chauhan",
+            to: ["prathumjirai@gmail.com", payment.appointment.patient.email,],
+            subject: "Your Appointment is Confirmed",
+            html: appointmentEmailTemplate({
+                patientName: payment.appointment.patient.name,
+                doctorName: "Ankita Chauhan",
+                startTime: payment.appointment.slot.startTime.toISOString(),
+                endTime: payment.appointment.slot.endTime.toISOString(),
+                meetLink: meet.meetLink!,
+            }),
         });
 
         return Response.json({ success: true });

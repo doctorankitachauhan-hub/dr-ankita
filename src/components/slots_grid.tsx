@@ -79,26 +79,38 @@ export default function PremiumSlots({ slots, date }: { slots: Slot[]; date: str
                     email,
                 },
 
-                handler: async function (response: any) {
-                    try {
-                        setIsVerifying(true);
-                        const res = await axios.post("/api/v1/user/verify-payment", response);
-                        if (!res.data?.success) {
-                            toast.error("Payment verification failed");
-                            return;
-                        }
-                        toast.success("Booking confirmed 🎉");
-                        setSelected(null);
+                // handler: async function (response: any) {
+                //     try {
+                //         setIsVerifying(true);
+                //         const res = await axios.post("/api/v1/user/verify-payment", response);
+                //         if (!res.data?.success) {
+                //             toast.error("Payment verification failed");
+                //             return;
+                //         }
+                //         toast.success("Booking confirmed 🎉");
+                //         setSelected(null);
+                //         await queryClient.invalidateQueries({
+                //             queryKey: ["slots", date]
+                //         });
+
+                //     } catch (err) {
+                //         toast.error("Something went wrong");
+                //     } finally {
+                //         setIsVerifying(false);
+                //     }
+                // },
+                handler: function () {
+                    toast.success("Payment successful 🎉");
+                    setIsVerifying(true);
+                    setTimeout(async () => {
                         await queryClient.invalidateQueries({
-                            queryKey: ["slots", date]
+                            queryKey: ["slots", date],
                         });
 
-                    } catch (err) {
-                        toast.error("Something went wrong");
-                    } finally {
                         setIsVerifying(false);
-                    }
-                },
+                        setSelected(null);
+                    }, 3000);
+                }
             };
 
             const rzp = new (window as any).Razorpay(options);

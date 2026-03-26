@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
 
         const mail = await sendMail({
             title: "Login Verification Code",
-            to: email,
+            to: [email],
             subject: "Login Verification Code",
             html: otpTemplate(otp)
         });
