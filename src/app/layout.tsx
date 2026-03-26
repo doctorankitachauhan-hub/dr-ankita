@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import Contact from "@/components/Contact";
 import Providers from "@/lib/providers";
 import AuthBoundary from "@/context/auth_boundry";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "Dr. Ankita Chauhan",
@@ -36,6 +37,7 @@ export default function RootLayout({
             </SmoothScrollProvider>
           </AuthBoundary>
         </Providers>
+        <Script src="https://checkout.razorpay.com/v1/checkout.js"></Script>
       </body>
     </html>
   );

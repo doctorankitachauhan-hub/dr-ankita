@@ -39,9 +39,7 @@ export default function AvailableSlots({ date }: { date: string }) {
                     ) :
                     <PremiumSlots
                         slots={data}
-                        onSelect={(slot) => {
-                            console.log("Booking slot:", slot.id);
-                        }}
+                        date={date}
                     />
             }
         </div>

@@ -35,7 +35,6 @@ export async function GET(req: NextRequest) {
 
         const slots = await prisma.timeSlot.findMany({
             where: {
-                status: "AVAILABLE",
                 startTime: {
                     gte: startOfDay,
                     lte: endOfDay
