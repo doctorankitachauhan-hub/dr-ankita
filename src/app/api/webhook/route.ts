@@ -5,7 +5,6 @@ import { createGoogleMeet } from "@/lib/create_meeting";
 import { sendMail } from "@/lib/sendMail";
 import { appointmentEmailTemplate } from "@/lib/appointmentEmailTemplate";
 
-// 🔐 Verify Razorpay signature
 function verifyWebhookSignature(body: string, signature: string) {
     const expected = crypto
         .createHmac("sha256", process.env.RAZORPAY_WEBHOOK_SECRET!)
@@ -45,80 +44,74 @@ async function handlePaymentCaptured(payment: any) {
     const orderId = payment.order_id;
     const paymentId = payment.id;
 
-    // ✅ Fetch payment
-    const dbPayment = await prisma.payment.findUnique({
-        where: { razorpayOrderId: orderId },
-    });
+    let appointment: any = null;
+    let slot: any = null;
+    let patient: any = null;
 
-    if (!dbPayment) {
-        console.error("Payment not found");
-        return;
-    }
-
-    // ✅ Idempotency (VERY IMPORTANT)
-    if (dbPayment.status === "SUCCESS") {
-        return;
-    }
-
-    // ✅ Prevent double booking
-    const updated = await prisma.timeSlot.updateMany({
-        where: {
-            id: dbPayment.slotId,
-            status: "AVAILABLE",
-        },
-        data: { status: "BOOKED" },
-    });
-
-    if (updated.count === 0) {
-        // ❌ Slot already booked
-        await prisma.payment.update({
-            where: { id: dbPayment.id },
-            data: { status: "FAILED" },
+    await prisma.$transaction(async (tx) => {
+        const dbPayment = await tx.payment.findUnique({
+            where: { razorpayOrderId: orderId },
         });
 
-        return;
-    }
+        if (!dbPayment) throw new Error("Payment not found");
 
-    // ✅ Fetch slot + doctor
-    const slot = await prisma.timeSlot.findUnique({
-        where: { id: dbPayment.slotId },
-        include: { doctor: true },
-    });
+        if (dbPayment.status === "SUCCESS") return;
 
-    if (!slot) return;
-
-    let appointment: any;
-
-    try {
-        appointment = await prisma.appointment.create({
-            data: {
-                patientId: dbPayment.userId,
-                slotId: dbPayment.slotId,
-                status: "CONFIRMED",
+        const updated = await tx.timeSlot.updateMany({
+            where: {
+                id: dbPayment.slotId,
+                status: "AVAILABLE",
             },
-            include: { patient: true },
+            data: { status: "BOOKED" },
         });
-    } catch (err: any) {
-        // ✅ Handle duplicate safely
-        if (err.code === "P2002") {
-            console.log("Duplicate appointment prevented");
+
+        if (updated.count === 0) {
             return;
         }
 
-        throw err;
-    }
+        slot = await tx.timeSlot.findUnique({
+            where: { id: dbPayment.slotId },
+            include: { doctor: true },
+        });
 
-    // ✅ Update payment AFTER success
-    await prisma.payment.update({
-        where: { id: dbPayment.id },
-        data: {
-            status: "SUCCESS",
-            transactionId: paymentId,
-            appointmentId: appointment.id,
-        },
+        try {
+            appointment = await tx.appointment.create({
+                data: {
+                    patientId: dbPayment.userId,
+                    slotId: dbPayment.slotId,
+                    status: "CONFIRMED",
+                },
+                include: { patient: true },
+            });
+
+            patient = appointment.patient;
+
+        } catch (err: any) {
+            if (err.code === "P2002") {
+                return;
+            }
+            throw err;
+        }
+
+        await tx.payment.update({
+            where: { id: dbPayment.id },
+            data: {
+                status: "SUCCESS",
+                transactionId: paymentId,
+                appointmentId: appointment.id,
+            },
+        });
     });
 
-    const patient = appointment.patient;
+    if (!appointment) {
+        await prisma.payment.update({
+            where: { razorpayOrderId: orderId },
+            data: { status: "FAILED" },
+        });
+        return;
+    }
+
+    if (!slot || !patient) return;
 
     let meetLink = "";
     let eventId = "";
@@ -149,12 +142,12 @@ async function handlePaymentCaptured(payment: any) {
 
     try {
         await sendMail({
-            title: "Appointement Details",
+            title: slot.doctor.name,
             to: [patient.email, "prathumjirai@gmail.com"],
             subject: "Appointment Confirmed",
             html: appointmentEmailTemplate({
                 patientName: patient.name,
-                doctorName: "Dr. Ankita Chauhan",
+                doctorName: slot.doctor.name,
                 startTime: slot.startTime.toISOString(),
                 endTime: slot.endTime.toISOString(),
                 meetLink,

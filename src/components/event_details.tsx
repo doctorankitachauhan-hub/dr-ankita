@@ -8,6 +8,7 @@ import Spinner from './ui/spinner';
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { SlotDetails } from '@/types/slots';
+import { generateInitials } from '@/lib/generate_initials';
 
 export default function EventDetails() {
     const searchParams = useSearchParams();
@@ -46,8 +47,9 @@ export default function EventDetails() {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="fixed inset-0 bg-slate-900/20 p-4 pt-10 z-50"
+                    className="fixed inset-0 bg-slate-900/20 p-10 z-50 overflow-y-scroll"
                     onClick={closeModal}
+                    data-lenis-prevent
                 >
 
                     <motion.div
