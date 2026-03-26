@@ -1,9 +1,13 @@
 'use client';
-
-import { useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import SliderWrapper from "./ui/slider_wrapper";
 
-export default function DateSelector() {
+
+type Props = {
+    setDate: Dispatch<SetStateAction<string>>
+}
+
+export default function DateSelector({ setDate }: Props) {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const today = new Date();
 
@@ -13,6 +17,16 @@ export default function DateSelector() {
         return date;
     });
     const selectedDate = days[selectedIndex];
+
+    function handleClick(idx: number) {
+        setSelectedIndex(idx);
+        const selected = days[idx];
+        setDate(selected.toISOString().split("T")[0]);
+    }
+
+    useEffect(() => {
+        setDate(days[0].toISOString().split("T")[0]);
+    }, []);
 
     return (
         <div className="w-full bg-white p-4 border-b border-slate-200 flex items-center justify-between gap-6">
@@ -35,7 +49,7 @@ export default function DateSelector() {
                             <button
                                 key={index}
                                 disabled={!isClickable}
-                                onClick={() => setSelectedIndex(index)}
+                                onClick={() => handleClick(index)}
                                 className={`
                                 flex flex-col items-center justify-center
                                 min-w-[60px] px-3 py-2 rounded-xl border text-sm transition
