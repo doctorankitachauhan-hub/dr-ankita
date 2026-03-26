@@ -14,28 +14,36 @@ export default function AvailableSlots({ date }: { date: string }) {
         enabled: !!date,
     });
 
-    if (isLoading || isFetching) {
+    if (isLoading) {
         return (
-            <div className="w-full h-full flex items-center justify-center">
+            <div className="w-full h-[300px] flex items-center justify-center">
                 <Spinner />
             </div>
         );
     }
 
-    if (!data?.length) {
-        return (
-            <div className="w-full h-full flex items-center justify-center">
-                No slots available for this day
-            </div>
-        );
-    }
-
     return (
-        <PremiumSlots
-            slots={data}
-            onSelect={(slot) => {
-                console.log("Booking slot:", slot.id);
-            }}
-        />
+        <div className="relative w-full h-full">
+            {isFetching && (
+                <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center z-10">
+                    <Spinner />
+                </div>
+            )}
+            {
+                !data || data.length === 0 ?
+                    (
+                        <div className="w-full h-[300px] flex flex-col items-center justify-center text-slate-500">
+                            <p className="text-lg font-medium">No slots available</p>
+                            <p className="text-sm">Try selecting another date</p>
+                        </div>
+                    ) :
+                    <PremiumSlots
+                        slots={data}
+                        onSelect={(slot) => {
+                            console.log("Booking slot:", slot.id);
+                        }}
+                    />
+            }
+        </div>
     );
 }
