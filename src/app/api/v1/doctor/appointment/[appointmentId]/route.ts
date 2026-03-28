@@ -15,7 +15,10 @@ const statusSchema = z.object({
     status: z.enum(["COMPLETED", "CANCELLED"]),
 });
 
-export async function POST(req: NextRequest, { params }: { params: Promise<{ appointmentId: string }> }) {
+export async function POST(
+    req: NextRequest,
+    { params }: { params: Promise<{ appointmentId: string }> }
+) {
     try {
         const user = getUser(req);
         if (!user?.id) {
@@ -47,10 +50,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ app
             where: { id: appointmentId },
             include: {
                 slot: {
-                    include: {
-                        doctor: { select: { userId: true } },
-                    },
+                    include: { doctor: { select: { userId: true } } },
                 },
+                payment: true,
+                meeting: true,
             },
         });
 
@@ -76,66 +79,66 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ app
             );
         }
 
-        if (newStatus === "CANCELLED") {
-            const payment = await prisma.payment.findFirst({
-                where: { appointmentId, status: "SUCCESS" },
+        if (newStatus === "COMPLETED") {
+            await prisma.appointment.update({
+                where: { id: appointmentId },
+                data: { status: "COMPLETED" },
             });
 
-            if (payment?.transactionId) {
-                try {
-                    await razorpay.payments.refund(payment.transactionId, {
-                        speed: "normal",
-                    });
-                } catch (refundErr: any) {
-                    console.error("Razorpay refund failed:", refundErr);
-                    return NextResponse.json(
-                        { error: "Refund failed. Please try again or process it manually." },
-                        { status: 502 }
-                    );
-                }
-
-                await Promise.all([
-                    prisma.payment.update({
-                        where: { id: payment.id },
-                        data: { status: "REFUNDED" },
-                    }),
-                    prisma.appointment.update({
-                        where: { id: appointmentId },
-                        data: { status: "CANCELLED" },
-                    }),
-                    prisma.timeSlot.update({
-                        where: { id: appointment.slotId },
-                        data: { status: "AVAILABLE", },
-                    }),
-                ]);
-            } else {
-                console.warn(`No refundable payment for appointment ${appointmentId} — cancelling without refund`);
-
-                await Promise.all([
-                    prisma.appointment.update({
-                        where: { id: appointmentId },
-                        data: { status: "CANCELLED" },
-                    }),
-                    prisma.timeSlot.update({
-                        where: { id: appointment.slotId },
-                        data: { status: "AVAILABLE" },
-                    }),
-                ]);
-            }
-
             return NextResponse.json(
-                { success: true, message: "Appointment cancelled and refund initiated" },
+                { success: true, message: "Appointment marked as completed" },
                 { status: 200 }
             );
         }
 
-        await prisma.appointment.update({
-            where: { id: appointmentId },
-            data: { status: "COMPLETED" },
-        });
+        const payment = appointment.payment;
+
+        if (payment?.transactionId && payment.status === "SUCCESS") {
+            try {
+                await razorpay.payments.refund(payment.transactionId, {
+                    speed: "normal",
+                });
+            } catch (refundErr: any) {
+                console.error("Razorpay refund failed:", refundErr);
+                return NextResponse.json(
+                    { error: "Refund failed. Please try again or process it manually." },
+                    { status: 502 }
+                );
+            }
+
+            await Promise.all([
+                appointment.meeting
+                    ? prisma.meeting.delete({ where: { appointmentId } })
+                    : Promise.resolve(),
+
+                prisma.payment.update({
+                    where: { id: payment.id },
+                    data: { status: "REFUNDED", appointmentId: null },
+                }),
+            ]);
+
+            await prisma.appointment.delete({ where: { id: appointmentId } });
+            await prisma.timeSlot.update({
+                where: { id: appointment.slotId },
+                data: { status: "AVAILABLE" },
+            });
+
+        } else {
+            console.warn(`No refundable payment for appointment ${appointmentId} — cancelling without refund`);
+            if (appointment.meeting) {
+                await prisma.meeting.delete({ where: { appointmentId } });
+            }
+
+            await prisma.appointment.delete({ where: { id: appointmentId } });
+
+            await prisma.timeSlot.update({
+                where: { id: appointment.slotId },
+                data: { status: "AVAILABLE" },
+            });
+        }
 
         return NextResponse.json(
-            { success: true, message: "Appointment marked as completed" },
+            { success: true, message: "Appointment cancelled and refund initiated" },
             { status: 200 }
         );
 

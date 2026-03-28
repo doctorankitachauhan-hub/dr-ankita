@@ -166,7 +166,7 @@ export default function AppointmentList({ selectedFilter, selectedDate }: Props)
 
                             <div className="flex items-center gap-2">
 
-                                {meeting?.meetingLink && (
+                                {!isCompleted && !isCancelled && meeting?.meetingLink && (
                                     <a
                                         href={meeting.meetingLink}
                                         target="_blank"
