@@ -37,9 +37,8 @@ export default function AppointmentList({ selectedFilter, selectedDate }: Props)
             return res.data;
         }
     });
-    // const 
 
-    const { mutate, isPending } = useMutation({
+    const { mutate, isPending, variables} = useMutation({
         mutationFn: async ({ id, status }: { id: string, status: string }) => {
             const response = await axios.post(
                 `/api/v1/doctor/appointment/${id}`,
@@ -114,6 +113,9 @@ export default function AppointmentList({ selectedFilter, selectedDate }: Props)
                 const isCompleted = appt.status === "COMPLETED";
                 const isCancelled = appt.status === "CANCELLED";
 
+                const isCompleting = isPending && variables?.id === appt.id && variables?.status === "COMPLETED";
+                const isCancelling = isPending && variables?.id === appt.id && variables?.status === "CANCELLED";
+
                 return (
                     <div
                         key={appt.id}
@@ -179,27 +181,28 @@ export default function AppointmentList({ selectedFilter, selectedDate }: Props)
                                     <button
                                         disabled={isPending}
                                         onClick={() => handleChangeStatus(appt.id, "COMPLETED")}
-                                        className="px-3 py-2 text-sm cursor-pointer rounded-lg border border-green-200 text-green-600 hover:bg-green-50 transition"
+                                        className="min-w-[80px] px-3 py-2 text-sm cursor-pointer rounded-lg border border-green-200 text-green-600 hover:bg-green-50 transition disabled:opacity-50 flex items-center justify-center"
                                     >
-                                        {isPending ? <Spinner /> : "Complete"}
+                                        {isCompleting ? <Spinner /> : "Complete"}
                                     </button>
                                 )}
 
                                 {/* Cancel */}
                                 {!isCompleted && !isCancelled && (
                                     <button
+                                        disabled={isPending}
                                         onClick={() => handleChangeStatus(appt.id, "CANCELLED")}
-                                        className="px-3 py-2 text-sm cursor-pointer rounded-lg border border-red-200 text-red-500 hover:bg-red-50 transition"
+                                        className="min-w-[72px] px-3 py-2 text-sm cursor-pointer rounded-lg border border-red-200 text-red-500 hover:bg-red-50 transition disabled:opacity-50 flex items-center justify-center"
                                     >
-                                        Cancel
+                                        {isCancelling ? <Spinner /> : "Cancel"}
                                     </button>
                                 )}
 
                                 {/* Reschedule */}
                                 {!isCancelled && !isCompleted && (
                                     <button
-                                        onClick={() => console.log(appt.id)}
-                                        className="px-3 py-2 text-sm cursor-pointer rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 transition"
+                                        disabled={isPending}
+                                        className="px-3 py-2 text-sm cursor-pointer rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 transition disabled:opacity-50"
                                     >
                                         Reschedule
                                     </button>
