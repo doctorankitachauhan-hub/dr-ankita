@@ -37,8 +37,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ app
         }
 
         const newStatus = parsed.data.status;
-        console.log(newStatus);
-        
+
         const appointment = await prisma.appointment.findUnique({
             where: { id: appointmentId },
         });
@@ -57,13 +56,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ app
             );
         }
 
-        // if (appointment.status === newStatus ) {
-        //     return NextResponse.json(
-        //         { error: `Appointment already ${appointment.status}` },
-        //         { status: 400 }
-        //     );
-        // }
-
         if (appointment.status !== "CONFIRMED") {
             return NextResponse.json(
                 { error: "Only confirmed appointments can be updated" },
@@ -71,15 +63,28 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ app
             );
         }
 
-        await prisma.appointment.update({
-            where: { id: appointmentId },
-            data: { status: newStatus },
-        });
+        if (newStatus === "CANCELLED") {
+            await Promise.all([
+                prisma.appointment.update({
+                    where: { id: appointmentId },
+                    data: { status: "CANCELLED" },
+                }),
+                prisma.timeSlot.update({
+                    where: { id: appointment.slotId },
+                    data: { status: "AVAILABLE" },
+                }),
+            ]);
+        } else {
+            await prisma.appointment.update({
+                where: { id: appointmentId },
+                data: { status: newStatus },
+            });
+        }
 
-        return NextResponse.json({
-            success: true,
-            message: "Updated Successfully"
-        }, { status: 200 });
+        return NextResponse.json(
+            { success: true, message: `Appointment marked as ${newStatus.toLowerCase()}` },
+            { status: 200 }
+        );
 
     } catch (error) {
         console.log("Error while changinh Appointements status", error);

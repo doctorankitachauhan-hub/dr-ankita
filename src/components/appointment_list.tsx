@@ -37,13 +37,13 @@ export default function AppointmentList({ selectedFilter, selectedDate }: Props)
             return res.data;
         }
     });
-
+    // const 
 
     const { mutate, isPending } = useMutation({
         mutationFn: async ({ id, status }: { id: string, status: string }) => {
             const response = await axios.post(
                 `/api/v1/doctor/appointment/${id}`,
-                {status},
+                { status },
                 { withCredentials: true }
             );
 
@@ -60,11 +60,9 @@ export default function AppointmentList({ selectedFilter, selectedDate }: Props)
         }
     })
 
-    function handleChangeStatus(id: string, status: string) {
-        if (!id || !status) {
-            return toast.error("Invalid Operation!!")
-        }
-        mutate({ id, status })
+    function handleChangeStatus(id: string, status: "COMPLETED" | "CANCELLED") {
+        if (!id || !status) return toast.error("Invalid Operation!");
+        mutate({ id, status });
     }
 
     if ((isLoading || isFetching) && !data) {
@@ -179,6 +177,7 @@ export default function AppointmentList({ selectedFilter, selectedDate }: Props)
 
                                 {!isCompleted && !isCancelled && (
                                     <button
+                                        disabled={isPending}
                                         onClick={() => handleChangeStatus(appt.id, "COMPLETED")}
                                         className="px-3 py-2 text-sm cursor-pointer rounded-lg border border-green-200 text-green-600 hover:bg-green-50 transition"
                                     >
