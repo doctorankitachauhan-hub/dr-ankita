@@ -1,10 +1,12 @@
 "use client";
 import { Filter } from "@/constant/appointment_filters";
 import { AppointmentResponse } from "@/types/appointments";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import axios, { AxiosError } from "axios";
 import { format } from "date-fns";
 import { Calendar, Clock, Video } from "lucide-react";
+import toast from "react-hot-toast";
+import Spinner from "./ui/spinner";
 
 function formatTime(start: string, end: string) {
     return `${format(new Date(start), "hh:mm a")} - ${format(
@@ -24,7 +26,7 @@ type Props = {
 
 
 export default function AppointmentList({ selectedFilter, selectedDate }: Props) {
-
+    const queryClient = useQueryClient();
     const { data, isLoading, isFetching } = useQuery<AppointmentResponse[] | []>({
         queryKey: ["appointment", selectedDate, selectedFilter.value],
         queryFn: async () => {
@@ -35,6 +37,35 @@ export default function AppointmentList({ selectedFilter, selectedDate }: Props)
             return res.data;
         }
     });
+
+
+    const { mutate, isPending } = useMutation({
+        mutationFn: async ({ id, status }: { id: string, status: string }) => {
+            const response = await axios.post(
+                `/api/v1/doctor/appointment/${id}`,
+                {status},
+                { withCredentials: true }
+            );
+
+            return response.data;
+        },
+        onSuccess: async (val) => {
+            toast.success(val?.message);
+            await queryClient.invalidateQueries({
+                queryKey: ["appointment", selectedDate, selectedFilter.value]
+            });
+        },
+        onError: (err: AxiosError<{ error: string }>) => {
+            toast.error(err.response?.data?.error || "Something went wrong")
+        }
+    })
+
+    function handleChangeStatus(id: string, status: string) {
+        if (!id || !status) {
+            return toast.error("Invalid Operation!!")
+        }
+        mutate({ id, status })
+    }
 
     if ((isLoading || isFetching) && !data) {
         return (
@@ -146,20 +177,19 @@ export default function AppointmentList({ selectedFilter, selectedDate }: Props)
                                     </a>
                                 )}
 
-                                {/* Complete */}
                                 {!isCompleted && !isCancelled && (
                                     <button
-                                        onClick={() => console.log(appt.id)}
+                                        onClick={() => handleChangeStatus(appt.id, "COMPLETED")}
                                         className="px-3 py-2 text-sm cursor-pointer rounded-lg border border-green-200 text-green-600 hover:bg-green-50 transition"
                                     >
-                                        Complete
+                                        {isPending ? <Spinner /> : "Complete"}
                                     </button>
                                 )}
 
                                 {/* Cancel */}
-                                {!isCancelled && (
+                                {!isCompleted && !isCancelled && (
                                     <button
-                                        onClick={() => console.log(appt.id)}
+                                        onClick={() => handleChangeStatus(appt.id, "CANCELLED")}
                                         className="px-3 py-2 text-sm cursor-pointer rounded-lg border border-red-200 text-red-500 hover:bg-red-50 transition"
                                     >
                                         Cancel

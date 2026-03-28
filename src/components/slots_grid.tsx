@@ -69,7 +69,7 @@ async function pollBookingStatus(orderId: string): Promise<"SUCCESS" | "FAILED" 
 
 export default function PremiumSlots({ slots, date }: { slots: Slot[]; date: string }) {
     const [selected, setSelected] = useState<Slot | null>(null);
-    const [isVerifying, setIsVerifying] = useState(false);
+    // const [isVerifying, setIsVerifying] = useState(false);
     const [bookingState, setBookingState] = useState<BookingState>({ phase: "idle" });
     const now = new Date();
     const grouped = groupSlots(slots);
