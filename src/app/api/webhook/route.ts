@@ -55,27 +55,22 @@ async function handlePaymentCaptured(payment: any) {
         return;
     }
 
-    const slotUpdate = await prisma.timeSlot.updateMany({
-        where: { id: dbPayment.slotId, status: "AVAILABLE" },
-        data: { status: "BOOKED" },
-    });
-
-    if (slotUpdate.count === 0) {
-        console.warn(`⚠️  Slot unavailable for order ${orderId}`);
-        await prisma.payment.updateMany({
-            where: { razorpayOrderId: orderId, status: { not: "SUCCESS" } },
-            data: { status: "FAILED" },
-        });
-        return;
-    }
-
     const slot = await prisma.timeSlot.findUnique({
         where: { id: dbPayment.slotId },
         include: { doctor: { include: { user: true } } },
     });
 
     if (!slot) {
-        console.error(`❌ Slot not found after booking: ${dbPayment.slotId}`);
+        console.error(`❌ Slot not found: ${dbPayment.slotId}`);
+        return;
+    }
+
+    if (slot.status === "BOOKED") {
+        console.warn(`⚠️ Slot already booked for order ${orderId}`);
+        await prisma.payment.update({
+            where: { razorpayOrderId: orderId, status: { not: "SUCCESS" } },
+            data: { status: "FAILED" },
+        });
         return;
     }
 
@@ -96,7 +91,7 @@ async function handlePaymentCaptured(payment: any) {
             console.log(`⏭️  Appointment already exists for slot ${dbPayment.slotId}`);
             return;
         }
-        await prisma.payment.updateMany({
+        await prisma.payment.update({
             where: { razorpayOrderId: orderId, status: { not: "SUCCESS" } },
             data: { status: "FAILED" },
         });
@@ -105,14 +100,20 @@ async function handlePaymentCaptured(payment: any) {
 
     const patient = appointment.patient;
 
-    await prisma.payment.update({
-        where: { id: dbPayment.id },
-        data: {
-            status: "SUCCESS",
-            transactionId: paymentId,
-            appointmentId: appointment.id,
-        },
-    });
+    await Promise.all([
+        prisma.payment.update({
+            where: { id: dbPayment.id },
+            data: {
+                status: "SUCCESS",
+                transactionId: paymentId,
+                appointmentId: appointment.id,
+            },
+        }),
+        prisma.timeSlot.update({
+            where: { id: dbPayment.slotId },
+            data: { status: "BOOKED" },
+        }),
+    ]);
 
     let meetLink = "";
 
