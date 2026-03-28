@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
         });
 
         await prisma.doctorAvailability.createMany({
-            data: parsed.data.availability.map((a) => ({
+            data: parsed.data.map((a) => ({
                 doctorId: doctor.id,
                 dayOfWeek: a.dayOfWeek,
                 startTime: a.startTime,
@@ -63,6 +63,48 @@ export async function POST(req: NextRequest) {
 
     } catch (error) {
         console.error("Availability error:", error);
+        return NextResponse.json(
+            { error: "Internal Server Error" },
+            { status: 500 }
+        );
+    }
+}
+
+export async function GET(req: NextRequest) {
+    try {
+        const user = getUser(req);
+
+        if (!user?.id) {
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            );
+        }
+
+        const { success, message, status } = authorize(req, [Role.DOCTOR])
+        if (!success) {
+            return NextResponse.json({ error: message }, { status })
+        }
+
+        const doctor = await prisma.doctorProfile.findUnique({
+            where: { userId: user.id }
+        });
+
+        if (!doctor) {
+            return NextResponse.json(
+                { error: "Doctor not found" },
+                { status: 404 }
+            );
+        }
+
+        const res = await prisma.doctorAvailability.findMany({
+            where: { doctorId: doctor.id }
+        });
+
+        return NextResponse.json(res, { status: 200 });
+
+    } catch (error) {
+        console.error("Error on getting Availability:", error);
         return NextResponse.json(
             { error: "Internal Server Error" },
             { status: 500 }

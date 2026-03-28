@@ -97,6 +97,12 @@ export const DoctorDashboardMenu: DashboardMenuType[] = [
         access: ["DOCTOR"],
     },
     {
+        name: "Set Availability",
+        page: "/doctor/set-availability",
+        icon: CalendarClock,
+        access: ["DOCTOR"],
+    },
+    {
         name: "Patients",
         page: "/doctor/patients",
         icon: Users,
