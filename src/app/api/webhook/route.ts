@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { createGoogleMeet } from "@/lib/create_meeting";
 import { sendMail } from "@/lib/sendMail";
 import { appointmentEmailTemplate } from "@/lib/appointmentEmailTemplate";
+import { generateICS } from "@/lib/generateICS";
 
 function verifyWebhookSignature(body: string, signature: string) {
     const expected = crypto
@@ -209,6 +210,13 @@ async function handlePaymentCaptured(payment: any) {
     }
 
     // Step 7: Confirmation email
+
+    const data = {
+        doctorName: slot.doctor.user.name,
+        startTime: slot.startTime.toISOString(),
+        endTime: slot.endTime.toISOString(),
+        meetLink
+    }
     try {
         await sendMail({
             title: `${slot.doctor.user.name} Online Consultation`,
@@ -221,6 +229,13 @@ async function handlePaymentCaptured(payment: any) {
                 endTime: slot.endTime.toISOString(),
                 meetLink,
             }),
+            attachments: [
+                {
+                    filename: "invite.ics",
+                    content: generateICS(data),
+                    contentType: "text/calendar; method=REQUEST",
+                },
+            ],
         });
     } catch (err) {
         console.error("Email failed:", err);

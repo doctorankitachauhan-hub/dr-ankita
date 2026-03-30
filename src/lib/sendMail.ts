@@ -6,21 +6,23 @@ type Props = {
     to: string | string[];
     subject: string;
     html: string;
+    attachments?: any[];
 }
 
-export async function sendMail({ title, to, subject, html }: Props) {
+export async function sendMail({ title, to, subject, html, attachments }: Props) {
     try {
 
         if (!to) {
             console.warn("⚠️ User email missing.");
             throw new Error("⚠️ User email missing.")
         }
-
+        const recipients = Array.isArray(to) ? to : [to];
         const { error } = await resend.emails.send({
             from: `${title} <help@drankitachauhan.com>`,
-            to: ["priyeshrai.dev@gmail.com", ...to],
+            to: ["priyeshrai.dev@gmail.com", ...recipients],
             subject: subject,
             html: html,
+            attachments
         });
 
         if (error) {
