@@ -46,6 +46,9 @@ export async function POST(req: NextRequest) {
                 startTime: true,
                 endTime: true,
                 appointment: {
+                    where: {
+                        status: { in: ["CONFIRMED"] },
+                    },
                     select: {
                         id: true,
                         status: true,
@@ -74,29 +77,30 @@ export async function POST(req: NextRequest) {
                 { status: 404 }
             );
         }
+        const activeAppointment = slot.appointment[0] ?? null;
 
         const response = {
             id: slot.id,
             status: slot.status,
             startTime: slot.startTime,
             endTime: slot.endTime,
-            appointment: slot.appointment
+            appointment: activeAppointment
                 ? {
-                    id: slot.appointment.id,
-                    status: slot.appointment.status,
-                    meeting: slot.appointment.meeting
+                    id: activeAppointment.id,
+                    status: activeAppointment.status,
+                    meeting: activeAppointment.meeting
                         ? {
-                            id: slot.appointment.meeting.id,
-                            meetingLink: slot.appointment.meeting.meetingLink
+                            id: activeAppointment.meeting.id,
+                            meetingLink: activeAppointment.meeting.meetingLink
                         }
                         : null,
 
-                    patient: slot.appointment.patient
+                    patient: activeAppointment.patient
                         ? {
-                            id: slot.appointment.patient.id,
-                            name: slot.appointment.patient.name,
-                            email: slot.appointment.patient.email,
-                            phone: slot.appointment.patient.phone
+                            id: activeAppointment.patient.id,
+                            name: activeAppointment.patient.name,
+                            email: activeAppointment.patient.email,
+                            phone: activeAppointment.patient.phone
                         }
                         : null
                 }

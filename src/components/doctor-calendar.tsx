@@ -38,7 +38,7 @@ export default function DoctorCalendar({ slots }: Props) {
     });
 
     function handleEventClick(event_id: string) {
-        router.push(`?event_id=${event_id}`, { scroll: false })
+        router.push(`?slot_id=${event_id}`, { scroll: false })
     }
 
     return (

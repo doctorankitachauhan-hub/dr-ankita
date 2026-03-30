@@ -11,19 +11,20 @@ import { SlotDetails } from '@/types/slots';
 import { generateInitials } from '@/lib/generate_initials';
 
 export default function EventDetails() {
+    const queryClient = useQueryClient();
     const searchParams = useSearchParams();
     const router = useRouter();
-    const eventId = searchParams.get("event_id");
+    const eventId = searchParams.get("slot_id");
     const hasEventId = !!eventId;
 
     const closeModal = () => {
         const params = new URLSearchParams(searchParams.toString());
-        params.delete("event_id");
+        params.delete("slot_id");
         router.replace(`?${params.toString()}`, { scroll: false });
     };
 
     const { data, isFetching, isLoading, error } = useQuery<SlotDetails>({
-        queryKey: ["event_slots", eventId],
+        queryKey: ["slot_id", eventId],
         queryFn: async () => {
             const res = await axios.post('/api/v1/doctor/event-slot', { eventId }, {
                 withCredentials: true,
@@ -33,6 +34,60 @@ export default function EventDetails() {
         placeholderData: (old) => old,
         enabled: hasEventId,
     })
+
+    const { mutate, isPending } = useMutation({
+        mutationFn: async ({ id, status }: { id: string, status: string }) => {
+            const response = await axios.post(
+                `/api/v1/doctor/appointment/${id}`,
+                { status },
+                { withCredentials: true }
+            );
+
+            return response.data;
+        },
+        onSuccess: async (val) => {
+            toast.success(val?.message);
+            await Promise.all([
+                queryClient.invalidateQueries({ queryKey: ["slot_id", eventId] }),
+                queryClient.invalidateQueries({ queryKey: ["slots"] }),
+            ]);
+        },
+        onError: (err: AxiosError<{ error: string }>) => {
+            toast.error(err.response?.data?.error || "Something went wrong")
+        }
+    })
+
+    function handleChangeStatus(id: string, status: "CANCELLED") {
+        if (!id || !status) return toast.error("Invalid Operation!");
+        mutate({ id, status });
+    }
+
+    const { mutate: changeStatus, isPending: changingStatus } = useMutation({
+        mutationFn: async ({ id, status }: { id: string, status: string }) => {
+            const response = await axios.post(
+                `/api/v1/doctor/slots/${id}`,
+                { status },
+                { withCredentials: true }
+            );
+
+            return response.data;
+        },
+        onSuccess: async (val) => {
+            toast.success(val?.message);
+            await Promise.all([
+                queryClient.invalidateQueries({ queryKey: ["slot_id", eventId] }),
+                queryClient.invalidateQueries({ queryKey: ["slots"] }),
+            ]);
+        },
+        onError: (err: AxiosError<{ error: string }>) => {
+            toast.error(err.response?.data?.error || "Something went wrong")
+        }
+    })
+
+    function handleSlotStatus(id: string, status: "AVAILABLE" | "BLOCKED") {
+        if (!id || !status) return toast.error("Invalid Operation!");
+        changeStatus({ id, status })
+    }
 
     if (error) {
         closeModal();
@@ -217,18 +272,25 @@ export default function EventDetails() {
                                     </button>}
 
                                     {data.status === "BOOKED" && (
-                                        <button className="px-4 py-2 text-sm cursor-pointer rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition">
-                                            Cancel Appointment
+                                        <button
+                                            className="px-4 py-2 text-sm cursor-pointer rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition"
+                                            onClick={() => handleChangeStatus(data.appointment?.id!, "CANCELLED")}
+                                        >
+                                            {isPending ? <Spinner /> : "Cancel Appointment"}
                                         </button>
                                     )}
 
                                     {data.status === "AVAILABLE" ? (
-                                        <button className="px-4 py-2 text-sm cursor-pointer rounded-lg bg-slate-800 text-white hover:bg-slate-700 transition">
-                                            Block Slot
+                                        <button className="px-4 py-2 text-sm cursor-pointer rounded-lg bg-slate-800 text-white hover:bg-slate-700 transition"
+                                            onClick={() => handleSlotStatus(eventId, "BLOCKED")}
+                                        >
+                                            {changingStatus ? <Spinner /> : "Block Slot"}
                                         </button>
                                     ) : data.status === "BLOCKED" ? (
-                                        <button className="px-4 py-2 text-sm cursor-pointer rounded-lg bg-green-600 text-white hover:bg-green-500 transition">
-                                            Unblock Slot
+                                        <button className="px-4 py-2 text-sm cursor-pointer rounded-lg bg-green-600 text-white hover:bg-green-500 transition"
+                                            onClick={() => handleSlotStatus(eventId, "AVAILABLE")}
+                                        >
+                                            {changingStatus ? <Spinner color /> : "Unblock Slot"}
                                         </button>
                                     ) : null}
 
