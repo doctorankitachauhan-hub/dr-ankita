@@ -78,7 +78,7 @@ model TimeSlot {
   updatedAt DateTime @updatedAt
 
   doctor      DoctorProfile @relation(fields: [doctorId], references: [id])
-  appointment Appointment?
+  appointment Appointment[]
 
   @@unique([doctorId, startTime, endTime])
   @@index([doctorId, startTime])
@@ -87,7 +87,7 @@ model TimeSlot {
 model Appointment {
   id        String            @id @default(cuid())
   patientId String
-  slotId    String            @unique
+  slotId    String
   status    AppointmentStatus @default(PENDING)
 
   reminder1Sent Boolean @default(false)
@@ -99,13 +99,16 @@ model Appointment {
   patient User     @relation(fields: [patientId], references: [id])
   slot    TimeSlot @relation(fields: [slotId], references: [id])
 
-  payment Payment?
+  payment Payment[]
   meeting Meeting?
+
+  @@index([slotId, status])
+  @@index([patientId, status])
 }
 
 model Payment {
   id            String  @id @default(cuid())
-  appointmentId String? @unique
+  appointmentId String?
 
   amount          Float
   status          PaymentStatus
@@ -118,6 +121,9 @@ model Payment {
   createdAt DateTime @default(now())
 
   appointment Appointment? @relation(fields: [appointmentId], references: [id])
+
+  @@index([userId, status])
+  @@index([slotId, status])
 }
 
 model Meeting {

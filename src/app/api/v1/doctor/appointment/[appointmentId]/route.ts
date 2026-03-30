@@ -52,7 +52,10 @@ export async function POST(
                 slot: {
                     include: { doctor: { select: { userId: true } } },
                 },
-                payment: true,
+                payment: {
+                    where: { status: "SUCCESS" },
+                    take: 1,
+                },
                 meeting: true,
             },
         });
@@ -91,9 +94,9 @@ export async function POST(
             );
         }
 
-        const payment = appointment.payment;
+        const payment = appointment.payment[0] ?? null;
 
-        if (payment?.transactionId && payment.status === "SUCCESS") {
+        if (payment?.transactionId) {
             try {
                 await razorpay.payments.refund(payment.transactionId, {
                     speed: "normal",
@@ -105,36 +108,33 @@ export async function POST(
                     { status: 502 }
                 );
             }
-
             await Promise.all([
-                appointment.meeting
-                    ? prisma.meeting.delete({ where: { appointmentId } })
-                    : Promise.resolve(),
-
+                prisma.appointment.update({
+                    where: { id: appointmentId },
+                    data: { status: "CANCELLED" },
+                }),
                 prisma.payment.update({
                     where: { id: payment.id },
-                    data: { status: "REFUNDED", appointmentId: null },
+                    data: { status: "REFUNDED" },
+                }),
+                prisma.timeSlot.update({
+                    where: { id: appointment.slotId },
+                    data: { status: "AVAILABLE" },
                 }),
             ]);
-
-            await prisma.appointment.delete({ where: { id: appointmentId } });
-            await prisma.timeSlot.update({
-                where: { id: appointment.slotId },
-                data: { status: "AVAILABLE" },
-            });
-
         } else {
-            console.warn(`No refundable payment for appointment ${appointmentId} — cancelling without refund`);
-            if (appointment.meeting) {
-                await prisma.meeting.delete({ where: { appointmentId } });
-            }
+            console.warn(`No refundable payment for appointment ${appointmentId}`);
 
-            await prisma.appointment.delete({ where: { id: appointmentId } });
-
-            await prisma.timeSlot.update({
-                where: { id: appointment.slotId },
-                data: { status: "AVAILABLE" },
-            });
+            await Promise.all([
+                prisma.appointment.update({
+                    where: { id: appointmentId },
+                    data: { status: "CANCELLED" },
+                }),
+                prisma.timeSlot.update({
+                    where: { id: appointment.slotId },
+                    data: { status: "AVAILABLE" },
+                }),
+            ]);
         }
 
         return NextResponse.json(

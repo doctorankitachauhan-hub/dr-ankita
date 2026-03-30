@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({ success: true });
     } catch (error) {
-        console.error("🔥 Webhook error:", error);
+        console.error("Webhook error:", error);
         return new NextResponse("Webhook error", { status: 500 });
     }
 }
@@ -41,65 +41,124 @@ async function handlePaymentCaptured(payment: any) {
     const orderId = payment.order_id as string;
     const paymentId = payment.id as string;
 
+    // Step 1: Load payment row
     const dbPayment = await prisma.payment.findUnique({
         where: { razorpayOrderId: orderId },
     });
 
     if (!dbPayment) {
-        console.error(`❌ No payment row for order ${orderId}`);
+        console.error(`No payment row for order ${orderId}`);
         return;
     }
 
+    // Step 2: Idempotency — already fully processed
     if (dbPayment.status === "SUCCESS") {
-        console.log(`⏭️  Already processed: ${orderId}`);
+        console.log(`Already processed: ${orderId}`);
         return;
     }
 
+    // Step 3: Fetch slot
     const slot = await prisma.timeSlot.findUnique({
         where: { id: dbPayment.slotId },
         include: { doctor: { include: { user: true } } },
     });
 
     if (!slot) {
-        console.error(`❌ Slot not found: ${dbPayment.slotId}`);
+        console.error(`Slot not found: ${dbPayment.slotId}`);
         return;
     }
 
     if (slot.status === "BOOKED") {
-        console.warn(`⚠️ Slot already booked for order ${orderId}`);
-        await prisma.payment.update({
+        console.warn(`Slot already booked for order ${orderId}`);
+        await prisma.payment.updateMany({
             where: { razorpayOrderId: orderId, status: { not: "SUCCESS" } },
             data: { status: "FAILED" },
         });
         return;
     }
 
+    // Step 4: Resolve appointment
+    //
+    // Appointment.slotId has no @unique — a slot can have many rows over time.
+    // Payment.appointmentId has no @unique — a payment points to one appointment,
+    // but an appointment can be reused across bookings.
+    //
+    // Resolution order:
+    //   1. Active appointment exists → concurrent webhook → exit
+    //   2. This patient's cancelled appointment exists → reuse it (update to CONFIRMED)
+    //      → but first unlink it from its old REFUNDED payment to clear the FK
+    //   3. No prior appointment → create fresh row
+
+    const existingActive = await prisma.appointment.findFirst({
+        where: {
+            slotId: dbPayment.slotId,
+            status: { in: ["CONFIRMED", "COMPLETED", "PENDING"] },
+        },
+    });
+
+    if (existingActive) {
+        console.log(`Active appointment already exists for slot ${dbPayment.slotId}`);
+        return;
+    }
+
+    const cancelledByThisUser = await prisma.appointment.findFirst({
+        where: {
+            slotId: dbPayment.slotId,
+            patientId: dbPayment.userId,
+            status: "CANCELLED",
+        },
+        orderBy: { createdAt: "desc" },
+    });
+
     let appointment: any;
 
-    try {
-        appointment = await prisma.appointment.create({
+    if (cancelledByThisUser) {
+        // Unlink the old REFUNDED payment from this appointment before reusing it.
+        // Payment.appointmentId still has @unique until you run the migration —
+        // without this step the new payment.update below would hit P2002.
+        await prisma.payment.updateMany({
+            where: {
+                appointmentId: cancelledByThisUser.id,
+                status: "REFUNDED",
+            },
+            data: { appointmentId: null },
+        });
+
+        // Now safely reuse the cancelled appointment row
+        appointment = await prisma.appointment.update({
+            where: { id: cancelledByThisUser.id },
             data: {
                 patientId: dbPayment.userId,
-                slotId: dbPayment.slotId,
                 status: "CONFIRMED",
+                reminder1Sent: false,
+                reminder2Sent: false,
             },
             include: { patient: true },
         });
-        // console.log(`Slot booked successfully: ${orderId}`);
-    } catch (err: any) {
-        if (err.code === "P2002") {
-            console.log(`⏭️  Appointment already exists for slot ${dbPayment.slotId}`);
-            return;
+    } else {
+        // Fresh booking — new row
+        try {
+            appointment = await prisma.appointment.create({
+                data: {
+                    patientId: dbPayment.userId,
+                    slotId: dbPayment.slotId,
+                    status: "CONFIRMED",
+                },
+                include: { patient: true },
+            });
+        } catch (err: any) {
+            console.error("Appointment create failed:", err);
+            await prisma.payment.updateMany({
+                where: { razorpayOrderId: orderId, status: { not: "SUCCESS" } },
+                data: { status: "FAILED" },
+            });
+            throw err;
         }
-        await prisma.payment.update({
-            where: { razorpayOrderId: orderId, status: { not: "SUCCESS" } },
-            data: { status: "FAILED" },
-        });
-        throw err;
     }
 
     const patient = appointment.patient;
 
+    // Step 5: Mark payment SUCCESS + slot BOOKED in parallel
     await Promise.all([
         prisma.payment.update({
             where: { id: dbPayment.id },
@@ -115,6 +174,7 @@ async function handlePaymentCaptured(payment: any) {
         }),
     ]);
 
+    // Step 6: Google Meet
     let meetLink = "";
 
     try {
@@ -145,9 +205,10 @@ async function handlePaymentCaptured(payment: any) {
             });
         }
     } catch (err) {
-        console.error("⚠️ Meet creation failed:", err);
+        console.error("Meet creation failed:", err);
     }
 
+    // Step 7: Confirmation email
     try {
         await sendMail({
             title: `${slot.doctor.user.name} Online Consultation`,
@@ -162,6 +223,6 @@ async function handlePaymentCaptured(payment: any) {
             }),
         });
     } catch (err) {
-        console.error("⚠️ Email failed:", err);
+        console.error("Email failed:", err);
     }
 }
