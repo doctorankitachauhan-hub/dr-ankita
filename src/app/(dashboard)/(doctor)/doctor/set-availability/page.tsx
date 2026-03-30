@@ -9,6 +9,27 @@ import Spinner from "@/components/ui/spinner";
 
 const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
+function generateTimeSlots() {
+    const slots = [];
+    for (let h = 0; h < 24; h++) {
+        for (let m = 0; m < 60; m += 15) {
+            const hh = String(h).padStart(2, "0");
+            const mm = String(m).padStart(2, "0");
+            const ampm = h < 12 ? "AM" : "PM";
+            const h12 = h % 12 === 0 ? 12 : h % 12;
+            slots.push({ value: `${hh}:${mm}`, label: `${h12}:${mm} ${ampm}`, });
+        }
+    }
+    return slots;
+}
+
+const TIME_SLOTS = generateTimeSlots();
+function getEndTimeSlots(startTime: string) {
+    if (!startTime) return TIME_SLOTS;
+    return TIME_SLOTS.filter((s) => s.value > startTime);
+}
+
+
 export default function SetDoctorAvailability() {
     const queryClient = useQueryClient();
     const [availability, setAvailability] = useState<AvailabilityType[]>([
@@ -61,15 +82,18 @@ export default function SetDoctorAvailability() {
         });
     }
 
-    function updateSlot(
-        index: number,
-        key: keyof AvailabilityType,
-        value: any
-    ) {
+    function updateSlot(index: number, key: keyof AvailabilityType, value: any) {
         setAvailability((prev) => {
             const updated = prev.map((item, i) =>
                 i === index ? { ...item, [key]: value } : item
             );
+
+            if (key === "startTime") {
+                const current = updated[index];
+                if (current.endTime && current.endTime <= value) {
+                    updated[index] = { ...current, endTime: "" };
+                }
+            }
 
             const current = updated[index];
 
@@ -156,32 +180,43 @@ export default function SetDoctorAvailability() {
 
                         <div className="grid grid-cols-3 gap-3">
 
-                            <input
-                                type="time"
+                            <select
                                 value={slot.startTime}
-                                onChange={(e) =>
-                                    updateSlot(index, "startTime", e.target.value)
-                                }
-                                className="px-3 py-2 rounded-lg border border-slate-200 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300"
-                            />
+                                onChange={(e) => updateSlot(index, "startTime", e.target.value)}
+                                className="px-3 py-2 rounded-lg border border-slate-200 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300 bg-white"
+                            >
+                                <option value="" disabled>Start time</option>
+                                {TIME_SLOTS.map((s) => (
+                                    <option key={s.value} value={s.value}>
+                                        {s.label}
+                                    </option>
+                                ))}
+                            </select>
 
-                            <input
-                                type="time"
+                            <select
                                 value={slot.endTime}
-                                onChange={(e) =>
-                                    updateSlot(index, "endTime", e.target.value)
-                                }
-                                className="px-3 py-2 rounded-lg border border-slate-200 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300"
-                            />
+                                onChange={(e) => updateSlot(index, "endTime", e.target.value)}
+                                disabled={!slot.startTime}
+                                className="px-3 py-2 rounded-lg border border-slate-200 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300 bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                <option value="" disabled>End time</option>
+                                {getEndTimeSlots(slot.startTime).map((s) => (
+                                    <option key={s.value} value={s.value}>
+                                        {s.label}
+                                    </option>
+                                ))}
+                            </select>
 
                             <input
                                 type="number"
                                 value={slot.slotDuration}
+                                min={15}
+                                step={15}
                                 onChange={(e) =>
                                     updateSlot(index, "slotDuration", Number(e.target.value))
                                 }
                                 className="px-3 py-2 rounded-lg border border-slate-200 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300"
-                                placeholder="Duration"
+                                placeholder="Duration (min)"
                             />
                         </div>
 
