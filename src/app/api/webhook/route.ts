@@ -42,7 +42,6 @@ async function handlePaymentCaptured(payment: any) {
     const orderId = payment.order_id as string;
     const paymentId = payment.id as string;
 
-    // Step 1: Load payment row
     const dbPayment = await prisma.payment.findUnique({
         where: { razorpayOrderId: orderId },
     });
@@ -52,13 +51,11 @@ async function handlePaymentCaptured(payment: any) {
         return;
     }
 
-    // Step 2: Idempotency — already fully processed
     if (dbPayment.status === "SUCCESS") {
         console.log(`Already processed: ${orderId}`);
         return;
     }
 
-    // Step 3: Fetch slot
     const slot = await prisma.timeSlot.findUnique({
         where: { id: dbPayment.slotId },
         include: { doctor: { include: { user: true } } },
@@ -77,18 +74,6 @@ async function handlePaymentCaptured(payment: any) {
         });
         return;
     }
-
-    // Step 4: Resolve appointment
-    //
-    // Appointment.slotId has no @unique — a slot can have many rows over time.
-    // Payment.appointmentId has no @unique — a payment points to one appointment,
-    // but an appointment can be reused across bookings.
-    //
-    // Resolution order:
-    //   1. Active appointment exists → concurrent webhook → exit
-    //   2. This patient's cancelled appointment exists → reuse it (update to CONFIRMED)
-    //      → but first unlink it from its old REFUNDED payment to clear the FK
-    //   3. No prior appointment → create fresh row
 
     const existingActive = await prisma.appointment.findFirst({
         where: {
@@ -114,9 +99,6 @@ async function handlePaymentCaptured(payment: any) {
     let appointment: any;
 
     if (cancelledByThisUser) {
-        // Unlink the old REFUNDED payment from this appointment before reusing it.
-        // Payment.appointmentId still has @unique until you run the migration —
-        // without this step the new payment.update below would hit P2002.
         await prisma.payment.updateMany({
             where: {
                 appointmentId: cancelledByThisUser.id,
@@ -125,7 +107,6 @@ async function handlePaymentCaptured(payment: any) {
             data: { appointmentId: null },
         });
 
-        // Now safely reuse the cancelled appointment row
         appointment = await prisma.appointment.update({
             where: { id: cancelledByThisUser.id },
             data: {
