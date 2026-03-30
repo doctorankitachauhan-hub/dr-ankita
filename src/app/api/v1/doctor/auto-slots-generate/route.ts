@@ -55,27 +55,18 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const lastSlot = await prisma.timeSlot.findFirst({
-            where: { doctorId: doctor.id },
-            orderBy: { startTime: "desc" }
-        });
+        const today = new Date();
+        today.setUTCHours(0, 0, 0, 0);
 
-        let startDate = new Date();
+        const totalDays = parsed.data.days ?? 15;
 
-        if (lastSlot) {
-            startDate = new Date(lastSlot.startTime);
-            startDate.setDate(startDate.getDate() + 1);
-        }
-
-        startDate.setUTCHours(0, 0, 0, 0);
-
-        const slots = generateFromAvailability(
+        const generatedSlots = generateFromAvailability(
             availability,
-            parsed.data.days ?? 15,
-            startDate
+            totalDays,
+            today
         );
 
-        if (!slots.length) {
+        if (!generatedSlots.length) {
             return NextResponse.json(
                 { error: "No slots generated" },
                 { status: 400 }
@@ -85,40 +76,65 @@ export async function POST(req: NextRequest) {
         const existingSlots = await prisma.timeSlot.findMany({
             where: {
                 doctorId: doctor.id,
-                startTime: {
-                    gte: new Date(),
-                }
+                startTime: { gte: today }
             }
         });
 
-        const filteredSlots = slots.filter((newSlot) => {
-            return !existingSlots.some((existing) => {
-                return (
-                    existing.startTime < newSlot.endTime &&
-                    existing.endTime > newSlot.startTime
-                );
-            });
-        });
 
-        if (!filteredSlots.length) {
-            return NextResponse.json(
-                { error: "All slots already exist" },
-                { status: 409 }
-            );
+        const key = (s: { startTime: Date; endTime: Date }) =>
+            `${s.startTime.toISOString()}_${s.endTime.toISOString()}`;
+
+        const generatedMap = new Map(
+            generatedSlots.map((s) => [key(s), s])
+        );
+
+        const existingMap = new Map(
+            existingSlots.map((s) => [key(s), s])
+        );
+
+        const toCreate: typeof generatedSlots = [];
+        const toDelete: typeof existingSlots = [];
+
+        for (const [k, genSlot] of generatedMap) {
+            if (!existingMap.has(k)) {
+                toCreate.push(genSlot);
+            }
         }
 
-        await prisma.timeSlot.createMany({
-            data: filteredSlots.map((s) => ({
-                doctorId: doctor.id,
-                startTime: s.startTime,
-                endTime: s.endTime
-            })),
-            skipDuplicates: true
+        for (const [k, existSlot] of existingMap) {
+            if (!generatedMap.has(k)) {
+                if (existSlot.status === "AVAILABLE") {
+                    toDelete.push(existSlot);
+                }
+            }
+        }
+
+        await prisma.$transaction(async (tx) => {
+
+            if (toDelete.length) {
+                await tx.timeSlot.deleteMany({
+                    where: {
+                        id: { in: toDelete.map((s) => s.id) }
+                    }
+                });
+            }
+
+            if (toCreate.length) {
+                await tx.timeSlot.createMany({
+                    data: toCreate.map((s) => ({
+                        doctorId: doctor.id,
+                        startTime: s.startTime,
+                        endTime: s.endTime
+                    })),
+                    skipDuplicates: true
+                });
+            }
         });
 
         return NextResponse.json({
-            message: "Slots generated successfully",
-            count: filteredSlots.length
+            message: "Slots updated",
+            created: toCreate.length,
+            deleted: toDelete.length
         });
 
     } catch (error) {
