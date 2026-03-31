@@ -1,13 +1,14 @@
 'use client'
 import { ButtonPrimary } from '@/utils/Section';
 import { useLenisControl } from '@/utils/SmoothScroll';
-import { ChevronDown, ChevronRight, Menu, MoveUpRight, Phone, X } from 'lucide-react';
+import { ChevronDown, ChevronRight, Menu, MoveUpRight, Phone, User, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation'
-import React, { Fragment, useEffect, useState } from 'react'
-import BookAppointment from './BookAppointment';
+import { useEffect, useState } from 'react'
 import MobileMenuItem from './MobileMenu';
+import Signup from './auth/signup';
+import { useAuth } from '@/hooks/useAuth';
+import { useRouter } from 'next/navigation';
 
 interface MenuItem {
     key: string;
@@ -17,7 +18,7 @@ interface MenuItem {
 }
 
 export default function NavBar() {
-    const currentPath = usePathname();
+    const router = useRouter()
     const menuItems: MenuItem[] = [
         // {
         //     key: 'home',
@@ -154,20 +155,17 @@ export default function NavBar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { stopScroll, startScroll } = useLenisControl();
     const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
-    const [openForm, setOpenForm] = useState<boolean>(false);
-
-    const toggleSubMenu = (key: string) => {
-        setOpenSubMenu((prev) => (prev === key ? null : key));
-    };
+    const [openLoginModal, setOpenLoginModal] = useState<boolean>(false);
+    const { isAuthenticated, user } = useAuth()
 
     useEffect(() => {
-        if (isMenuOpen || openForm) {
+        if (isMenuOpen || openLoginModal) {
             stopScroll();
         } else {
             startScroll();
         }
         return () => startScroll();
-    }, [isMenuOpen, stopScroll, startScroll, openForm]);
+    }, [isMenuOpen, stopScroll, startScroll, openLoginModal]);
 
     return (
         <header className='relative w-full z-30 bg-primary-color'>
@@ -245,10 +243,23 @@ export default function NavBar() {
                     }
                 </div>
 
-                <div className='lg:flex flex-col items-end hidden relative w-max'>
-                    <ButtonPrimary onClick={() => setOpenForm(true)} className='bg-white text-primary-color! hover:bg-gray-50! '>
-                        Book Appointment
-                    </ButtonPrimary>
+                <div className='lg:flex gap-2 items-center hidden relative'>
+                    {
+                        !isAuthenticated && <ButtonPrimary
+                            onClick={() => setOpenLoginModal(true)}
+                            className='bg-white text-primary-color! hover:bg-gray-50! '>
+                            Book Appointement
+                        </ButtonPrimary>
+                    }
+                    <button
+                        onClick={() => isAuthenticated ? router.push("/user/dashboard") : router.push("/login")}
+                        className='flex flex-col items-center justify-center cursor-pointer'
+                    >
+                        <User className='text-white' />
+                        <span className='text-xs text-white text-center'>
+                            {user?.name}
+                        </span>
+                    </button>
                 </div>
 
                 <button onClick={() => setIsMenuOpen((prev) => !prev)} className='lg:hidden w-12 h-12 flex items-center justify-center cursor-pointer bg-primary rounded-full '>
@@ -298,7 +309,7 @@ export default function NavBar() {
                     </div>
 
                     <div className='w-full absolute bottom-0 flex flex-col items-end'>
-                        <ButtonPrimary onClick={() => { setIsMenuOpen(false); setOpenForm(true); }}
+                        <ButtonPrimary
                             className='w-full bg-white text-primary-color! hover:bg-gray-50!'
                         >
                             Book Appointment
@@ -306,7 +317,11 @@ export default function NavBar() {
                     </div>
                 </div>
             </div>
-            <BookAppointment openForm={openForm} closeForm={setOpenForm} />
+
+            <Signup
+                openLoginModal={openLoginModal}
+                closeLoginModal={() => setOpenLoginModal(false)}
+            />
         </header>
     )
 }

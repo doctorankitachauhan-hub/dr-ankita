@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import SmoothScrollProvider from "@/utils/SmoothScroll";
-import TopBar from "@/components/TopBar";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import Contact from "@/components/Contact";
+import Providers from "@/lib/providers";
+import AuthBoundary from "@/context/auth_boundry";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "Dr. Ankita Chauhan",
@@ -25,13 +27,17 @@ export default function RootLayout({
         <link rel="shortcut icon" href="/images/logo/new-logo-1.png" type="image/x-icon" />
       </head>
       <body className="overflow-x-hidden">
-        <SmoothScrollProvider>
-          {/* <TopBar /> */}
-          <NavBar />
-          {children}
-          <Contact />
-          <Footer />
-        </SmoothScrollProvider>
+        <Providers>
+          <AuthBoundary>
+            <SmoothScrollProvider>
+              {/* <NavBar /> */}
+              {children}
+              {/* <Contact /> */}
+              {/* <Footer /> */}
+            </SmoothScrollProvider>
+          </AuthBoundary>
+        </Providers>
+        <Script src="https://checkout.razorpay.com/v1/checkout.js"></Script>
       </body>
     </html>
   );

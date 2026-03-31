@@ -37,6 +37,11 @@
       transform: translateY(calc(-100% - var(--gap)));
     }
   }
+  @keyframes shimmer {
+    100% {
+      transform: translateX(200%);
+    }
+  }
 }
 
 section {
@@ -96,14 +101,16 @@ li {
   transition: all 0.3s ease-in-out;
 }
 
-input:focus ~ .labels, input:not(:placeholder-shown) ~ .labels {
+input:focus ~ .labels,
+input:not(:placeholder-shown) ~ .labels {
   top: -10px;
   left: 6px;
   font-size: 0.85rem;
   color: var(--primary-hover);
   transform: translateY(0);
 }
-textarea:focus ~ .label, textarea:not(:placeholder-shown) ~ .label {
+textarea:focus ~ .label,
+textarea:not(:placeholder-shown) ~ .label {
   top: -10px;
   left: 6px;
   font-size: 0.85rem;

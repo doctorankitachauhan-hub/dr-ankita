@@ -1,0 +1,243 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  DOCTOR
+  PATIENT
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+enum MeetingProvider {
+  GOOGLE_MEET
+}
+
+enum SlotStatus {
+  AVAILABLE
+  BOOKED
+  BLOCKED
+  CANCELLED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+model User {
+  id       String  @id @default(cuid())
+  name     String
+  email    String  @unique
+  phone    String?
+  password String?
+  role     Role    @default(PATIENT)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  doctorProfile    DoctorProfile?
+  appointments     Appointment[]
+  contextDocuments ContextDocument[]
+
+  @@index([email])
+  @@index([role])
+}
+
+model DoctorProfile {
+  id              String  @id @default(cuid())
+  userId          String  @unique
+  specialization  String
+  experience      Int
+  consultationFee Float
+  bio             String?
+
+  user                 User                 @relation(fields: [userId], references: [id])
+  slots                TimeSlot[]
+  doctorAvailabilities DoctorAvailability[]
+
+  @@index([userId])
+}
+
+model TimeSlot {
+  id        String     @id @default(cuid())
+  doctorId  String
+  startTime DateTime
+  endTime   DateTime
+  status    SlotStatus @default(AVAILABLE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  doctor      DoctorProfile @relation(fields: [doctorId], references: [id])
+  appointment Appointment[]
+
+  @@unique([doctorId, startTime, endTime])
+  @@index([doctorId, startTime])
+  @@index([doctorId, status])
+  @@index([startTime])
+}
+
+model Appointment {
+  id        String            @id @default(cuid())
+  patientId String
+  slotId    String
+  status    AppointmentStatus @default(PENDING)
+
+  reminder1Sent Boolean @default(false)
+  reminder2Sent Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  patient             User                @relation(fields: [patientId], references: [id])
+  slot                TimeSlot            @relation(fields: [slotId], references: [id])
+  payment             Payment[]
+  meeting             Meeting?
+  appointmentContexts AppointmentContext?
+
+  @@index([slotId, status])
+  @@index([patientId, status])
+  @@index([status, createdAt])
+}
+
+model Payment {
+  id              String        @id @default(cuid())
+  appointmentId   String?
+  contextId       String?
+  amount          Float
+  status          PaymentStatus
+  transactionId   String?
+  razorpayOrderId String        @unique
+
+  slotId String
+  userId String
+
+  createdAt DateTime @default(now())
+
+  appointment Appointment?        @relation(fields: [appointmentId], references: [id])
+  context     AppointmentContext? @relation(fields: [contextId], references: [id])
+
+  @@index([userId, status])
+  @@index([slotId, status])
+  @@index([razorpayOrderId])
+  @@index([status, createdAt])
+  @@index([contextId])
+}
+
+model Meeting {
+  id            String @id @default(cuid())
+  appointmentId String @unique
+
+  provider MeetingProvider @default(GOOGLE_MEET)
+
+  meetingLink   String
+  googleEventId String
+
+  startTime DateTime
+  endTime   DateTime
+
+  createdAt DateTime @default(now())
+
+  appointment Appointment @relation(fields: [appointmentId], references: [id])
+
+  @@index([startTime])
+}
+
+model EmailOTP {
+  id        String   @id @default(cuid())
+  email     String
+  otpHash   String
+  userData  Json?
+  expiresAt DateTime
+  attempts  Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([expiresAt])
+}
+
+model DoctorAvailability {
+  id       String @id @default(cuid())
+  doctorId String
+
+  dayOfWeek    Int
+  startTime    String
+  endTime      String
+  slotDuration Int
+
+  shiftType String?
+
+  isActive Boolean @default(true)
+
+  doctor DoctorProfile @relation(fields: [doctorId], references: [id])
+
+  @@index([doctorId, dayOfWeek])
+  @@index([doctorId, isActive])
+}
+
+model AppointmentContext {
+  id            String  @id @default(cuid())
+  userId        String
+  appointmentId String? @unique
+
+  reason   String
+  symptoms String?
+  notes    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  appointment      Appointment?      @relation(fields: [appointmentId], references: [id])
+  contextDocuments ContextDocument[]
+  payments         Payment[]
+
+  @@index([appointmentId, id])
+  @@index([userId])
+}
+
+model ContextDocument {
+  id           String @id @default(cuid())
+  contextId    String
+  uploadedById String
+
+  fileName     String
+  fileUrl      String
+  fileType     String
+  fileSize     Int
+  documentType DocumentType
+
+  createdAt DateTime @default(now())
+
+  context    AppointmentContext @relation(fields: [contextId], references: [id], onDelete: Cascade)
+  uploadedBy User               @relation(fields: [uploadedById], references: [id])
+
+  @@index([contextId])
+  @@index([uploadedById])
+}
+
+enum DocumentType {
+  PRESCRIPTION
+  LAB_REPORT
+  SCAN_XRAY
+  DISCHARGE_SUMMARY
+  OTHER
+}

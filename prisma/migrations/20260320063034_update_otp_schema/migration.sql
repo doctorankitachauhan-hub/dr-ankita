@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "EmailOTP" ALTER COLUMN "userData" DROP NOT NULL;
