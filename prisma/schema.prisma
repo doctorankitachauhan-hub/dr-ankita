@@ -54,8 +54,9 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  doctorProfile DoctorProfile?
-  appointments  Appointment[]
+  doctorProfile    DoctorProfile?
+  appointments     Appointment[]
+  contextDocuments ContextDocument[]
 
   @@index([email])
   @@index([role])
@@ -96,21 +97,22 @@ model TimeSlot {
 }
 
 model Appointment {
-  id             String            @id @default(cuid())
-  patientId      String
-  slotId         String
-  status         AppointmentStatus @default(PENDING)
+  id        String            @id @default(cuid())
+  patientId String
+  slotId    String
+  status    AppointmentStatus @default(PENDING)
 
   reminder1Sent Boolean @default(false)
   reminder2Sent Boolean @default(false)
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  patient      User         @relation(fields: [patientId], references: [id])
-  slot         TimeSlot     @relation(fields: [slotId], references: [id])
-  payment      Payment[]
-  meeting      Meeting?
+  patient             User                @relation(fields: [patientId], references: [id])
+  slot                TimeSlot            @relation(fields: [slotId], references: [id])
+  payment             Payment[]
+  meeting             Meeting?
+  appointmentContexts AppointmentContext?
 
   @@index([slotId, status])
   @@index([patientId, status])
@@ -118,9 +120,9 @@ model Appointment {
 }
 
 model Payment {
-  id            String  @id @default(cuid())
-  appointmentId String?
-
+  id              String        @id @default(cuid())
+  appointmentId   String?
+  contextId       String?
   amount          Float
   status          PaymentStatus
   transactionId   String?
@@ -131,12 +133,14 @@ model Payment {
 
   createdAt DateTime @default(now())
 
-  appointment Appointment? @relation(fields: [appointmentId], references: [id])
+  appointment Appointment?        @relation(fields: [appointmentId], references: [id])
+  context     AppointmentContext? @relation(fields: [contextId], references: [id])
 
   @@index([userId, status])
   @@index([slotId, status])
   @@index([razorpayOrderId])
   @@index([status, createdAt])
+  @@index([contextId])
 }
 
 model Meeting {
@@ -190,3 +194,50 @@ model DoctorAvailability {
   @@index([doctorId, isActive])
 }
 
+model AppointmentContext {
+  id            String  @id @default(cuid())
+  userId        String
+  appointmentId String? @unique
+
+  reason   String
+  symptoms String?
+  notes    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  appointment      Appointment?      @relation(fields: [appointmentId], references: [id])
+  contextDocuments ContextDocument[]
+  payments         Payment[]
+
+  @@index([appointmentId, id])
+  @@index([userId])
+}
+
+model ContextDocument {
+  id           String @id @default(cuid())
+  contextId    String
+  uploadedById String
+
+  fileName     String
+  fileUrl      String
+  fileType     String
+  fileSize     Int
+  documentType DocumentType
+
+  createdAt DateTime @default(now())
+
+  context    AppointmentContext @relation(fields: [contextId], references: [id], onDelete: Cascade)
+  uploadedBy User               @relation(fields: [uploadedById], references: [id])
+
+  @@index([contextId])
+  @@index([uploadedById])
+}
+
+enum DocumentType {
+  PRESCRIPTION
+  LAB_REPORT
+  SCAN_XRAY
+  DISCHARGE_SUMMARY
+  OTHER
+}

@@ -11,14 +11,34 @@ const razorpay = new Razorpay({
     key_secret: process.env.RAZORPAY_API_SECRET!,
 });
 
-const SlotId = z.object({
+const DocumentType = z.enum([
+    "PRESCRIPTION",
+    "LAB_REPORT",
+    "SCAN_XRAY",
+    "DISCHARGE_SUMMARY",
+    "OTHER",
+]);
+
+const ContextFileSchema = z.object({
+    fileName: z.string().min(1),
+    fileUrl: z.url("Invalid file URL"),
+    fileType: z.string().min(1),
+    fileSize: z.number().int().positive(),
+    documentType: DocumentType,
+});
+
+const CreateOrderSchema = z.object({
     slotId: z.cuid({ error: "Invalid Slot Selection" }).trim(),
+    reason: z.string().min(1, "Reason is required").max(1000).trim(),
+    symptoms: z.string().max(1000).trim().optional(),
+    notes: z.string().max(1000).trim().optional(),
+    files: z.array(ContextFileSchema).max(10).optional().default([]),
 });
 
 export async function POST(req: NextRequest) {
     try {
         const user = getUser(req);
-        if (!user?.id) {
+        if (!user || !user.id) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
@@ -28,7 +48,7 @@ export async function POST(req: NextRequest) {
         }
 
         const body = await req.json();
-        const parsed = SlotId.safeParse(body);
+        const parsed = CreateOrderSchema.safeParse(body);
         if (!parsed.success) {
             return NextResponse.json(
                 { error: z.prettifyError(parsed.error) },
@@ -36,7 +56,7 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const slotId = parsed.data.slotId;
+        const { slotId, reason, symptoms, notes, files } = parsed.data;
 
         const slot = await prisma.timeSlot.findUnique({
             where: { id: slotId },
@@ -52,6 +72,7 @@ export async function POST(req: NextRequest) {
                 userId: user.id,
                 status: { in: ["PENDING", "SUCCESS"] },
             },
+            include: { context: true },
         });
 
         if (existingPayment?.status === "SUCCESS") {
@@ -62,6 +83,28 @@ export async function POST(req: NextRequest) {
         }
 
         if (existingPayment?.status === "PENDING") {
+            if (existingPayment.contextId) {
+                await prisma.appointmentContext.update({
+                    where: { id: existingPayment.contextId },
+                    data: {
+                        reason,
+                        symptoms,
+                        notes,
+                        contextDocuments: {
+                            deleteMany: {},
+                            create: files.map((f) => ({
+                                uploadedById: user.id!,
+                                fileName: f.fileName,
+                                fileUrl: f.fileUrl,
+                                fileType: f.fileType,
+                                fileSize: f.fileSize,
+                                documentType: f.documentType,
+                            })),
+                        },
+                    },
+                });
+            }
+
             return NextResponse.json({
                 name: user.name,
                 email: user.email,
@@ -79,14 +122,36 @@ export async function POST(req: NextRequest) {
             receipt: `receipt_${slotId}`,
         });
 
-        await prisma.payment.create({
-            data: {
-                amount,
-                status: "PENDING",
-                razorpayOrderId: order.id,
-                slotId,
-                userId: user.id,
-            },
+        await prisma.$transaction(async (tx) => {
+            const context = await tx.appointmentContext.create({
+                data: {
+                    userId: user.id!,
+                    reason,
+                    symptoms,
+                    notes,
+                    contextDocuments: {
+                        create: files.map((f) => ({
+                            uploadedById: user.id!,
+                            fileName: f.fileName,
+                            fileUrl: f.fileUrl,
+                            fileType: f.fileType,
+                            fileSize: f.fileSize,
+                            documentType: f.documentType,
+                        })),
+                    },
+                },
+            });
+
+            await tx.payment.create({
+                data: {
+                    amount,
+                    status: "PENDING",
+                    razorpayOrderId: order.id,
+                    slotId,
+                    userId: user.id!,
+                    contextId: context.id,
+                },
+            });
         });
 
         return NextResponse.json({

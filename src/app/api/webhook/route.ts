@@ -44,6 +44,11 @@ async function handlePaymentCaptured(payment: any) {
 
     const dbPayment = await prisma.payment.findUnique({
         where: { razorpayOrderId: orderId },
+        include: {
+            context: {
+                include: { contextDocuments: true },
+            },
+        },
     });
 
     if (!dbPayment) {
@@ -67,7 +72,7 @@ async function handlePaymentCaptured(payment: any) {
     }
 
     if (slot.status === "BOOKED") {
-        console.warn(`Slot already booked for order ${orderId}`);
+        console.log(`Slot already booked for order ${orderId}`);
         await prisma.payment.updateMany({
             where: { razorpayOrderId: orderId, status: { not: "SUCCESS" } },
             data: { status: "FAILED" },
@@ -118,7 +123,6 @@ async function handlePaymentCaptured(payment: any) {
             include: { patient: true },
         });
     } else {
-        // Fresh booking — new row
         try {
             appointment = await prisma.appointment.create({
                 data: {
@@ -140,6 +144,13 @@ async function handlePaymentCaptured(payment: any) {
 
     const patient = appointment.patient;
 
+    if (dbPayment.contextId) {
+        await prisma.appointmentContext.update({
+            where: { id: dbPayment.contextId },
+            data: { appointmentId: appointment.id },
+        });
+    }
+
     // Step 5: Mark payment SUCCESS + slot BOOKED in parallel
     await Promise.all([
         prisma.payment.update({
@@ -156,7 +167,6 @@ async function handlePaymentCaptured(payment: any) {
         }),
     ]);
 
-    // Step 6: Google Meet
     let meetLink = "";
 
     try {
@@ -190,7 +200,6 @@ async function handlePaymentCaptured(payment: any) {
         console.error("Meet creation failed:", err);
     }
 
-    // Step 7: Confirmation email
 
     const data = {
         doctorName: slot.doctor.user.name,
@@ -198,10 +207,20 @@ async function handlePaymentCaptured(payment: any) {
         endTime: slot.endTime.toISOString(),
         meetLink
     }
-    try {
-        await sendMail({
+    const context = dbPayment.context;
+
+    const emailDocuments = (context?.contextDocuments ?? []).map((d) => ({
+        fileName: d.fileName,
+        fileUrl: d.fileUrl,
+        documentType: d.documentType as any,
+    }));
+
+
+    // email send to patient and doctor
+    const emailPromises = [
+        sendMail({
             title: `${slot.doctor.user.name} Online Consultation`,
-            to: [patient.email, "prathumjirai@gmail.com"],
+            to: [patient.email],
             subject: "Appointment Confirmed",
             html: appointmentEmailTemplate({
                 patientName: patient.name,
@@ -217,8 +236,41 @@ async function handlePaymentCaptured(payment: any) {
                     contentType: "text/calendar; method=REQUEST",
                 },
             ],
-        });
-    } catch (err) {
-        console.error("Email failed:", err);
-    }
+        }),
+
+        sendMail({
+            title: `${slot.doctor.user.name} Online Consultation`,
+            to: ["prathumjirai@gmail.com"],
+            subject: "Appointment Confirmed",
+            html: appointmentEmailTemplate({
+                patientName: patient.name,
+                doctorName: slot.doctor.user.name,
+                startTime: slot.startTime.toISOString(),
+                endTime: slot.endTime.toISOString(),
+                meetLink,
+                reason: context?.reason,
+                symptoms: context?.symptoms ?? undefined,
+                notes: context?.notes ?? undefined,
+                documents: emailDocuments,
+            }),
+            attachments: [
+                {
+                    filename: "invite.ics",
+                    content: generateICS(data),
+                    contentType: "text/calendar; method=REQUEST",
+                },
+            ],
+        }),
+    ];
+
+    const results = await Promise.allSettled(emailPromises);
+
+    results.forEach((result, index) => {
+        if (result.status === "rejected") {
+            console.error(
+                `Email ${index === 0 ? "patient" : "doctor"} failed:`,
+                result.reason
+            );
+        }
+    });
 }

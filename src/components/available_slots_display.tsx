@@ -3,7 +3,13 @@ import axios from "axios";
 import PremiumSlots from "./slots_grid";
 import Spinner from "./ui/spinner";
 
-export default function AvailableSlots({ date }: { date: string }) {
+type SelectedSlot = {
+    id: string;
+    startTime: string;
+    endTime: string;
+};
+
+export default function AvailableSlots({ date, onSlotConfirm }: { date: string; onSlotConfirm: (slot: SelectedSlot) => void; }) {
 
     const { data, isLoading, isFetching } = useQuery({
         queryKey: ["slots", date],
@@ -29,19 +35,18 @@ export default function AvailableSlots({ date }: { date: string }) {
                     <Spinner />
                 </div>
             )}
-            {
-                !data || data.length === 0 ?
-                    (
-                        <div className="w-full h-[300px] flex flex-col items-center justify-center text-slate-500">
-                            <p className="text-lg font-medium">No slots available</p>
-                            <p className="text-sm">Try selecting another date</p>
-                        </div>
-                    ) :
-                    <PremiumSlots
-                        slots={data}
-                        date={date}
-                    />
-            }
+            {!data || data.length === 0 ? (
+                <div className="w-full h-[300px] flex flex-col items-center justify-center text-slate-500">
+                    <p className="text-lg font-medium">No slots available</p>
+                    <p className="text-sm">Try selecting another date</p>
+                </div>
+            ) : (
+                <PremiumSlots
+                    slots={data}
+                    date={date}
+                    onSlotConfirm={onSlotConfirm}
+                />
+            )}
         </div>
     );
 }

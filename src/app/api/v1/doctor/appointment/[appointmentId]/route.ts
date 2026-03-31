@@ -121,6 +121,10 @@ export async function POST(
                     where: { id: appointment.slotId },
                     data: { status: "AVAILABLE" },
                 }),
+                prisma.appointmentContext.updateMany({
+                    where: { appointmentId },
+                    data: { appointmentId: null },
+                }),
             ]);
         } else {
             console.warn(`No refundable payment for appointment ${appointmentId}`);
