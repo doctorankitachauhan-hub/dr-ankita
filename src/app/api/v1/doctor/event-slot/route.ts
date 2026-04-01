@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
                 id,
                 doctor: {
                     userId: user.id
-                }
+                },
             },
             select: {
                 id: true,
@@ -65,6 +65,23 @@ export async function POST(req: NextRequest) {
                                 email: true,
                                 phone: true
                             }
+                        },
+                        appointmentContexts: {
+                            select: {
+                                id: true,
+                                reason: true,
+                                symptoms: true,
+                                notes: true,
+                                contextDocuments: {
+                                    select: {
+                                        id: true,
+                                        fileName: true,
+                                        documentType: true,
+                                        fileUrl: true,
+                                        fileType: true,
+                                    }
+                                }
+                            },
                         }
                     }
                 }
@@ -101,14 +118,28 @@ export async function POST(req: NextRequest) {
                             name: activeAppointment.patient.name,
                             email: activeAppointment.patient.email,
                             phone: activeAppointment.patient.phone
-                        }
+                        } : null,
+                    appointmentContexts: activeAppointment.appointmentContexts ? {
+                        id: activeAppointment.appointmentContexts.id,
+                        reason: activeAppointment.appointmentContexts.reason,
+                        symptoms: activeAppointment.appointmentContexts.symptoms,
+                        notes: activeAppointment.appointmentContexts.notes,
+                        contextDocuments: activeAppointment.appointmentContexts.contextDocuments
+                            ? activeAppointment.appointmentContexts.contextDocuments.map((item) => ({
+                                id: item.id,
+                                fileName: item.fileName,
+                                documentType: item.documentType,
+                                fileUrl: item.fileUrl,
+                                fileType: item.fileType,
+                            }))
+                            : []
+                    }
                         : null
                 }
                 : null
         };
 
         return NextResponse.json({
-            message: "Slot fetched successfully",
             data: response
         });
 

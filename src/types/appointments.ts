@@ -13,6 +13,7 @@ export type AppointmentResponse = {
 
     meeting: Meeting | null;
     patient: Patient;
+    appointmentContexts: Contexts | null
 };
 
 export type Meeting = {
@@ -34,3 +35,19 @@ export type Patient = {
     dob: string | null;
     address: string | null;
 };
+
+export type Contexts = {
+    id: string,
+    reason: string,
+    symptoms: string,
+    notes: string,
+    contextDocuments: ContextDoc[]
+}
+
+export type ContextDoc = {
+    id: string,
+    fileName: string,
+    documentType: string,
+    fileUrl: string,
+    fileType: string,
+}

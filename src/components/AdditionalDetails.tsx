@@ -33,7 +33,7 @@ export default function AdditionalDetails() {
 
     ]
     return (
-        <Section className='lg:!pb-0'>
+        <Section className='lg:!pb-0 bg-[#F9FAFB] '>
             <Wrapper>
                 <div className='z-10 lg:absolute relative lg:left-1/2 lg:-translate-x-1/2 bg-white lg:shadow-lg lg:px-5 lg:py-5 lg:-top-[110px] lg:rounded-2xl lg:w-max lg:mx-auto'>
 
