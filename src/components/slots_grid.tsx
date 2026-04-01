@@ -91,7 +91,7 @@ export default function PremiumSlots({
                                         {isBooked ? (
                                             <div className="flex flex-col items-center">
                                                 <span className="text-xs font-semibold">Booked</span>
-                                                <span className="text-[10px] opacity-70">Unavailable</span>
+                                                <span className="text-[11px] opacity-70">{formatTime(slot.startTime, slot.endTime)}</span>
                                             </div>
                                         ) : (
                                             formatTime(slot.startTime, slot.endTime)
