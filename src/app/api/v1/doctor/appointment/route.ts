@@ -55,6 +55,23 @@ export async function GET(req: NextRequest) {
                         phone: true,
                     }
                 },
+                appointmentContexts: {
+                    select: {
+                        id: true,
+                        reason: true,
+                        symptoms: true,
+                        notes: true,
+                        contextDocuments: {
+                            select: {
+                                id: true,
+                                fileName: true,
+                                documentType: true,
+                                fileUrl: true,
+                                fileType: true,
+                            }
+                        }
+                    },
+                }
             }
         })
 
