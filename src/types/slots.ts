@@ -48,3 +48,42 @@ export const slotDetailsSchema = z.object({
 });
 
 export type SlotDetails = z.infer<typeof slotDetailsSchema>;
+
+export type ContextDocument = {
+    id: string;
+    fileName: string | null;
+    documentType: string;
+    fileUrl: string;
+    fileType: string;
+};
+export type AppointmentContext = {
+    id: string;
+    reason: string;
+    symptoms?: string | null;
+    notes?: string | null;
+    contextDocuments: ContextDocument[];
+};
+export type Patient = {
+    id: string;
+    name: string;
+    email: string;
+    phone: string | null;
+};
+export type Meeting = {
+    id: string;
+    meetingLink: string;
+};
+export type Appointment = {
+    id: string;
+    status: "CONFIRMED" | "PENDING" | "CANCELLED" | "COMPLETED";
+    meeting: Meeting | null;
+    patient: Patient | null;
+    appointmentContexts: AppointmentContext | null;
+};
+export type SlotResponse = {
+    id: string;
+    status: "AVAILABLE" | "BOOKED" | "BLOCKED" | "CANCELLED";
+    startTime: Date;
+    endTime: Date;
+    appointment: Appointment | null;
+};
