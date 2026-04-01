@@ -1,7 +1,7 @@
 type EmailProps = {
     doctorName: string;
-    startTime: string;
-    endTime: string;
+    startTime: string | Date;
+    endTime: string | Date;
     meetLink: string;
 };
 

@@ -151,7 +151,6 @@ async function handlePaymentCaptured(payment: any) {
         });
     }
 
-    // Step 5: Mark payment SUCCESS + slot BOOKED in parallel
     await Promise.all([
         prisma.payment.update({
             where: { id: dbPayment.id },
@@ -200,11 +199,10 @@ async function handlePaymentCaptured(payment: any) {
         console.error("Meet creation failed:", err);
     }
 
-
     const data = {
         doctorName: slot.doctor.user.name,
-        startTime: slot.startTime.toISOString(),
-        endTime: slot.endTime.toISOString(),
+        startTime: slot.startTime,
+        endTime: slot.endTime,
         meetLink
     }
     const context = dbPayment.context;
@@ -215,18 +213,16 @@ async function handlePaymentCaptured(payment: any) {
         documentType: d.documentType as any,
     }));
 
-
-    // email send to patient and doctor
-    const emailPromises = [
-        sendMail({
+    try {
+        await sendMail({
             title: `${slot.doctor.user.name} Online Consultation`,
             to: [patient.email],
             subject: "Appointment Confirmed",
             html: appointmentEmailTemplate({
                 patientName: patient.name,
                 doctorName: slot.doctor.user.name,
-                startTime: slot.startTime.toISOString(),
-                endTime: slot.endTime.toISOString(),
+                startTime: slot.startTime,
+                endTime: slot.endTime,
                 meetLink,
             }),
             attachments: [
@@ -236,17 +232,21 @@ async function handlePaymentCaptured(payment: any) {
                     contentType: "text/calendar; method=REQUEST",
                 },
             ],
-        }),
+        });
+    } catch (err) {
+        console.error("Patient email failed:", err);
+    }
 
-        sendMail({
+    try {
+        await sendMail({
             title: `${slot.doctor.user.name} Online Consultation`,
             to: ["prathumjirai@gmail.com"],
             subject: "Appointment Confirmed",
             html: appointmentEmailTemplate({
                 patientName: patient.name,
                 doctorName: slot.doctor.user.name,
-                startTime: slot.startTime.toISOString(),
-                endTime: slot.endTime.toISOString(),
+                startTime: slot.startTime,
+                endTime: slot.endTime,
                 meetLink,
                 reason: context?.reason,
                 symptoms: context?.symptoms ?? undefined,
@@ -260,17 +260,8 @@ async function handlePaymentCaptured(payment: any) {
                     contentType: "text/calendar; method=REQUEST",
                 },
             ],
-        }),
-    ];
-
-    const results = await Promise.allSettled(emailPromises);
-
-    results.forEach((result, index) => {
-        if (result.status === "rejected") {
-            console.error(
-                `Email ${index === 0 ? "patient" : "doctor"} failed:`,
-                result.reason
-            );
-        }
-    });
+        });
+    } catch (err) {
+        console.error("Email failed:", err);
+    }
 }

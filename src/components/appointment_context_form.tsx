@@ -196,7 +196,6 @@ export default function AppointmentContextForm({ slot, date, changeStep }: { slo
                     if (status === "SUCCESS") {
                         setBookingState({ phase: "success" });
                         await queryClient.invalidateQueries({ queryKey: ["slots", date] });
-                        changeStep();
                         return;
                     }
                     if (status === "FAILED") {
@@ -395,7 +394,7 @@ export default function AppointmentContextForm({ slot, date, changeStep }: { slo
                                 A confirmation and Google Meet link has been sent to your email.
                             </p>
                             <button
-                                onClick={() => setBookingState({ phase: "idle" })}
+                                onClick={() => (setBookingState({ phase: "idle" }), changeStep())}
                                 className="mt-2 w-full py-2.5 rounded-xl bg-green-500 text-white text-sm font-medium hover:bg-green-600 transition"
                             >
                                 Done
