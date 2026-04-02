@@ -21,10 +21,12 @@ import {
     CheckCircle2,
     XCircle,
     RefreshCw,
+    FilePlus,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import Spinner from "./ui/spinner";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
+import PrescriptionModal from "./prescription_modal";
 
 function formatTime(start: string, end: string) {
     return `${format(new Date(start), "hh:mm a")} – ${format(new Date(end), "hh:mm a")}`;
@@ -46,7 +48,7 @@ type Props = {
 
 export default function AppointmentList({ selectedFilter, selectedDate }: Props) {
     const queryClient = useQueryClient();
-
+    const [selectedAppointment, setSelectedAppointment] = useState<AppointmentResponse | null>(null)
     const { data, isLoading, isFetching } = useQuery<AppointmentResponse[] | []>({
         queryKey: ["appointment", selectedDate, selectedFilter.value],
         queryFn: async () => {
@@ -112,21 +114,30 @@ export default function AppointmentList({ selectedFilter, selectedDate }: Props)
     }
 
     return (
-        <div className="w-full p-5 flex flex-col gap-3">
-            <AnimatePresence mode="popLayout">
-                {data.map((appt, index) => (
-                    <AppointmentCard
-                        key={appt.id}
-                        appt={appt}
-                        index={index}
-                        onChangeStatus={handleChangeStatus}
-                        isPending={isPending}
-                        pendingId={variables?.id}
-                        pendingStatus={variables?.status}
-                    />
-                ))}
-            </AnimatePresence>
-        </div>
+        <>
+
+            <div className="w-full p-5 flex flex-col gap-3">
+                <AnimatePresence mode="popLayout">
+                    {data.map((appt, index) => (
+                        <AppointmentCard
+                            key={appt.id}
+                            appt={appt}
+                            index={index}
+                            onChangeStatus={handleChangeStatus}
+                            isPending={isPending}
+                            pendingId={variables?.id}
+                            pendingStatus={variables?.status}
+                            setAppointment={setSelectedAppointment}
+                        />
+                    ))}
+                </AnimatePresence>
+            </div>
+            
+            <PrescriptionModal
+                appointment={selectedAppointment}
+                onClose={() => setSelectedAppointment(null)}
+            />
+        </>
     );
 }
 
@@ -258,13 +269,14 @@ function ContextSection({ ctx }: { ctx: NonNullable<AppointmentResponse["appoint
     );
 }
 
-function AppointmentCard({ appt, index, onChangeStatus, isPending, pendingId, pendingStatus }: {
+function AppointmentCard({ appt, index, onChangeStatus, isPending, pendingId, pendingStatus, setAppointment }: {
     appt: AppointmentResponse;
     index: number;
     onChangeStatus: (id: string, status: "COMPLETED" | "CANCELLED") => void;
     isPending: boolean;
     pendingId: string | undefined;
     pendingStatus: string | undefined;
+    setAppointment: Dispatch<SetStateAction<AppointmentResponse | null>>
 }) {
     const [expanded, setExpanded] = useState(false);
 
@@ -426,6 +438,25 @@ function AppointmentCard({ appt, index, onChangeStatus, isPending, pendingId, pe
                                     <>
                                         <CheckCircle2 size={13} />
                                         Complete
+                                    </>
+                                )}
+                            </motion.button>
+                        )}
+
+                        {!isCancelled && (
+                            <motion.button
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.97 }}
+                                disabled={isPending}
+                                onClick={() => setAppointment(appt)}
+                                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-primary-color text-primary-color hover:bg-emerald-50 transition disabled:opacity-50 min-w-[82px] justify-center"
+                            >
+                                {isCompleting ? (
+                                    <Spinner />
+                                ) : (
+                                    <>
+                                        <FilePlus size={13} />
+                                        Send prescriptions
                                     </>
                                 )}
                             </motion.button>
