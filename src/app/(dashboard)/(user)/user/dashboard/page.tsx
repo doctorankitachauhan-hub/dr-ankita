@@ -1,5 +1,6 @@
 'use client';
 
+import PatientAppointmentList from "@/components/patient_appointement_list";
 import PatientAppointmentHeader from "@/components/patient_appointment_header";
 import { PatientAppointmentFilters, PatientFilter } from "@/constant/appointment_filters";
 import { format } from "date-fns";
@@ -20,6 +21,10 @@ export default function UserDashboard() {
         selectedDate={selectedDate}
         onFilterChange={setSelectedFilter}
         onDateChange={setSelectedDate}
+      />
+      <PatientAppointmentList
+        selectedFilter={selectedFilter}
+        selectedDate={selectedDate}
       />
     </div>
   )

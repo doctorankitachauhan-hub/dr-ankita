@@ -19,12 +19,12 @@ export const AppointmentFilters: Filter[] = [
 ]
 
 export type PatientFilter = {
-    key: "upcoming" | "completed" | "cancelled";
+    key: "COMPLETED" | "CONFIRMED" | "CANCELLED";
     label: string;
 };
 
 export const PatientAppointmentFilters: PatientFilter[] = [
-    { key: "upcoming", label: "Upcoming" },
-    { key: "completed", label: "Completed" },
-    { key: "cancelled", label: "Cancelled" },
+    { key: "CONFIRMED", label: "Upcoming" },
+    { key: "COMPLETED", label: "Completed" },
+    { key: "CANCELLED", label: "Cancelled" },
 ];
