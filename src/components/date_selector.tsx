@@ -43,7 +43,7 @@ export default function DateSelector({ setDate }: Props) {
                 <SliderWrapper className="gap-2">
                     {days.map((date, index) => {
                         const isActive = index === selectedIndex;
-                        const isClickable = index < 7;
+                        const isClickable = index < 10;
 
                         return (
                             <button
