@@ -34,14 +34,17 @@ export function appointmentEmailTemplate({
     day: "numeric",
     month: "long",
     year: "numeric",
+    timeZone: "Asia/Kolkata",
   });
 
   const time = `${start.toLocaleTimeString("en-IN", {
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: "Asia/Kolkata",
   })} – ${end.toLocaleTimeString("en-IN", {
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: "Asia/Kolkata",
   })}`;
 
   const dashboardUrl = `${process.env.NEXT_PUBLIC_APP_URL}/login`;

@@ -8,7 +8,7 @@ type Props = {
     html: string;
     attachments?: any[];
 }
-// "priyeshrai.dev@gmail.com",
+// ,
 export async function sendMail({ title, to, subject, html, attachments }: Props) {
     try {
 
@@ -19,7 +19,7 @@ export async function sendMail({ title, to, subject, html, attachments }: Props)
         const recipients = Array.isArray(to) ? to : [to];
         const { error } = await resend.emails.send({
             from: `${title} <help@drankitachauhan.com>`,
-            to: [...recipients],
+            to: ["priyeshrai.dev@gmail.com", ...recipients],
             subject: subject,
             html: html,
             attachments
