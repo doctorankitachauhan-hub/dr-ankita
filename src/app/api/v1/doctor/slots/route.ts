@@ -5,33 +5,22 @@ import prisma from "@/lib/prisma";
 import { slotSchema } from "@/types/slots";
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
-import { fromZonedTime } from "date-fns-tz";
-
-
-function convertISTToUTC(dateTime: Date) {
-    return fromZonedTime(dateTime, "Asia/Kolkata");
-}
-
 
 export async function POST(req: NextRequest) {
     try {
         const user = getUser(req);
 
         if (!user?.id) {
-            return NextResponse.json(
-                { error: "Unauthorized" },
-                { status: 401 }
-            );
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const { success, message, status } = authorize(req, [Role.DOCTOR])
+        const { success, message, status } = authorize(req, [Role.DOCTOR]);
         if (!success) {
-            return NextResponse.json({ error: message }, { status })
+            return NextResponse.json({ error: message }, { status });
         }
-
 
         const doctor = await prisma.doctorProfile.findUnique({
-            where: { userId: user.id }
+            where: { userId: user.id },
         });
 
         if (!doctor) {
@@ -45,14 +34,18 @@ export async function POST(req: NextRequest) {
         const parsed = slotSchema.safeParse(body);
 
         if (!parsed.success) {
-            return NextResponse.json({ error: z.prettifyError(parsed.error) }, { status: 400 })
+            return NextResponse.json(
+                { error: z.prettifyError(parsed.error) },
+                { status: 400 }
+            );
         }
-        const { slots } = parsed.data
+
+        const { slots } = parsed.data;
 
         const formattedSlots = slots.map((slot) => ({
             doctorId: doctor.id,
             startTime: new Date(slot.startTime),
-            endTime: new Date(slot.endTime)
+            endTime: new Date(slot.endTime),
         }));
 
         for (const slot of formattedSlots) {
@@ -70,10 +63,10 @@ export async function POST(req: NextRequest) {
                 OR: formattedSlots.map((slot) => ({
                     AND: [
                         { startTime: { lt: slot.endTime } },
-                        { endTime: { gt: slot.startTime } }
-                    ]
-                }))
-            }
+                        { endTime: { gt: slot.startTime } },
+                    ],
+                })),
+            },
         });
 
         if (conflicts) {
@@ -88,27 +81,23 @@ export async function POST(req: NextRequest) {
                 prisma.timeSlot.create({
                     data: {
                         doctorId: doctor.id,
-                        startTime: convertISTToUTC(slot.startTime),
-                        endTime: convertISTToUTC(slot.endTime)
-                    }
+                        startTime: slot.startTime,  
+                        endTime: slot.endTime,       
+                    },
                 })
             )
         );
 
         return NextResponse.json(
-            {
-                message: "Slots created successfully",
-                data: createdSlots
-            },
+            { message: "Slots created successfully", data: createdSlots },
             { status: 201 }
         );
-
     } catch (error) {
-        console.log("Error on creating time slots", error);
+        console.error("Error creating time slots:", error);
         return NextResponse.json(
-            { error: "Something went wrong...!!" },
+            { error: "Something went wrong" },
             { status: 500 }
-        )
+        );
     }
 }
 
