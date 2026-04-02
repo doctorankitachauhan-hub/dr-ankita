@@ -35,6 +35,10 @@ function generateTimeSlots() {
 }
 
 const TIME_SLOTS = generateTimeSlots();
+function getEndTimeSlots(startTime: string) {
+    if (!startTime) return TIME_SLOTS;
+    return TIME_SLOTS.filter((s) => s.value > startTime);
+}
 
 export default function CreateSlots() {
     const [slots, setSlots] = useState<SlotsType[]>([
@@ -215,7 +219,7 @@ export default function CreateSlots() {
                                             <option value="" disabled>
                                                 Select end time
                                             </option>
-                                            {TIME_SLOTS.map((s) => (
+                                            {getEndTimeSlots(slot.startTime).map((s) => (
                                                 <option key={s.value} value={s.value}>
                                                     {s.label}
                                                 </option>
