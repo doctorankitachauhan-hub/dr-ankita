@@ -50,6 +50,7 @@ export default function PatientAppointmentHeader({
             onClick={handlePrev}
             className="p-1.5 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition cursor-pointer"
             aria-label="Previous day"
+            disabled
           >
             <ChevronLeft size={15} />
           </button>
@@ -78,6 +79,7 @@ export default function PatientAppointmentHeader({
             onClick={handleNext}
             className="p-1.5 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition cursor-pointer"
             aria-label="Next day"
+            disabled
           >
             <ChevronRight size={15} />
           </button>
