@@ -60,7 +60,8 @@ export const ModelName = {
   EmailOTP: 'EmailOTP',
   DoctorAvailability: 'DoctorAvailability',
   AppointmentContext: 'AppointmentContext',
-  ContextDocument: 'ContextDocument'
+  ContextDocument: 'ContextDocument',
+  Prescription: 'Prescription'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -216,6 +217,21 @@ export const ContextDocumentScalarFieldEnum = {
 } as const
 
 export type ContextDocumentScalarFieldEnum = (typeof ContextDocumentScalarFieldEnum)[keyof typeof ContextDocumentScalarFieldEnum]
+
+
+export const PrescriptionScalarFieldEnum = {
+  id: 'id',
+  appointmentId: 'appointmentId',
+  doctorId: 'doctorId',
+  patientId: 'patientId',
+  type: 'type',
+  content: 'content',
+  pdfUrl: 'pdfUrl',
+  issuedAt: 'issuedAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PrescriptionScalarFieldEnum = (typeof PrescriptionScalarFieldEnum)[keyof typeof PrescriptionScalarFieldEnum]
 
 
 export const SortOrder = {

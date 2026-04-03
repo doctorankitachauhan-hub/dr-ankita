@@ -211,6 +211,7 @@ export type AppointmentWhereInput = {
   payment?: Prisma.PaymentListRelationFilter
   meeting?: Prisma.XOR<Prisma.MeetingNullableScalarRelationFilter, Prisma.MeetingWhereInput> | null
   appointmentContexts?: Prisma.XOR<Prisma.AppointmentContextNullableScalarRelationFilter, Prisma.AppointmentContextWhereInput> | null
+  prescriptions?: Prisma.PrescriptionListRelationFilter
 }
 
 export type AppointmentOrderByWithRelationInput = {
@@ -227,6 +228,7 @@ export type AppointmentOrderByWithRelationInput = {
   payment?: Prisma.PaymentOrderByRelationAggregateInput
   meeting?: Prisma.MeetingOrderByWithRelationInput
   appointmentContexts?: Prisma.AppointmentContextOrderByWithRelationInput
+  prescriptions?: Prisma.PrescriptionOrderByRelationAggregateInput
 }
 
 export type AppointmentWhereUniqueInput = Prisma.AtLeast<{
@@ -246,6 +248,7 @@ export type AppointmentWhereUniqueInput = Prisma.AtLeast<{
   payment?: Prisma.PaymentListRelationFilter
   meeting?: Prisma.XOR<Prisma.MeetingNullableScalarRelationFilter, Prisma.MeetingWhereInput> | null
   appointmentContexts?: Prisma.XOR<Prisma.AppointmentContextNullableScalarRelationFilter, Prisma.AppointmentContextWhereInput> | null
+  prescriptions?: Prisma.PrescriptionListRelationFilter
 }, "id">
 
 export type AppointmentOrderByWithAggregationInput = {
@@ -288,6 +291,7 @@ export type AppointmentCreateInput = {
   payment?: Prisma.PaymentCreateNestedManyWithoutAppointmentInput
   meeting?: Prisma.MeetingCreateNestedOneWithoutAppointmentInput
   appointmentContexts?: Prisma.AppointmentContextCreateNestedOneWithoutAppointmentInput
+  prescriptions?: Prisma.PrescriptionCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentUncheckedCreateInput = {
@@ -302,6 +306,7 @@ export type AppointmentUncheckedCreateInput = {
   payment?: Prisma.PaymentUncheckedCreateNestedManyWithoutAppointmentInput
   meeting?: Prisma.MeetingUncheckedCreateNestedOneWithoutAppointmentInput
   appointmentContexts?: Prisma.AppointmentContextUncheckedCreateNestedOneWithoutAppointmentInput
+  prescriptions?: Prisma.PrescriptionUncheckedCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentUpdateInput = {
@@ -316,6 +321,7 @@ export type AppointmentUpdateInput = {
   payment?: Prisma.PaymentUpdateManyWithoutAppointmentNestedInput
   meeting?: Prisma.MeetingUpdateOneWithoutAppointmentNestedInput
   appointmentContexts?: Prisma.AppointmentContextUpdateOneWithoutAppointmentNestedInput
+  prescriptions?: Prisma.PrescriptionUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentUncheckedUpdateInput = {
@@ -330,6 +336,7 @@ export type AppointmentUncheckedUpdateInput = {
   payment?: Prisma.PaymentUncheckedUpdateManyWithoutAppointmentNestedInput
   meeting?: Prisma.MeetingUncheckedUpdateOneWithoutAppointmentNestedInput
   appointmentContexts?: Prisma.AppointmentContextUncheckedUpdateOneWithoutAppointmentNestedInput
+  prescriptions?: Prisma.PrescriptionUncheckedUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentCreateManyInput = {
@@ -554,6 +561,20 @@ export type AppointmentUpdateOneWithoutAppointmentContextsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AppointmentUpdateToOneWithWhereWithoutAppointmentContextsInput, Prisma.AppointmentUpdateWithoutAppointmentContextsInput>, Prisma.AppointmentUncheckedUpdateWithoutAppointmentContextsInput>
 }
 
+export type AppointmentCreateNestedOneWithoutPrescriptionsInput = {
+  create?: Prisma.XOR<Prisma.AppointmentCreateWithoutPrescriptionsInput, Prisma.AppointmentUncheckedCreateWithoutPrescriptionsInput>
+  connectOrCreate?: Prisma.AppointmentCreateOrConnectWithoutPrescriptionsInput
+  connect?: Prisma.AppointmentWhereUniqueInput
+}
+
+export type AppointmentUpdateOneRequiredWithoutPrescriptionsNestedInput = {
+  create?: Prisma.XOR<Prisma.AppointmentCreateWithoutPrescriptionsInput, Prisma.AppointmentUncheckedCreateWithoutPrescriptionsInput>
+  connectOrCreate?: Prisma.AppointmentCreateOrConnectWithoutPrescriptionsInput
+  upsert?: Prisma.AppointmentUpsertWithoutPrescriptionsInput
+  connect?: Prisma.AppointmentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AppointmentUpdateToOneWithWhereWithoutPrescriptionsInput, Prisma.AppointmentUpdateWithoutPrescriptionsInput>, Prisma.AppointmentUncheckedUpdateWithoutPrescriptionsInput>
+}
+
 export type AppointmentCreateWithoutPatientInput = {
   id?: string
   status?: $Enums.AppointmentStatus
@@ -565,6 +586,7 @@ export type AppointmentCreateWithoutPatientInput = {
   payment?: Prisma.PaymentCreateNestedManyWithoutAppointmentInput
   meeting?: Prisma.MeetingCreateNestedOneWithoutAppointmentInput
   appointmentContexts?: Prisma.AppointmentContextCreateNestedOneWithoutAppointmentInput
+  prescriptions?: Prisma.PrescriptionCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentUncheckedCreateWithoutPatientInput = {
@@ -578,6 +600,7 @@ export type AppointmentUncheckedCreateWithoutPatientInput = {
   payment?: Prisma.PaymentUncheckedCreateNestedManyWithoutAppointmentInput
   meeting?: Prisma.MeetingUncheckedCreateNestedOneWithoutAppointmentInput
   appointmentContexts?: Prisma.AppointmentContextUncheckedCreateNestedOneWithoutAppointmentInput
+  prescriptions?: Prisma.PrescriptionUncheckedCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentCreateOrConnectWithoutPatientInput = {
@@ -631,6 +654,7 @@ export type AppointmentCreateWithoutSlotInput = {
   payment?: Prisma.PaymentCreateNestedManyWithoutAppointmentInput
   meeting?: Prisma.MeetingCreateNestedOneWithoutAppointmentInput
   appointmentContexts?: Prisma.AppointmentContextCreateNestedOneWithoutAppointmentInput
+  prescriptions?: Prisma.PrescriptionCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentUncheckedCreateWithoutSlotInput = {
@@ -644,6 +668,7 @@ export type AppointmentUncheckedCreateWithoutSlotInput = {
   payment?: Prisma.PaymentUncheckedCreateNestedManyWithoutAppointmentInput
   meeting?: Prisma.MeetingUncheckedCreateNestedOneWithoutAppointmentInput
   appointmentContexts?: Prisma.AppointmentContextUncheckedCreateNestedOneWithoutAppointmentInput
+  prescriptions?: Prisma.PrescriptionUncheckedCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentCreateOrConnectWithoutSlotInput = {
@@ -683,6 +708,7 @@ export type AppointmentCreateWithoutPaymentInput = {
   slot: Prisma.TimeSlotCreateNestedOneWithoutAppointmentInput
   meeting?: Prisma.MeetingCreateNestedOneWithoutAppointmentInput
   appointmentContexts?: Prisma.AppointmentContextCreateNestedOneWithoutAppointmentInput
+  prescriptions?: Prisma.PrescriptionCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentUncheckedCreateWithoutPaymentInput = {
@@ -696,6 +722,7 @@ export type AppointmentUncheckedCreateWithoutPaymentInput = {
   updatedAt?: Date | string
   meeting?: Prisma.MeetingUncheckedCreateNestedOneWithoutAppointmentInput
   appointmentContexts?: Prisma.AppointmentContextUncheckedCreateNestedOneWithoutAppointmentInput
+  prescriptions?: Prisma.PrescriptionUncheckedCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentCreateOrConnectWithoutPaymentInput = {
@@ -725,6 +752,7 @@ export type AppointmentUpdateWithoutPaymentInput = {
   slot?: Prisma.TimeSlotUpdateOneRequiredWithoutAppointmentNestedInput
   meeting?: Prisma.MeetingUpdateOneWithoutAppointmentNestedInput
   appointmentContexts?: Prisma.AppointmentContextUpdateOneWithoutAppointmentNestedInput
+  prescriptions?: Prisma.PrescriptionUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentUncheckedUpdateWithoutPaymentInput = {
@@ -738,6 +766,7 @@ export type AppointmentUncheckedUpdateWithoutPaymentInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meeting?: Prisma.MeetingUncheckedUpdateOneWithoutAppointmentNestedInput
   appointmentContexts?: Prisma.AppointmentContextUncheckedUpdateOneWithoutAppointmentNestedInput
+  prescriptions?: Prisma.PrescriptionUncheckedUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentCreateWithoutMeetingInput = {
@@ -751,6 +780,7 @@ export type AppointmentCreateWithoutMeetingInput = {
   slot: Prisma.TimeSlotCreateNestedOneWithoutAppointmentInput
   payment?: Prisma.PaymentCreateNestedManyWithoutAppointmentInput
   appointmentContexts?: Prisma.AppointmentContextCreateNestedOneWithoutAppointmentInput
+  prescriptions?: Prisma.PrescriptionCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentUncheckedCreateWithoutMeetingInput = {
@@ -764,6 +794,7 @@ export type AppointmentUncheckedCreateWithoutMeetingInput = {
   updatedAt?: Date | string
   payment?: Prisma.PaymentUncheckedCreateNestedManyWithoutAppointmentInput
   appointmentContexts?: Prisma.AppointmentContextUncheckedCreateNestedOneWithoutAppointmentInput
+  prescriptions?: Prisma.PrescriptionUncheckedCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentCreateOrConnectWithoutMeetingInput = {
@@ -793,6 +824,7 @@ export type AppointmentUpdateWithoutMeetingInput = {
   slot?: Prisma.TimeSlotUpdateOneRequiredWithoutAppointmentNestedInput
   payment?: Prisma.PaymentUpdateManyWithoutAppointmentNestedInput
   appointmentContexts?: Prisma.AppointmentContextUpdateOneWithoutAppointmentNestedInput
+  prescriptions?: Prisma.PrescriptionUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentUncheckedUpdateWithoutMeetingInput = {
@@ -806,6 +838,7 @@ export type AppointmentUncheckedUpdateWithoutMeetingInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payment?: Prisma.PaymentUncheckedUpdateManyWithoutAppointmentNestedInput
   appointmentContexts?: Prisma.AppointmentContextUncheckedUpdateOneWithoutAppointmentNestedInput
+  prescriptions?: Prisma.PrescriptionUncheckedUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentCreateWithoutAppointmentContextsInput = {
@@ -819,6 +852,7 @@ export type AppointmentCreateWithoutAppointmentContextsInput = {
   slot: Prisma.TimeSlotCreateNestedOneWithoutAppointmentInput
   payment?: Prisma.PaymentCreateNestedManyWithoutAppointmentInput
   meeting?: Prisma.MeetingCreateNestedOneWithoutAppointmentInput
+  prescriptions?: Prisma.PrescriptionCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentUncheckedCreateWithoutAppointmentContextsInput = {
@@ -832,6 +866,7 @@ export type AppointmentUncheckedCreateWithoutAppointmentContextsInput = {
   updatedAt?: Date | string
   payment?: Prisma.PaymentUncheckedCreateNestedManyWithoutAppointmentInput
   meeting?: Prisma.MeetingUncheckedCreateNestedOneWithoutAppointmentInput
+  prescriptions?: Prisma.PrescriptionUncheckedCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentCreateOrConnectWithoutAppointmentContextsInput = {
@@ -861,6 +896,7 @@ export type AppointmentUpdateWithoutAppointmentContextsInput = {
   slot?: Prisma.TimeSlotUpdateOneRequiredWithoutAppointmentNestedInput
   payment?: Prisma.PaymentUpdateManyWithoutAppointmentNestedInput
   meeting?: Prisma.MeetingUpdateOneWithoutAppointmentNestedInput
+  prescriptions?: Prisma.PrescriptionUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentUncheckedUpdateWithoutAppointmentContextsInput = {
@@ -874,6 +910,79 @@ export type AppointmentUncheckedUpdateWithoutAppointmentContextsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payment?: Prisma.PaymentUncheckedUpdateManyWithoutAppointmentNestedInput
   meeting?: Prisma.MeetingUncheckedUpdateOneWithoutAppointmentNestedInput
+  prescriptions?: Prisma.PrescriptionUncheckedUpdateManyWithoutAppointmentNestedInput
+}
+
+export type AppointmentCreateWithoutPrescriptionsInput = {
+  id?: string
+  status?: $Enums.AppointmentStatus
+  reminder1Sent?: boolean
+  reminder2Sent?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  patient: Prisma.UserCreateNestedOneWithoutAppointmentsInput
+  slot: Prisma.TimeSlotCreateNestedOneWithoutAppointmentInput
+  payment?: Prisma.PaymentCreateNestedManyWithoutAppointmentInput
+  meeting?: Prisma.MeetingCreateNestedOneWithoutAppointmentInput
+  appointmentContexts?: Prisma.AppointmentContextCreateNestedOneWithoutAppointmentInput
+}
+
+export type AppointmentUncheckedCreateWithoutPrescriptionsInput = {
+  id?: string
+  patientId: string
+  slotId: string
+  status?: $Enums.AppointmentStatus
+  reminder1Sent?: boolean
+  reminder2Sent?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  payment?: Prisma.PaymentUncheckedCreateNestedManyWithoutAppointmentInput
+  meeting?: Prisma.MeetingUncheckedCreateNestedOneWithoutAppointmentInput
+  appointmentContexts?: Prisma.AppointmentContextUncheckedCreateNestedOneWithoutAppointmentInput
+}
+
+export type AppointmentCreateOrConnectWithoutPrescriptionsInput = {
+  where: Prisma.AppointmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.AppointmentCreateWithoutPrescriptionsInput, Prisma.AppointmentUncheckedCreateWithoutPrescriptionsInput>
+}
+
+export type AppointmentUpsertWithoutPrescriptionsInput = {
+  update: Prisma.XOR<Prisma.AppointmentUpdateWithoutPrescriptionsInput, Prisma.AppointmentUncheckedUpdateWithoutPrescriptionsInput>
+  create: Prisma.XOR<Prisma.AppointmentCreateWithoutPrescriptionsInput, Prisma.AppointmentUncheckedCreateWithoutPrescriptionsInput>
+  where?: Prisma.AppointmentWhereInput
+}
+
+export type AppointmentUpdateToOneWithWhereWithoutPrescriptionsInput = {
+  where?: Prisma.AppointmentWhereInput
+  data: Prisma.XOR<Prisma.AppointmentUpdateWithoutPrescriptionsInput, Prisma.AppointmentUncheckedUpdateWithoutPrescriptionsInput>
+}
+
+export type AppointmentUpdateWithoutPrescriptionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
+  reminder1Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminder2Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  patient?: Prisma.UserUpdateOneRequiredWithoutAppointmentsNestedInput
+  slot?: Prisma.TimeSlotUpdateOneRequiredWithoutAppointmentNestedInput
+  payment?: Prisma.PaymentUpdateManyWithoutAppointmentNestedInput
+  meeting?: Prisma.MeetingUpdateOneWithoutAppointmentNestedInput
+  appointmentContexts?: Prisma.AppointmentContextUpdateOneWithoutAppointmentNestedInput
+}
+
+export type AppointmentUncheckedUpdateWithoutPrescriptionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  patientId?: Prisma.StringFieldUpdateOperationsInput | string
+  slotId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
+  reminder1Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminder2Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  payment?: Prisma.PaymentUncheckedUpdateManyWithoutAppointmentNestedInput
+  meeting?: Prisma.MeetingUncheckedUpdateOneWithoutAppointmentNestedInput
+  appointmentContexts?: Prisma.AppointmentContextUncheckedUpdateOneWithoutAppointmentNestedInput
 }
 
 export type AppointmentCreateManyPatientInput = {
@@ -897,6 +1006,7 @@ export type AppointmentUpdateWithoutPatientInput = {
   payment?: Prisma.PaymentUpdateManyWithoutAppointmentNestedInput
   meeting?: Prisma.MeetingUpdateOneWithoutAppointmentNestedInput
   appointmentContexts?: Prisma.AppointmentContextUpdateOneWithoutAppointmentNestedInput
+  prescriptions?: Prisma.PrescriptionUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentUncheckedUpdateWithoutPatientInput = {
@@ -910,6 +1020,7 @@ export type AppointmentUncheckedUpdateWithoutPatientInput = {
   payment?: Prisma.PaymentUncheckedUpdateManyWithoutAppointmentNestedInput
   meeting?: Prisma.MeetingUncheckedUpdateOneWithoutAppointmentNestedInput
   appointmentContexts?: Prisma.AppointmentContextUncheckedUpdateOneWithoutAppointmentNestedInput
+  prescriptions?: Prisma.PrescriptionUncheckedUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentUncheckedUpdateManyWithoutPatientInput = {
@@ -943,6 +1054,7 @@ export type AppointmentUpdateWithoutSlotInput = {
   payment?: Prisma.PaymentUpdateManyWithoutAppointmentNestedInput
   meeting?: Prisma.MeetingUpdateOneWithoutAppointmentNestedInput
   appointmentContexts?: Prisma.AppointmentContextUpdateOneWithoutAppointmentNestedInput
+  prescriptions?: Prisma.PrescriptionUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentUncheckedUpdateWithoutSlotInput = {
@@ -956,6 +1068,7 @@ export type AppointmentUncheckedUpdateWithoutSlotInput = {
   payment?: Prisma.PaymentUncheckedUpdateManyWithoutAppointmentNestedInput
   meeting?: Prisma.MeetingUncheckedUpdateOneWithoutAppointmentNestedInput
   appointmentContexts?: Prisma.AppointmentContextUncheckedUpdateOneWithoutAppointmentNestedInput
+  prescriptions?: Prisma.PrescriptionUncheckedUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentUncheckedUpdateManyWithoutSlotInput = {
@@ -975,10 +1088,12 @@ export type AppointmentUncheckedUpdateManyWithoutSlotInput = {
 
 export type AppointmentCountOutputType = {
   payment: number
+  prescriptions: number
 }
 
 export type AppointmentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   payment?: boolean | AppointmentCountOutputTypeCountPaymentArgs
+  prescriptions?: boolean | AppointmentCountOutputTypeCountPrescriptionsArgs
 }
 
 /**
@@ -998,6 +1113,13 @@ export type AppointmentCountOutputTypeCountPaymentArgs<ExtArgs extends runtime.T
   where?: Prisma.PaymentWhereInput
 }
 
+/**
+ * AppointmentCountOutputType without action
+ */
+export type AppointmentCountOutputTypeCountPrescriptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PrescriptionWhereInput
+}
+
 
 export type AppointmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1013,6 +1135,7 @@ export type AppointmentSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   payment?: boolean | Prisma.Appointment$paymentArgs<ExtArgs>
   meeting?: boolean | Prisma.Appointment$meetingArgs<ExtArgs>
   appointmentContexts?: boolean | Prisma.Appointment$appointmentContextsArgs<ExtArgs>
+  prescriptions?: boolean | Prisma.Appointment$prescriptionsArgs<ExtArgs>
   _count?: boolean | Prisma.AppointmentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["appointment"]>
 
@@ -1060,6 +1183,7 @@ export type AppointmentInclude<ExtArgs extends runtime.Types.Extensions.Internal
   payment?: boolean | Prisma.Appointment$paymentArgs<ExtArgs>
   meeting?: boolean | Prisma.Appointment$meetingArgs<ExtArgs>
   appointmentContexts?: boolean | Prisma.Appointment$appointmentContextsArgs<ExtArgs>
+  prescriptions?: boolean | Prisma.Appointment$prescriptionsArgs<ExtArgs>
   _count?: boolean | Prisma.AppointmentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AppointmentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1079,6 +1203,7 @@ export type $AppointmentPayload<ExtArgs extends runtime.Types.Extensions.Interna
     payment: Prisma.$PaymentPayload<ExtArgs>[]
     meeting: Prisma.$MeetingPayload<ExtArgs> | null
     appointmentContexts: Prisma.$AppointmentContextPayload<ExtArgs> | null
+    prescriptions: Prisma.$PrescriptionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1488,6 +1613,7 @@ export interface Prisma__AppointmentClient<T, Null = never, ExtArgs extends runt
   payment<T extends Prisma.Appointment$paymentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Appointment$paymentArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   meeting<T extends Prisma.Appointment$meetingArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Appointment$meetingArgs<ExtArgs>>): Prisma.Prisma__MeetingClient<runtime.Types.Result.GetResult<Prisma.$MeetingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   appointmentContexts<T extends Prisma.Appointment$appointmentContextsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Appointment$appointmentContextsArgs<ExtArgs>>): Prisma.Prisma__AppointmentContextClient<runtime.Types.Result.GetResult<Prisma.$AppointmentContextPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  prescriptions<T extends Prisma.Appointment$prescriptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Appointment$prescriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PrescriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1980,6 +2106,30 @@ export type Appointment$appointmentContextsArgs<ExtArgs extends runtime.Types.Ex
    */
   include?: Prisma.AppointmentContextInclude<ExtArgs> | null
   where?: Prisma.AppointmentContextWhereInput
+}
+
+/**
+ * Appointment.prescriptions
+ */
+export type Appointment$prescriptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Prescription
+   */
+  select?: Prisma.PrescriptionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Prescription
+   */
+  omit?: Prisma.PrescriptionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PrescriptionInclude<ExtArgs> | null
+  where?: Prisma.PrescriptionWhereInput
+  orderBy?: Prisma.PrescriptionOrderByWithRelationInput | Prisma.PrescriptionOrderByWithRelationInput[]
+  cursor?: Prisma.PrescriptionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PrescriptionScalarFieldEnum | Prisma.PrescriptionScalarFieldEnum[]
 }
 
 /**
