@@ -135,7 +135,7 @@ export async function POST(req: NextRequest) {
 
         try {
             await sendMail({
-                title: "Your Prescription",
+                title: "Your Prescription ",
                 to: appointment.patient.email,
                 subject: "Your Medical Prescription",
                 html: buildEmailHtml({

@@ -17,9 +17,11 @@ import {
 import { format } from "date-fns";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useMutation } from "@tanstack/react-query";
+import axios, { AxiosError } from "axios";
 
 type Props = {
-    appointment: AppointmentResponse | null;
+    appointment: AppointmentResponse;
     onClose: () => void;
 };
 
@@ -30,46 +32,42 @@ function formatDOB(dob: string | null) {
 
 export default function PrescriptionModal({ appointment, onClose }: Props) {
     const [prescription, setPrescription] = useState("");
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
-    if (!appointment) return null;
 
     const ctx = appointment.appointmentContexts;
     const patient = appointment.patient;
-    const initials = patient.name
-        .split(" ")
-        .map((n) => n[0])
-        .slice(0, 2)
-        .join("")
-        .toUpperCase();
+    const initials = patient.name.split(" ").map((n) => n[0]).slice(0, 2).join("").toUpperCase();
+
+    const { mutate, isPending } = useMutation({
+        mutationFn: async () => {
+            const response = await axios.post('/api/v1/doctor/prescription',
+                {
+                    appointmentId: appointment.id,
+                    userId: appointment.patientId,
+                    prescription: prescription
+                },
+                { withCredentials: true }
+            );
+            return response.data;
+        },
+        onSuccess: async (val) => {
+            toast.success(val?.message);
+            onClose();
+            setPrescription("");
+        },
+        onError: (err: AxiosError<{ error: string }>) => {
+            toast.error(err.response?.data?.error || "Something went wrong");
+        },
+    })
 
     const handleSubmit = async () => {
         if (!prescription.trim()) {
             toast.error("Please write a prescription");
             return;
         }
-
-        setIsSubmitting(true);
-
-        try {
-            // Add your API call here
-            // await axios.post(`/api/v1/doctor/prescription`, {
-            //     appointmentId: appointment.id,
-            //     prescription: prescription
-            // }, { withCredentials: true });
-
-            // Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-
-            toast.success("Prescription sent successfully!");
-            setPrescription("");
-            onClose();
-        } catch (error) {
-            toast.error("Failed to send prescription");
-        } finally {
-            setIsSubmitting(false);
-        }
+        mutate()
     };
+
+    if (!appointment) return null;
 
     return (
         <AnimatePresence>
@@ -307,17 +305,18 @@ export default function PrescriptionModal({ appointment, onClose }: Props) {
                         <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200 bg-slate-50">
                             <button
                                 onClick={onClose}
-                                disabled={isSubmitting}
+                                disabled={isPending}
                                 className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-200 rounded-lg transition disabled:opacity-50"
                             >
                                 Cancel
                             </button>
+
                             <button
                                 onClick={handleSubmit}
-                                disabled={isSubmitting || !prescription.trim()}
+                                disabled={isPending || !prescription.trim()}
                                 className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm shadow-teal-100"
                             >
-                                {isSubmitting ? (
+                                {isPending ? (
                                     <>
                                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                         Sending...

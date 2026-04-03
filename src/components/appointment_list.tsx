@@ -85,7 +85,6 @@ export default function AppointmentList({ selectedFilter, selectedDate }: Props)
         mutate({ id, status });
     }
 
-    // Skeleton loading state
     if ((isLoading || isFetching) && !data) {
         return (
             <div className="w-full p-5 flex flex-col gap-3">
@@ -132,11 +131,13 @@ export default function AppointmentList({ selectedFilter, selectedDate }: Props)
                     ))}
                 </AnimatePresence>
             </div>
-            
-            <PrescriptionModal
-                appointment={selectedAppointment}
-                onClose={() => setSelectedAppointment(null)}
-            />
+
+            {selectedAppointment &&
+                <PrescriptionModal
+                    appointment={selectedAppointment}
+                    onClose={() => setSelectedAppointment(null)}
+                />
+            }
         </>
     );
 }
