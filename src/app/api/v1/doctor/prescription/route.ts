@@ -1,4 +1,4 @@
-import { Role } from "@/generated/prisma/enums";
+import { PrescriptionType, Role } from "@/generated/prisma/enums";
 import { authorize } from "@/lib/authorize";
 import { getUser } from "@/lib/get-user";
 import prisma from "@/lib/prisma";
@@ -8,6 +8,7 @@ import z from "zod";
 import { sendMail } from "@/lib/sendMail";
 import { generatePrescriptionPDF } from "@/lib/generate_prescription_pdf";
 import { buildEmailHtml } from "@/lib/presctiption_email_temp";
+import { v2 as cloudinary } from "cloudinary";
 
 interface AppointmentWithRelations {
     id: string;
@@ -20,6 +21,7 @@ interface AppointmentWithRelations {
     appointmentContexts: unknown[];
     slot: {
         doctor: {
+            id: string;
             userId: string;
             user: {
                 name: string;
@@ -28,6 +30,13 @@ interface AppointmentWithRelations {
         };
     };
 }
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME!,
+    api_key: process.env.CLOUDINARY_API_KEY!,
+    api_secret: process.env.CLOUDINARY_API_SECRET!,
+});
+
 
 export async function POST(req: NextRequest) {
     try {
@@ -50,7 +59,7 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const { appointmentId, prescription, userId } = parsed.data;
+        const { appointmentId, prescription, userId, type } = parsed.data;
 
         if (!appointmentId || !userId || !prescription) {
             return NextResponse.json(
@@ -66,6 +75,8 @@ export async function POST(req: NextRequest) {
                 { status: 400 }
             );
         }
+
+        const prescriptionType = (type ?? PrescriptionType.FINAL) as PrescriptionType;
 
         const appointment = await prisma.appointment.findUnique({
             where: { id: appointmentId },
@@ -119,6 +130,23 @@ export async function POST(req: NextRequest) {
             );
         }
 
+        const existing = await prisma.prescription.findUnique({
+            where: {
+                appointmentId_type: { appointmentId, type: prescriptionType },
+            },
+            select: { id: true },
+        });
+
+        if (existing) {
+            const label = prescriptionType === PrescriptionType.INTERIM ? "interim" : "final";
+            return NextResponse.json(
+                {
+                    error: `A ${label} prescription has already been issued for this appointment. Only one ${label} prescription is allowed per appointment.`,
+                },
+                { status: 409 }
+            );
+        }
+
         let pdfBuffer: Buffer;
         try {
             pdfBuffer = await generatePrescriptionPDF(
@@ -133,11 +161,43 @@ export async function POST(req: NextRequest) {
             );
         }
 
+        let pdfUrl: string;
         try {
+            pdfUrl = await uploadPDFToCloudinary(pdfBuffer, appointmentId, prescriptionType);
+        } catch (err) {
+            console.error("[prescription] Cloudinary upload failed:", err);
+            return NextResponse.json(
+                { error: "Failed to store prescription PDF" },
+                { status: 500 }
+            );
+        }
+
+        try {
+            await prisma.prescription.create({
+                data: {
+                    appointmentId,
+                    doctorId: appointment.slot.doctor.id,
+                    patientId: userId,
+                    type: prescriptionType,
+                    content: trimmedPrescription,
+                    pdfUrl,
+                },
+            });
+        } catch (err) {
+            console.error("[prescription] DB save failed:", err);
+            return NextResponse.json(
+                { error: "Failed to save prescription record" },
+                { status: 500 }
+            );
+        }
+
+        try {
+            const typeLabel = prescriptionType === PrescriptionType.INTERIM ? "Interim" : "Final";
+
             await sendMail({
                 title: "Your Prescription ",
                 to: appointment.patient.email,
-                subject: "Your Medical Prescription",
+                subject: `Your ${typeLabel} Medical Prescription`,
                 html: buildEmailHtml({
                     patientName: appointment.patient.name,
                     doctorName: appointment.slot.doctor.user.name,
@@ -145,7 +205,7 @@ export async function POST(req: NextRequest) {
                 }),
                 attachments: [
                     {
-                        filename: `prescription-${appointmentId}.pdf`,
+                        filename: `prescription-${appointmentId}-${prescriptionType.toLowerCase()}.pdf`,
                         content: pdfBuffer,
                     },
                 ],
@@ -157,9 +217,9 @@ export async function POST(req: NextRequest) {
                 { status: 500 }
             );
         }
-
+        const typeLabel = prescriptionType === PrescriptionType.INTERIM ? "Interim" : "Final";
         return NextResponse.json(
-            { success: true, message: "Prescription sent successfully" },
+            { success: true, message: `${typeLabel} prescription sent successfully`, },
             { status: 200 }
         );
     } catch (error) {
@@ -169,4 +229,29 @@ export async function POST(req: NextRequest) {
             { status: 500 }
         );
     }
+}
+
+
+async function uploadPDFToCloudinary(pdfBuffer: Buffer, appointmentId: string, type: PrescriptionType): Promise<string> {
+
+    return new Promise((resolve, reject) => {
+        const publicId = `prescriptions/${appointmentId}_${type.toLowerCase()}`;
+
+        const stream = cloudinary.uploader.upload_stream(
+            {
+                public_id: publicId,
+                resource_type: "raw",
+                format: "pdf",
+                overwrite: true,
+            },
+            (error, result) => {
+                if (error || !result) {
+                    return reject(error ?? new Error("Cloudinary upload returned no result"));
+                }
+                resolve(result.secure_url);
+            }
+        );
+
+        stream.end(pdfBuffer);
+    });
 }
