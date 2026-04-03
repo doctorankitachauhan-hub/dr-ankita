@@ -417,7 +417,7 @@ function SkeletonBlock({ className }: { className: string }) {
             style={{
                 backgroundImage: "linear-gradient(90deg, #f3f4f6 25%, #e9eaec 50%, #f3f4f6 75%)",
                 backgroundSize: "200% 100%",
-                animation: "shimmer 1.6s infinite",
+                animation: "anim 1.6s infinite",
             }}
         />
     );
@@ -425,7 +425,7 @@ function SkeletonBlock({ className }: { className: string }) {
 
 export function PatientCardSkeleton() {
     return (
-        <div className="bg-white border border-gray-100 rounded-2xl p-5 flex flex-col gap-4 shadow-sm">
+        <div className="relative bg-white border border-gray-100 rounded-2xl p-5 flex flex-col gap-4 shadow-sm">
             <div className="flex items-start gap-3">
                 <SkeletonBlock className="w-12 h-12 rounded-2xl flex-shrink-0" />
                 <div className="flex-1 flex flex-col gap-2 pt-1">
@@ -455,7 +455,7 @@ export function PatientCardSkeleton() {
 
 export function PatientGridSkeleton({ count = 6 }: { count?: number }) {
     return (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 items-start">
+        <div className="relative grid gap-4 sm:grid-cols-2 lg:grid-cols-3 items-start">
             {Array.from({ length: count }).map((_, i) => (
                 <PatientCardSkeleton key={i} />
             ))}
