@@ -9,3 +9,16 @@ export const PrescriptionSchema = z.object({
 })
 
 export type PrescriptionSchemaType = z.infer<typeof PrescriptionSchema>
+
+
+export type PrescriptionsInterface = {
+    id: string,
+    appointmentId: string,
+    doctorId: string,
+    patientId: string,
+    type: PrescriptionType,
+    content: string,
+    pdfUrl: string,
+    issuedAt: string,
+    updatedAt: string
+}
