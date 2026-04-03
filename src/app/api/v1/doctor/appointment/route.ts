@@ -71,6 +71,15 @@ export async function GET(req: NextRequest) {
                             }
                         }
                     },
+                },
+                prescriptions: {
+                    select: {
+                        id: true,
+                        issuedAt: true,
+                        type: true,
+                        pdfUrl: true,
+                        content: true
+                    }
                 }
             }
         })

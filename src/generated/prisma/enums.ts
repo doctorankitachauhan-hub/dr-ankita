@@ -72,3 +72,11 @@ export const DocumentType = {
 } as const
 
 export type DocumentType = (typeof DocumentType)[keyof typeof DocumentType]
+
+
+export const PrescriptionType = {
+  INTERIM: 'INTERIM',
+  FINAL: 'FINAL'
+} as const
+
+export type PrescriptionType = (typeof PrescriptionType)[keyof typeof PrescriptionType]

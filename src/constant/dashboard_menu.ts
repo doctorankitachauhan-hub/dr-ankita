@@ -109,18 +109,6 @@ export const DoctorDashboardMenu: DashboardMenuType[] = [
         access: ["DOCTOR"],
     },
     {
-        name: "Create Prescription",
-        page: "/doctor/prescriptions/create",
-        icon: FilePlus,
-        access: ["DOCTOR"],
-    },
-    {
-        name: "All Prescriptions",
-        page: "/doctor/prescriptions",
-        icon: FileText,
-        access: ["DOCTOR"],
-    },
-    {
         name: "Messages",
         page: "/doctor/messages",
         icon: MessageSquare,

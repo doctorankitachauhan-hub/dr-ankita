@@ -57,6 +57,7 @@ model User {
   doctorProfile    DoctorProfile?
   appointments     Appointment[]
   contextDocuments ContextDocument[]
+  prescriptions    Prescription[]
 
   @@index([email])
   @@index([role])
@@ -73,6 +74,7 @@ model DoctorProfile {
   user                 User                 @relation(fields: [userId], references: [id])
   slots                TimeSlot[]
   doctorAvailabilities DoctorAvailability[]
+  prescriptions        Prescription[]
 
   @@index([userId])
 }
@@ -113,6 +115,7 @@ model Appointment {
   payment             Payment[]
   meeting             Meeting?
   appointmentContexts AppointmentContext?
+  prescriptions       Prescription[]
 
   @@index([slotId, status])
   @@index([patientId, status])
@@ -234,10 +237,38 @@ model ContextDocument {
   @@index([uploadedById])
 }
 
+model Prescription {
+  id            String @id @default(cuid())
+  appointmentId String
+  doctorId      String
+  patientId     String
+
+  type    PrescriptionType @default(FINAL)
+  content String
+  pdfUrl  String?
+
+  issuedAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  appointment Appointment   @relation(fields: [appointmentId], references: [id])
+  doctor      DoctorProfile @relation(fields: [doctorId], references: [id])
+  patient     User          @relation(fields: [patientId], references: [id])
+
+  @@unique([appointmentId, type])
+  @@index([patientId])
+  @@index([doctorId])
+  @@index([appointmentId])
+}
+
 enum DocumentType {
   PRESCRIPTION
   LAB_REPORT
   SCAN_XRAY
   DISCHARGE_SUMMARY
   OTHER
+}
+
+enum PrescriptionType {
+  INTERIM
+  FINAL
 }

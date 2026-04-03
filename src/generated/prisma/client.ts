@@ -91,3 +91,8 @@ export type AppointmentContext = Prisma.AppointmentContextModel
  * 
  */
 export type ContextDocument = Prisma.ContextDocumentModel
+/**
+ * Model Prescription
+ * 
+ */
+export type Prescription = Prisma.PrescriptionModel

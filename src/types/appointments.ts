@@ -1,4 +1,4 @@
-import { AppointmentStatus } from "@/generated/prisma/enums";
+import { AppointmentStatus, PrescriptionType } from "@/generated/prisma/enums";
 
 export type AppointmentResponse = {
     id: string;
@@ -14,6 +14,7 @@ export type AppointmentResponse = {
     meeting: Meeting | null;
     patient: Patient;
     appointmentContexts: Contexts | null
+    prescriptions: Prescriptions[] | []
 };
 
 export type Meeting = {
@@ -50,4 +51,12 @@ export type ContextDoc = {
     documentType: string,
     fileUrl: string,
     fileType: string,
+}
+
+export type Prescriptions = {
+    id: string,
+    issuedAt: string,
+    type: PrescriptionType,
+    pdfUrl: string,
+    content: string
 }
