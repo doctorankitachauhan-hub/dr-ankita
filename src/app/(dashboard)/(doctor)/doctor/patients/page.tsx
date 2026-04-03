@@ -39,7 +39,7 @@ export default function PatientDashboard() {
     }, [data?.patient, search]);
 
     return (
-        <div style={{ padding: "1.5rem", fontFamily: "var(--font-sans, sans-serif)" }}>
+        <div className="p-8">
             <DashboardHeader
                 totalCount={data?.patient.length ?? 0}
                 search={search}

@@ -40,7 +40,16 @@ export async function GET(req: NextRequest) {
                             payment: true,
                             meeting: true,
                             appointmentContexts: { include: { contextDocuments: true } },
-                            slot: { select: { id: true, startTime: true, endTime: true } }
+                            slot: { select: { id: true, startTime: true, endTime: true } },
+                            prescriptions: {
+                                select: {
+                                    id: true,
+                                    content: true,
+                                    issuedAt: true,
+                                    type: true,
+                                    pdfUrl: true
+                                }
+                            }
                         }
                     }
                 },
