@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
                 endTime: true,
                 appointment: {
                     where: {
-                        status: { in: ["CONFIRMED"] },
+                        status: { in: ["CONFIRMED","COMPLETED"] },
                     },
                     select: {
                         id: true,
