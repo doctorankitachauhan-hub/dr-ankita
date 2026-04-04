@@ -71,7 +71,7 @@ model DoctorProfile {
   consultationFee Float
   bio             String?
 
-  user                 User                 @relation(fields: [userId], references: [id])
+  user                 User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   slots                TimeSlot[]
   doctorAvailabilities DoctorAvailability[]
   prescriptions        Prescription[]
@@ -89,7 +89,7 @@ model TimeSlot {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  doctor      DoctorProfile @relation(fields: [doctorId], references: [id])
+  doctor      DoctorProfile @relation(fields: [doctorId], references: [id], onDelete: Cascade)
   appointment Appointment[]
 
   @@unique([doctorId, startTime, endTime])
@@ -110,8 +110,8 @@ model Appointment {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  patient             User                @relation(fields: [patientId], references: [id])
-  slot                TimeSlot            @relation(fields: [slotId], references: [id])
+  patient             User                @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  slot                TimeSlot            @relation(fields: [slotId], references: [id], onDelete: Cascade)
   payment             Payment[]
   meeting             Meeting?
   appointmentContexts AppointmentContext?
@@ -136,8 +136,8 @@ model Payment {
 
   createdAt DateTime @default(now())
 
-  appointment Appointment?        @relation(fields: [appointmentId], references: [id])
-  context     AppointmentContext? @relation(fields: [contextId], references: [id])
+  appointment Appointment?        @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  context     AppointmentContext? @relation(fields: [contextId], references: [id], onDelete: Cascade)
 
   @@index([userId, status])
   @@index([slotId, status])
@@ -160,7 +160,7 @@ model Meeting {
 
   createdAt DateTime @default(now())
 
-  appointment Appointment @relation(fields: [appointmentId], references: [id])
+  appointment Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
 
   @@index([startTime])
 }
@@ -209,7 +209,7 @@ model AppointmentContext {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  appointment      Appointment?      @relation(fields: [appointmentId], references: [id])
+  appointment      Appointment?      @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
   contextDocuments ContextDocument[]
   payments         Payment[]
 
@@ -231,7 +231,7 @@ model ContextDocument {
   createdAt DateTime @default(now())
 
   context    AppointmentContext @relation(fields: [contextId], references: [id], onDelete: Cascade)
-  uploadedBy User               @relation(fields: [uploadedById], references: [id])
+  uploadedBy User               @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
 
   @@index([contextId])
   @@index([uploadedById])
@@ -250,9 +250,9 @@ model Prescription {
   issuedAt  DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  appointment Appointment   @relation(fields: [appointmentId], references: [id])
-  doctor      DoctorProfile @relation(fields: [doctorId], references: [id])
-  patient     User          @relation(fields: [patientId], references: [id])
+  appointment Appointment   @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  doctor      DoctorProfile @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  patient     User          @relation(fields: [patientId], references: [id], onDelete: Cascade)
 
   @@unique([appointmentId, type])
   @@index([patientId])

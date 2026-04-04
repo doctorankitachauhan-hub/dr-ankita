@@ -5,13 +5,23 @@ import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from '@fullcalendar/daygrid'
 import { useRouter } from "next/navigation";
 import EventDetails from "./event_details";
-
+import { AppointmentStatus } from "@/generated/prisma/enums";
 
 type Slot = {
     id: string;
     startTime: string;
     endTime: string;
     status: "AVAILABLE" | "BOOKED" | "BLOCKED";
+    appointment: {
+        status: AppointmentStatus;
+        id: string;
+        createdAt: string;
+        updatedAt: string;
+        patientId: string;
+        slotId: string;
+        reminder1Sent: boolean;
+        reminder2Sent: boolean;
+    }[]
 };
 
 type Props = {
@@ -21,18 +31,36 @@ type Props = {
 export default function DoctorCalendar({ slots }: Props) {
     const router = useRouter();
     const now = new Date();
+
     const events = slots?.map((slot) => {
         const start = new Date(slot.startTime);
         const isPast = start < now;
+        const appt = slot.appointment?.[0];
+        const isCompleted = appt?.status === AppointmentStatus.COMPLETED;
+
+        const getTitle = () => {
+            if (isCompleted) return "Completed";
+            if (isPast && slot.status === "AVAILABLE") return "Expired";
+            if (slot.status === "BOOKED") return "Booked";
+            if (slot.status === "BLOCKED") return "Blocked";
+            return "Available";
+        };
+
+        const getBg = () => {
+            if (isCompleted) return "#8b5cf6";   
+            if (isPast) return "#d1d5db";
+            if (slot.status === "BOOKED") return "#ef4444";   
+            if (slot.status === "BLOCKED") return "#6b7280";  
+            return "#22c55e";                               
+        };
 
         return {
             id: slot.id,
-            title: (isPast && slot.status === "AVAILABLE") ? "Expired" : slot.status === "BOOKED" ? "Booked" : slot.status === "BLOCKED" ? "Blocked" : "Available",
+            title: getTitle(),
             start,
             end: new Date(slot.endTime),
-            backgroundColor: isPast ? "#d1d5db" : slot.status === "BOOKED" ? "#ef4444" : slot.status === "BLOCKED" ? "#6b7280" : "#22c55e",
-            textColor: isPast ? "#6b7280" : "#fff",
-            // editable: !isPast,
+            backgroundColor: getBg(),
+            textColor: isPast && !isCompleted ? "#6b7280" : "#fff",
             display: "block",
         };
     });

@@ -81,8 +81,8 @@ export async function POST(req: NextRequest) {
                 prisma.timeSlot.create({
                     data: {
                         doctorId: doctor.id,
-                        startTime: slot.startTime,  
-                        endTime: slot.endTime,       
+                        startTime: slot.startTime,
+                        endTime: slot.endTime,
                     },
                 })
             )
@@ -117,18 +117,18 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ error: message }, { status })
         }
 
-        const { searchParams } = req.nextUrl
-        const date = searchParams.get("date")?.trim();
+        // const { searchParams } = req.nextUrl
+        // const date = searchParams.get("date")?.trim();
 
-        if (!date) {
-            return NextResponse.json(
-                { error: "Date is required" },
-                { status: 400 }
-            );
-        }
+        // if (!date) {
+        //     return NextResponse.json(
+        //         { error: "Date is required" },
+        //         { status: 400 }
+        //     );
+        // }
 
-        const startOfDay = new Date(`${date}T00:00:00.000Z`);
-        const endOfDay = new Date(`${date}T23:59:59.999Z`);
+        // const startOfDay = new Date(`${date}T00:00:00.000Z`);
+        // const endOfDay = new Date(`${date}T23:59:59.999Z`);
 
         const slots = await prisma.timeSlot.findMany({
             where: {
@@ -147,8 +147,8 @@ export async function GET(req: NextRequest) {
                 endTime: true,
                 status: true,
                 appointment: {
-                    include: {
-                        patient: true
+                    orderBy: {
+                        createdAt: "desc"
                     }
                 }
             }

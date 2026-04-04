@@ -120,6 +120,7 @@ export default function EventDetails() {
     const appt = slot?.appointment;
     const patient = appt?.patient;
     const meeting = appt?.meeting;
+    const isCompleted = appt?.status === "COMPLETED"
     const ctx = appt?.appointmentContexts;
     const isLoaded = !isLoading && !isFetching && !!slot;
     const badge = slot ? slotStatusConfig[slot.status] : null;
@@ -302,7 +303,7 @@ export default function EventDetails() {
                                 Close
                             </button>
 
-                            {slot?.status === 'BOOKED' && (
+                            {!isCompleted && slot?.status === 'BOOKED' && (
                                 <motion.button
                                     whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
                                     className="px-3.5 py-2 text-xs font-medium rounded-lg border border-sky-200 text-sky-600 hover:bg-sky-50 transition"
@@ -311,7 +312,7 @@ export default function EventDetails() {
                                 </motion.button>
                             )}
 
-                            {slot?.status === 'BOOKED' && appt?.id && (
+                            {!isCompleted && slot?.status === 'BOOKED' && appt?.id && (
                                 <motion.button
                                     whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
                                     disabled={cancelling}
