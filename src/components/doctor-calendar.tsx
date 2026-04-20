@@ -87,7 +87,7 @@ export default function DoctorCalendar({ slots }: Props) {
                 eventDisplay="block"
                 headerToolbar={{
                     left: 'prev,next today',
-                    center: 'title',
+                    // center: 'title',
                     right: 'timeGridDay,dayGridMonth,timeGridWeek'
                 }}
                 // dateClick={(arg)=>console.log(arg)}
