@@ -23,11 +23,11 @@ export default function Hero() {
             <Wrapper>
                 <div className='relative w-full grid md:grid-cols-2 grid-cols-1 gap-5'>
                     <div className="w-full h-full relative flex flex-col justify-center md:items-start items-center">
-                        <h1 className='font-bold lg:text-5xl md:text-3xl text-[22px] text-secondry-color 
+                        <h1 className='font-bold lg:text-5xl md:text-4xl text-3xl text-secondry-color 
                         md:text-left text-center leading-[1.3]'>
                             Consultant<span className='!font-open-sans text-primary-color'> Gynecologist & Obstetrician</span>
                         </h1>
-                        <Subheading className='mt-2 max-w-xl md:!text-lg !text-sm'>
+                        <Subheading className='mt-2 max-w-xl md:!text-lg !text-base text-center md:text-left'>
                             Compassionate care for women at every stage of life.
                             <br />
                             Providing complete women&apos;s healthcare with compassion, expertise, and support through every stage of life.

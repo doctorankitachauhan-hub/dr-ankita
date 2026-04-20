@@ -309,11 +309,21 @@ export default function NavBar() {
                     </div>
 
                     <div className='w-full absolute bottom-0 flex flex-col items-end'>
-                        <ButtonPrimary
+                        {!isAuthenticated ? <ButtonPrimary
+                            onClick={() => (setOpenLoginModal(true), setIsMenuOpen(false))}
                             className='w-full bg-white text-primary-color! hover:bg-gray-50!'
                         >
                             Book Appointment
-                        </ButtonPrimary>
+                        </ButtonPrimary> :
+                            <button
+                                onClick={() => (isAuthenticated ? router.push("/user/dashboard") : router.push("/login"), setIsMenuOpen(false))}
+                                className='w-full flex items-center gap-3 cursor-pointer'
+                            >
+                                <User className='text-white' size={32} />
+                                <span className='text-xl text-white text-center'>
+                                    {user?.name}
+                                </span>
+                            </button>}
                     </div>
                 </div>
             </div>
