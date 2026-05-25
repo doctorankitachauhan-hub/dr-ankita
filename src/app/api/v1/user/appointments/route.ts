@@ -40,12 +40,12 @@ export async function GET(req: NextRequest) {
             where: {
                 patientId: user.id,
                 status: appointementStatus,
-                slot: {
-                    startTime: {
-                        gte: startOfDay,
-                        lte: endOfDay,
-                    },
-                },
+                // slot: {
+                //     startTime: {
+                //         gte: startOfDay,
+                //         lte: endOfDay,
+                //     },
+                // },
             },
             include: {
                 meeting: true,

@@ -39,7 +39,7 @@ export default function AppointmentHeader({
         : format(parseISO(selectedDate), "dd MMM yyyy");
 
     return (
-        <div className="sticky z-30 top-19 w-full flex items-center justify-between gap-4 border-b border-slate-200 bg-white px-5">
+        <div className="sticky z-30 top-19 w-full flex items-center justify-between flex-wrap gap-4 border-b border-slate-200 bg-white px-5 py-5 lg:py-0 ">
 
             <div className="relative flex items-center gap-6">
                 {AppointmentFilters.map((filter) => {

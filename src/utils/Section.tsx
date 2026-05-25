@@ -20,7 +20,7 @@ export function Section({ children, className, style }: Props) {
 }
 export function Wrapper({ children, className, style }: Props) {
     return (
-        <div className={`${className ?? ''} w-full max-w-7xl relative mx-auto px-6`} style={style}>
+        <div className={`${className ?? ''} w-full max-w-7xl relative mx-auto px-6 py-5`} style={style}>
             {children}
         </div>
     )

@@ -1,43 +1,55 @@
+// topbar.tsx
 'use client';
 import GenerateSlots from '@/components/generate-slots';
-import { useAuth } from '@/hooks/useAuth'
+import { useAuth } from '@/hooks/useAuth';
 import { ButtonPrimary } from '@/utils/Section';
 import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
-import { BellDot, Power } from 'lucide-react'
+import { BellDot, Menu, Power } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 
-export default function DashboardTopbar() {
+interface DashboardTopbarProps {
+    onMenuToggle: () => void;
+}
+
+export default function DashboardTopbar({ onMenuToggle }: DashboardTopbarProps) {
     const { user } = useAuth();
-    const isDoctor = user?.role === "DOCTOR"
-    const [openSlotModal, setOpenSlotModal] = useState<boolean>(false)
+    const isDoctor = user?.role === "DOCTOR";
+    const [openSlotModal, setOpenSlotModal] = useState<boolean>(false);
 
     const logoutMutation = useMutation({
         mutationFn: async () => {
-            const response = await axios.post("/api/auth/logout", {}, {
-                withCredentials: true
-            });
-            return response.data
+            const response = await axios.post("/api/auth/logout", {}, { withCredentials: true });
+            return response.data;
         },
         onSuccess: (val) => {
-            toast.success(val?.message)
+            toast.success(val?.message);
             window.location.href = "/";
         },
         onError: (err: AxiosError<{ error: string }>) => {
-            toast.error(err.response?.data?.error || "Something went wrong")
+            toast.error(err.response?.data?.error || "Something went wrong");
         }
     });
 
     return (
-        <div className='sticky top-0 z-40 w-full bg-white py-4 px-8 shadow-sm shadow-zinc-800/10 flex items-center justify-between'>
-            <div></div>
+        <div className='sticky top-0 z-30 w-full bg-white py-4 px-8 shadow-sm shadow-zinc-800/10 flex items-center justify-between'>
+            <button
+                className='lg:hidden cursor-pointer text-zinc-800'
+                onClick={onMenuToggle}
+                aria-label="Toggle sidebar"
+            >
+                <Menu size={28} strokeWidth={1.5} />
+            </button>
+
+            <div className='hidden lg:block' />
+
             <div className='flex items-center gap-5'>
-                {isDoctor &&
+                {isDoctor && (
                     <ButtonPrimary onClick={() => setOpenSlotModal(true)}>
                         Generate Time Slots
                     </ButtonPrimary>
-                }
+                )}
                 <button className='cursor-pointer'>
                     <BellDot size={32} strokeWidth={1.5} className='text-zinc-800' />
                 </button>
@@ -45,13 +57,13 @@ export default function DashboardTopbar() {
                     <Power size={32} strokeWidth={1.5} className='text-zinc-800' />
                 </button>
             </div>
-            {
-                isDoctor &&
+
+            {isDoctor && (
                 <GenerateSlots
                     open={openSlotModal}
                     close={() => setOpenSlotModal(false)}
                 />
-            }
+            )}
         </div>
-    )
+    );
 }

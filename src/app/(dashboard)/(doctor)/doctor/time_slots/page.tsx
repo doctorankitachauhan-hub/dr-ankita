@@ -6,7 +6,7 @@ import { useSlots } from "@/hooks/useFetch";
 
 export default function TimeSlots() {
     const { data, isLoading, isFetching } = useSlots();
-
+    
     if (isLoading || isFetching) return <div className="w-full h-full flex items-center justify-center"><Spinner /></div>;
     return <DoctorCalendar slots={data} />;
 }
