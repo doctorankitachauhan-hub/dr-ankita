@@ -7,9 +7,11 @@ export default function Layout({ children }: Readonly<{ children: ReactNode; }>)
     return (
         <>
             <NavBar />
-            {children}
+            <main>
+                {children}
+            </main>
             <Contact />
-            <Footer/>
+            <Footer />
         </>
     )
 }
