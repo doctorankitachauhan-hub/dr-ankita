@@ -1,7 +1,7 @@
 import Contact from "@/components/Contact";
+import Footer from "@/components/Footer";
 import NavBar from "@/components/NavBar";
 import { ReactNode } from "react";
-import { Footer } from "react-day-picker";
 
 export default function BlogLayout({ children }: Readonly<{ children: ReactNode; }>) {
     return (

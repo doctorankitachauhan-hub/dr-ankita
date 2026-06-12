@@ -13,14 +13,14 @@ interface BtnProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 export function Section({ children, className, style }: Props) {
     return (
-        <section className={className} style={style}>
+        <section className={`${className} w-full lg:px-8 md:px-6 px-3 overflow-hidden relative `} style={style}>
             {children}
         </section>
     )
 }
 export function Wrapper({ children, className, style }: Props) {
     return (
-        <div className={`${className ?? ''} w-full max-w-7xl relative mx-auto px-6 py-5`} style={style}>
+        <div className={`${className ?? ''} w-full max-w-7xl mx-auto lg:py-20 md:py-16 py-14 flex flex-col lg:gap-16 md:gap-14 gap-12`} style={style}>
             {children}
         </div>
     )
