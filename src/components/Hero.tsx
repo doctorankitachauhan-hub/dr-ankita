@@ -19,8 +19,8 @@ export default function Hero() {
         return () => startScroll();
     }, [stopScroll, startScroll, openForm]);
     return (
-        <Section className='bg-gradient-to-t from-primary-color/20 via-white to-transparent pb-0!'>
-            <Wrapper>
+        <Section className='bg-gradient-to-t from-primary-color/20 via-white to-transparent'>
+            <Wrapper className='pb-0!'>
                 <div className='relative w-full grid md:grid-cols-2 grid-cols-1 gap-5'>
                     <div className="w-full h-full relative flex flex-col justify-center md:items-start items-center">
                         <h1 className='font-bold lg:text-5xl md:text-4xl text-3xl text-secondry-color 
@@ -71,14 +71,40 @@ export default function Hero() {
                         </div>
                     </div>
 
-                    <div className="w-full h-full relative flex items-center justify-center md:justify-end">
-                        <Image
-                            src={'/images/hero/hero-1.png'}
-                            width={1920}
-                            height={1080}
-                            alt='Hero Image'
-                            className='w-full max-w-[400px] h-auto'
-                        />
+                    <div className="relative flex items-center justify-center md:justify-end">
+
+                        <div className="absolute w-[450px] h-[450px] rounded-full bg-primary-color/10 blur-3xl" />
+
+                        <div className="relative">
+
+                            <div className="absolute inset-0 rounded-full bg-gradient-to-t from-primary-color/20 to-transparent blur-2xl" />
+
+                            <Image
+                                src="/images/hero/hero-1.png"
+                                width={1920}
+                                height={1080}
+                                alt="Hero Image"
+                                className="relative z-10 w-full max-w-[500px] h-auto"
+                            />
+
+                            {/* Floating Card */}
+                            <div
+                                className="absolute bottom-10 z-10 -left-10 bg-white rounded-2xl shadow-xl p-4 hidden md:flex items-center gap-3"
+                            >
+                                <div className="size-12 rounded-full bg-green-100 flex items-center justify-center">
+                                    ✓
+                                </div>
+
+                                <div>
+                                    <h4 className="font-bold text-secondry-color">
+                                        1000+
+                                    </h4>
+                                    <p className="text-sm text-zinc-500">
+                                        Happy Patients
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </Wrapper>
