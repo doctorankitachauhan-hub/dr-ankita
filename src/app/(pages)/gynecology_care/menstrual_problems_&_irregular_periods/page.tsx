@@ -94,7 +94,7 @@ export default function page() {
                     </div>
                     <div className="relative w-full h-[320px] md:h-[420px] rounded-2xl overflow-hidden">
                         <Image
-                            src="https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=1600&auto=format&fit=crop"
+                            src="/images/all-service/gynecology/img-1.jpg"
                             alt="Menstrual health consultation"
                             fill
                             className="object-cover"
@@ -109,7 +109,7 @@ export default function page() {
                 <Wrapper className="grid lg:grid-cols-2 gap-12 items-center">
                     <div className="relative w-full h-[300px] md:h-[400px] rounded-2xl overflow-hidden order-2 lg:order-1">
                         <Image
-                            src="https://images.unsplash.com/photo-1584555613497-9ecf9dd06ae5?q=80&w=1200&auto=format&fit=crop"
+                            src="/images/all-service/gynecology/img-2.jpg"
                             alt="Understanding menstrual cycles"
                             fill
                             className="object-cover"
@@ -192,7 +192,7 @@ export default function page() {
 
                     <div className="relative w-full h-[320px] md:h-[480px] rounded-2xl overflow-hidden">
                         <Image
-                            src="https://images.unsplash.com/photo-1666214280165-1546d5e3f1b9?q=80&w=1200&auto=format&fit=crop"
+                            src="/images/all-service/gynecology/img-3.jpg"
                             alt="Doctor discussing hormonal health"
                             fill
                             className="object-cover"
@@ -213,10 +213,10 @@ export default function page() {
                         </Subheading>
                     </div>
 
-                    <div className="mt-12 grid lg:grid-cols-2 gap-10 items-center">
+                    <div className="mt-12 grid lg:grid-cols-2 gap-10 items-start">
                         <div className="relative w-full h-[300px] md:h-[420px] rounded-2xl overflow-hidden order-2 lg:order-1">
                             <Image
-                                src="https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=1200&auto=format&fit=crop"
+                                src="/images/all-service/gynecology/img-4.jpg"
                                 alt="Diagnosis and treatment for menstrual disorders"
                                 fill
                                 className="object-cover"
