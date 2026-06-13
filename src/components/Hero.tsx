@@ -84,7 +84,7 @@ export default function Hero() {
                                 width={1920}
                                 height={1080}
                                 alt="Hero Image"
-                                className="relative z-10 w-full max-w-[500px] h-auto"
+                                className="relative z-10 w-[440px]"
                             />
 
                             {/* Floating Card */}
