@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import SmoothScrollProvider from "@/utils/SmoothScroll";
-import NavBar from "@/components/NavBar";
-import Footer from "@/components/Footer";
-import Contact from "@/components/Contact";
 import Providers from "@/lib/providers";
 import AuthBoundary from "@/context/auth_boundry";
 import Script from "next/script";
+import { GoogleAnalytics } from "@next/third-parties/google"
 
 export const metadata: Metadata = {
   title: "Dr. Ankita Chauhan",
@@ -38,6 +36,7 @@ export default function RootLayout({
           </AuthBoundary>
         </Providers>
         <Script src="https://checkout.razorpay.com/v1/checkout.js"></Script>
+        <GoogleAnalytics gaId="G-G963FVQ89C" />
       </body>
     </html>
   );
