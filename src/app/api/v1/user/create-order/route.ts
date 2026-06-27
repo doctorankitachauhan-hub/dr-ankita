@@ -3,14 +3,9 @@ import { authorize } from "@/lib/authorize";
 import { getUser } from "@/lib/get-user";
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import Razorpay from "razorpay";
 import z from "zod";
 import { Cashfree, CFEnvironment } from "cashfree-pg";
 
-const razorpay = new Razorpay({
-    key_id: process.env.RAZORPAY_API_KEY!,
-    key_secret: process.env.RAZORPAY_API_SECRET!,
-});
 
 const cashfree = new Cashfree(
     CFEnvironment.SANDBOX,

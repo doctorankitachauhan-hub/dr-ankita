@@ -2,14 +2,16 @@ import { Role } from "@/generated/prisma/enums";
 import { authorize } from "@/lib/authorize";
 import { getUser } from "@/lib/get-user";
 import prisma from "@/lib/prisma";
+import { Cashfree, CFEnvironment } from "cashfree-pg";
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
-import Razorpay from "razorpay";
 
-const razorpay = new Razorpay({
-    key_id: process.env.RAZORPAY_API_KEY!,
-    key_secret: process.env.RAZORPAY_API_SECRET!,
-});
+
+const cashfree = new Cashfree(
+    CFEnvironment.SANDBOX,
+    process.env.CASHFREE_APP_ID,
+    process.env.CASHFREE_SECRET_KEY
+);
 
 const statusSchema = z.object({
     status: z.enum(["COMPLETED", "CANCELLED"]),
@@ -96,18 +98,23 @@ export async function POST(
 
         const payment = appointment.payment[0] ?? null;
 
-        if (payment?.transactionId) {
+        if (payment?.gatewayOrderId) {
             try {
-                await razorpay.payments.refund(payment.transactionId, {
-                    speed: "normal",
-                });
+                await cashfree.PGOrderCreateRefund(payment.gatewayOrderId,
+                    {
+                        refund_amount: payment.amount,
+                        refund_id: `refund_${appointmentId}`,
+                        refund_note: "Appointment cancelled by doctor",
+                    });
             } catch (refundErr: any) {
-                console.error("Razorpay refund failed:", refundErr);
+                console.error("Cashfree refund failed:", refundErr?.response?.data ?? refundErr);
                 return NextResponse.json(
                     { error: "Refund failed. Please try again or process it manually." },
                     { status: 502 }
                 );
             }
+
+
             await Promise.all([
                 prisma.appointment.update({
                     where: { id: appointmentId },
