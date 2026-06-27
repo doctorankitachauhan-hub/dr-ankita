@@ -103,7 +103,7 @@ export async function POST(
                 await cashfree.PGOrderCreateRefund(payment.gatewayOrderId,
                     {
                         refund_amount: payment.amount,
-                        refund_id: `refund_${appointmentId}`,
+                        refund_id: `refund_${appointmentId}_${Date.now()}`,
                         refund_note: "Appointment cancelled by doctor",
                     });
             } catch (refundErr: any) {
