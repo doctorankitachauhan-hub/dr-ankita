@@ -106,13 +106,21 @@ async function handlePaymentCaptured(data: any) {
     let appointment: any;
 
     if (cancelledByThisUser) {
-        await prisma.payment.updateMany({
+        const refundedPayments = await prisma.payment.findMany({
             where: {
                 appointmentId: cancelledByThisUser.id,
                 status: "REFUNDED",
             },
-            data: { appointmentId: null },
+            select: { id: true },
         });
+        const refundedPaymentIds = refundedPayments.map((p) => p.id);
+
+        if (refundedPaymentIds.length > 0) {
+            await prisma.payment.updateMany({
+                where: { id: { in: refundedPaymentIds } },
+                data: { appointmentId: null },
+            });
+        }
 
         appointment = await prisma.appointment.update({
             where: { id: cancelledByThisUser.id },
@@ -124,6 +132,14 @@ async function handlePaymentCaptured(data: any) {
             },
             include: { patient: true },
         });
+
+        if (refundedPaymentIds.length > 0) {
+            await prisma.payment.updateMany({
+                where: { id: { in: refundedPaymentIds } },
+                data: { appointmentId: appointment.id },
+            });
+        }
+
     } else {
         try {
             appointment = await prisma.appointment.create({
@@ -137,7 +153,7 @@ async function handlePaymentCaptured(data: any) {
         } catch (err: any) {
             console.error("Appointment create failed:", err);
             await prisma.payment.updateMany({
-                where: { razorpayOrderId: orderId, status: { not: "SUCCESS" } },
+                where: { gatewayOrderId: orderId, status: { not: "SUCCESS" } }, // ✅ was razorpayOrderId
                 data: { status: "FAILED" },
             });
             throw err;
