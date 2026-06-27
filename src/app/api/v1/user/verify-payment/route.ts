@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
         let result: TxResult;
 
         const payment = await prisma.payment.findUnique({
-            where: { razorpayOrderId: razorpay_order_id },
+            where: { gatewayOrderId: razorpay_order_id },
             include: {
                 appointment: {
                     include: {

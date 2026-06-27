@@ -5,11 +5,18 @@ import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import Razorpay from "razorpay";
 import z from "zod";
+import { Cashfree, CFEnvironment } from "cashfree-pg";
 
 const razorpay = new Razorpay({
     key_id: process.env.RAZORPAY_API_KEY!,
     key_secret: process.env.RAZORPAY_API_SECRET!,
 });
+
+const cashfree = new Cashfree(
+    CFEnvironment.SANDBOX,
+    process.env.CASHFREE_APP_ID,
+    process.env.CASHFREE_SECRET_KEY
+);
 
 const DocumentType = z.enum([
     "PRESCRIPTION",
@@ -45,6 +52,11 @@ export async function POST(req: NextRequest) {
         const { success, message, status } = authorize(req, [Role.PATIENT, Role.DOCTOR]);
         if (!success) {
             return NextResponse.json({ error: message }, { status });
+        }
+
+        const validUser = await prisma.user.findUnique({ where: { id: user.id } });
+        if (!validUser) {
+            return NextResponse.json({ error: "Invalid user" }, { status: 404 });
         }
 
         const body = await req.json();
@@ -105,22 +117,34 @@ export async function POST(req: NextRequest) {
                 });
             }
 
+            const cfOrder = await cashfree.PGFetchOrder(
+                existingPayment.gatewayOrderId
+            );
+
             return NextResponse.json({
                 name: user.name,
                 email: user.email,
-                orderId: existingPayment.razorpayOrderId,
+                orderId: existingPayment.gatewayOrderId,
+                paymentSessionId: cfOrder.data.payment_session_id,
                 amount: existingPayment.amount,
-                key: process.env.RAZORPAY_API_KEY,
             });
         }
 
         const amount = 500;
+        const orderId = `appt_${slotId}_${Date.now()}`;
 
-        const order = await razorpay.orders.create({
-            amount: amount * 100,
-            currency: "INR",
-            receipt: `receipt_${slotId}`,
+        const cfResponse = await cashfree.PGCreateOrder({
+            order_id: orderId,
+            order_amount: amount,
+            order_currency: "INR",
+            customer_details: {
+                customer_id: user.id!,
+                customer_name: user.name || "Patient",
+                customer_email: user.email!,
+                customer_phone: validUser.phone ?? "9999999999",
+            },
         });
+        const paymentSessionId = cfResponse.data.payment_session_id;
 
         await prisma.$transaction(async (tx) => {
             const context = await tx.appointmentContext.create({
@@ -146,7 +170,7 @@ export async function POST(req: NextRequest) {
                 data: {
                     amount,
                     status: "PENDING",
-                    razorpayOrderId: order.id,
+                    gatewayOrderId: orderId,
                     slotId,
                     userId: user.id!,
                     contextId: context.id,
@@ -157,9 +181,9 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({
             name: user.name,
             email: user.email,
-            orderId: order.id,
+            orderId,
             amount,
-            key: process.env.RAZORPAY_API_KEY,
+            paymentSessionId
         });
 
     } catch (error) {
