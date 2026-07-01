@@ -113,28 +113,18 @@ export default function NavBar() {
                     ]
                 },
                 {
-                    key: 'Cosmetic_&_Laser_Gynecology',
-                    name: 'Cosmetic & Laser Gynecology',
+                    key: 'Laser_Gynecology',
+                    name: 'Laser Gynecology',
                     submenu: [
                         {
                             key: "Laser treatment for stress urinary incontinence",
                             name: "Laser treatment for stress urinary incontinence",
-                            path: "/cosmetic_&_laser_gynecology/laser_treatment_for_stress_urinary_incontinence"
+                            path: "/laser_gynecology/laser_treatment_for_stress_urinary_incontinence"
                         },
                         {
                             key: "Vaginal tightening procedures",
                             name: "Vaginal tightening procedures",
-                            path: "/cosmetic_&_laser_gynecology/vaginal_tightening_procedures"
-                        },
-                        {
-                            key: "Treatment for pigmentation",
-                            name: "Treatment for pigmentation",
-                            path: "/cosmetic_&_laser_gynecology/treatment_for_pigmentation"
-                        },
-                        {
-                            key: "Management of chronic infections",
-                            name: "Management of chronic infections",
-                            path: "/cosmetic_&_laser_gynecology/management_of_chronic_infections"
+                            path: "/laser_gynecology/vaginal_tightening_procedures"
                         },
                     ]
                 },
