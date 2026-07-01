@@ -76,7 +76,7 @@ async function handlePaymentCaptured(data: any) {
     if (slot.status === "BOOKED") {
         console.log(`Slot already booked for order ${orderId}`);
         await prisma.payment.updateMany({
-            where: { razorpayOrderId: orderId, status: { not: "SUCCESS" } },
+            where: { gatewayOrderId: orderId, status: { not: "SUCCESS" } },
             data: { status: "FAILED" },
         });
         return;
