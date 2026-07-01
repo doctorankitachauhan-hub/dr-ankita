@@ -9,6 +9,8 @@ import toast from "react-hot-toast";
 import Spinner from "./ui/spinner";
 import { cn } from "@/lib/utils";
 import { getUploadSignature, uploadToCloudinary } from "@/lib/uploadToCloudinary";
+import { load } from '@cashfreepayments/cashfree-js';
+
 
 
 export type AppointmentContextData = {
@@ -243,40 +245,27 @@ export default function AppointmentContextForm({ slot, date, changeStep }: { slo
         onMutate: () => setBookingState({ phase: "paying" }),
         onSuccess: async (val) => {
             try {
-                const { orderId, amount, key, name, email } = val;
+                const { orderId, paymentSessionId, name, email } = val;
 
-                const options = {
-                    key,
-                    amount: amount * 100,
-                    currency: "INR",
-                    name: "Doctor Ankita",
-                    description: "Consultation Booking",
-                    order_id: orderId,
-                    prefill: { name, email },
-                    handler: async function () {
-                        await startPolling(orderId);
-                    },
-                    modal: {
-                        ondismiss: () => {
-                            setBookingState({ phase: "idle" });
-                            toast("Payment cancelled", { icon: "👋" });
-                        },
-                    },
-                };
-
-                const rzp = new (window as any).Razorpay(options);
-
-                rzp.on("payment.failed", (response: any) => {
-                    setBookingState({
-                        phase: "failed",
-                        reason:
-                            response?.error?.description || "Payment failed. Please try again.",
-                    });
+                const cashfree = await load({
+                    mode: process.env.CASHFREE_ENV === "PRODUCTION"
+                        ? "production"
+                        : "sandbox",
                 });
 
-                const timeout = setTimeout(() => setBookingState({ phase: "idle" }), 3000);
-                rzp.open();
-                rzp.on("modal.open", () => clearTimeout(timeout));
+                const result = await cashfree.checkout({
+                    paymentSessionId,
+                    redirectTarget: "_modal",
+                });
+
+                if (result.error) {
+                    setBookingState({
+                        phase: "failed",
+                        reason: result.error.message || "Payment failed. Please try again.",
+                    });
+                    return;
+                }
+                await startPolling(orderId);
             } catch {
                 setBookingState({
                     phase: "failed",

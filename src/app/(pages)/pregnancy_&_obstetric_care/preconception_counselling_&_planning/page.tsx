@@ -1,4 +1,5 @@
 import { Section, Wrapper, Heading, Subheading, ButtonPrimary } from '@/utils/Section'
+import Image from 'next/image'
 import React from 'react'
 
 function ImagePlaceholder({ className }: { className?: string }) {
@@ -70,14 +71,17 @@ const benefits = [
     {
         title: 'Physical & Emotional Readiness',
         desc: 'Helps couples prepare physically, mentally, and emotionally for parenthood.',
+        image: "/images/all-service/pregnancy/img-6.jpg"
     },
     {
         title: 'Healthier Pregnancy Outcomes',
         desc: 'Improves fertility health, supports healthy fetal development, and lowers the risk of complications during pregnancy and delivery.',
+        image: "/images/all-service/pregnancy/img-7.jpg"
     },
     {
         title: 'Time to Prepare',
         desc: 'Gives enough time to make positive lifestyle changes, complete vaccinations, and address medical concerns before conception.',
+        image: "/images/all-service/pregnancy/img-8.jpg"
     },
 ]
 
@@ -103,14 +107,31 @@ export default function page() {
                             <ButtonPrimary>Book a Consultation</ButtonPrimary>
                         </div>
                     </div>
-                    <ImagePlaceholder className="h-[320px] md:h-[420px]" />
+
+                    <div className="relative w-full h-[350px] md:h-[520px] rounded-2xl overflow-hidden">
+                        <Image
+                            src="/images/all-service/pregnancy/img-1.jpg"
+                            alt="Preconception Counselling and Planning"
+                            fill
+                            className="object-cover object-top"
+                            priority
+                        />
+                    </div>
                 </Wrapper>
             </Section>
 
             {/* Why It's Important */}
             <Section className="bg-white">
                 <Wrapper className="grid lg:grid-cols-2 gap-12 items-center">
-                    <ImagePlaceholder className="h-[300px] md:h-[400px] order-2 lg:order-1" />
+                    <div className="relative w-full h-[320px] md:h-[450px] rounded-2xl overflow-hidden order-2 lg:order-1">
+                        <Image
+                            src="/images/all-service/pregnancy/img-2.jpg"
+                            alt="Why is Preconception Counselling Important?"
+                            fill
+                            className="object-cover object-top"
+                        />
+                    </div>
+
                     <div className="order-1 lg:order-2">
                         <Heading>Why is Preconception Counselling Important?</Heading>
                         <Subheading className="mt-3 lg:!text-base !text-zinc-600 leading-relaxed">
@@ -159,7 +180,15 @@ export default function page() {
                             ))}
                         </div>
 
-                        <ImagePlaceholder className="h-[300px] md:h-[480px]" />
+                        <div className="relative w-full h-[350px] md:h-[520px] rounded-2xl overflow-hidden">
+                            <Image
+                                src="/images/all-service/pregnancy/img-3.jpg"
+                                alt="What Happens During Preconception Counselling?"
+                                fill
+                                className="object-cover object-top"
+                                priority
+                            />
+                        </div>
                     </div>
                 </Wrapper>
             </Section>
@@ -176,7 +205,17 @@ export default function page() {
                     </div>
 
                     <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <ImagePlaceholder className="h-[260px] lg:col-span-1 sm:col-span-2" />
+
+                        <div className="relative h-[260px] lg:col-span-1 sm:col-span-2 w-full rounded-2xl overflow-hidden">
+                            <Image
+                                src="/images/all-service/pregnancy/img-4.jpg"
+                                alt="Lifestyle Changes for a Healthy Pregnancy"
+                                fill
+                                className="object-cover object-top"
+                            />
+                        </div>
+
+
                         {lifestyleChanges.map((item, idx) => (
                             <div
                                 key={idx}
@@ -225,7 +264,15 @@ export default function page() {
                         </p>
                     </div>
 
-                    <ImagePlaceholder className="h-[320px] md:h-[480px]" />
+                    <div className="relative w-full h-[350px] md:h-[520px] rounded-2xl overflow-hidden">
+                        <Image
+                            src="/images/all-service/pregnancy/img-5.jpg"
+                            alt="Preconception Counselling and Planning"
+                            fill
+                            className="object-cover object-top"
+                            priority
+                        />
+                    </div>
                 </Wrapper>
             </Section>
 
@@ -244,7 +291,14 @@ export default function page() {
                     <div className="mt-12 grid md:grid-cols-3 gap-8">
                         {benefits.map((item, idx) => (
                             <div key={idx}>
-                                <ImagePlaceholder className="h-[200px]" />
+                                <div className="relative w-full h-[240px] rounded-2xl overflow-hidden">
+                                    <Image
+                                        src={item.image}
+                                        alt={item.title}
+                                        fill
+                                        className="object-cover object-top"
+                                    />
+                                </div>
                                 <h3 className="mt-5 font-montserrat text-xl font-bold text-secondry-color">
                                     {item.title}
                                 </h3>
@@ -269,7 +323,14 @@ export default function page() {
                                 <ButtonPrimary>Schedule Your Consultation</ButtonPrimary>
                             </div>
                         </div>
-                        <ImagePlaceholder className="h-[260px] md:h-[360px] !bg-white/10 !border-white/30" />
+                        <div className="relative w-full h-[260px] md:h-[400px] rounded-xl overflow-hidden">
+                            <Image
+                                src="/images/all-service/pregnancy/img-9.jpg"
+                                alt="Start Your Pregnancy Journey with Confidence"
+                                fill
+                                className="object-cover object-top"
+                            />
+                        </div>
                     </div>
                 </Wrapper>
             </Section>

@@ -129,7 +129,7 @@ model Payment {
   amount          Float
   status          PaymentStatus
   transactionId   String?
-  razorpayOrderId String        @unique
+  gatewayOrderId String   @unique
 
   slotId String
   userId String
@@ -141,7 +141,7 @@ model Payment {
 
   @@index([userId, status])
   @@index([slotId, status])
-  @@index([razorpayOrderId])
+  @@index([gatewayOrderId])
   @@index([status, createdAt])
   @@index([contextId])
 }

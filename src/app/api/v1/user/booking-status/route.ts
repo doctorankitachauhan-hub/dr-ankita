@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
 
         const payment = await prisma.payment.findUnique({
             where: {
-                razorpayOrderId: orderId,
+                gatewayOrderId: orderId,
             },
         });
 

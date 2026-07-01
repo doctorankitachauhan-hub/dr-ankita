@@ -6,48 +6,50 @@ import { sendMail } from "@/lib/sendMail";
 import { appointmentEmailTemplate } from "@/lib/appointmentEmailTemplate";
 import { generateICS } from "@/lib/generateICS";
 
-function verifyWebhookSignature(body: string, signature: string) {
+function verifyWebhookSignature(rawBody: string, signature: string, timestamp: string): boolean {
+
+    const data = timestamp + rawBody;
     const expected = crypto
-        .createHmac("sha256", process.env.RAZORPAY_WEBHOOK_SECRET!)
-        .update(body)
-        .digest("hex");
+        .createHmac("sha256", process.env.CASHFREE_SECRET_KEY!)
+        .update(data)
+        .digest("base64");
     return expected === signature;
 }
 
 export async function POST(req: NextRequest) {
     try {
         const rawBody = await req.text();
-        const signature = req.headers.get("x-razorpay-signature")!;
+        const signature = req.headers.get("x-webhook-signature") ?? "";
+        const timestamp = req.headers.get("x-webhook-timestamp") ?? "";
 
-        if (!verifyWebhookSignature(rawBody, signature)) {
+        if (!verifyWebhookSignature(rawBody, signature, timestamp)) {
             return new NextResponse("Invalid signature", { status: 400 });
         }
 
         const event = JSON.parse(rawBody);
 
-        if (event.event !== "payment.captured") {
+        if (event.type !== "PAYMENT_SUCCESS_WEBHOOK") {
             return NextResponse.json({ received: true });
         }
 
-        await handlePaymentCaptured(event.payload.payment.entity);
+        await handlePaymentCaptured(event.data);
 
         return NextResponse.json({ success: true });
+
     } catch (error) {
         console.error("Webhook error:", error);
         return new NextResponse("Webhook error", { status: 500 });
     }
 }
 
-async function handlePaymentCaptured(payment: any) {
-    const orderId = payment.order_id as string;
-    const paymentId = payment.id as string;
+async function handlePaymentCaptured(data: any) {
+    const orderId = data.order.order_id as string;
+    const paymentId = data.payment.cf_payment_id as string;
 
     const dbPayment = await prisma.payment.findUnique({
-        where: { razorpayOrderId: orderId },
+        where: { gatewayOrderId: orderId },
         include: {
-            context: {
-                include: { contextDocuments: true },
-            },
+            context: { include: { contextDocuments: true } },
         },
     });
 
@@ -104,13 +106,21 @@ async function handlePaymentCaptured(payment: any) {
     let appointment: any;
 
     if (cancelledByThisUser) {
-        await prisma.payment.updateMany({
+        const refundedPayments = await prisma.payment.findMany({
             where: {
                 appointmentId: cancelledByThisUser.id,
                 status: "REFUNDED",
             },
-            data: { appointmentId: null },
+            select: { id: true },
         });
+        const refundedPaymentIds = refundedPayments.map((p) => p.id);
+
+        if (refundedPaymentIds.length > 0) {
+            await prisma.payment.updateMany({
+                where: { id: { in: refundedPaymentIds } },
+                data: { appointmentId: null },
+            });
+        }
 
         appointment = await prisma.appointment.update({
             where: { id: cancelledByThisUser.id },
@@ -122,6 +132,14 @@ async function handlePaymentCaptured(payment: any) {
             },
             include: { patient: true },
         });
+
+        if (refundedPaymentIds.length > 0) {
+            await prisma.payment.updateMany({
+                where: { id: { in: refundedPaymentIds } },
+                data: { appointmentId: appointment.id },
+            });
+        }
+
     } else {
         try {
             appointment = await prisma.appointment.create({
@@ -135,7 +153,7 @@ async function handlePaymentCaptured(payment: any) {
         } catch (err: any) {
             console.error("Appointment create failed:", err);
             await prisma.payment.updateMany({
-                where: { razorpayOrderId: orderId, status: { not: "SUCCESS" } },
+                where: { gatewayOrderId: orderId, status: { not: "SUCCESS" } }, // ✅ was razorpayOrderId
                 data: { status: "FAILED" },
             });
             throw err;
@@ -156,7 +174,7 @@ async function handlePaymentCaptured(payment: any) {
             where: { id: dbPayment.id },
             data: {
                 status: "SUCCESS",
-                transactionId: paymentId,
+                transactionId: String(paymentId),
                 appointmentId: appointment.id,
             },
         }),
@@ -199,14 +217,8 @@ async function handlePaymentCaptured(payment: any) {
         console.error("Meet creation failed:", err);
     }
 
-    const data = {
-        doctorName: slot.doctor.user.name,
-        startTime: slot.startTime,
-        endTime: slot.endTime,
-        meetLink
-    }
+    const emailData = { doctorName: slot.doctor.user.name, startTime: slot.startTime, endTime: slot.endTime, meetLink };
     const context = dbPayment.context;
-
     const emailDocuments = (context?.contextDocuments ?? []).map((d) => ({
         fileName: d.fileName,
         fileUrl: d.fileUrl,
@@ -218,50 +230,18 @@ async function handlePaymentCaptured(payment: any) {
             title: `${slot.doctor.user.name} Online Consultation`,
             to: [patient.email],
             subject: "Appointment Confirmed",
-            html: appointmentEmailTemplate({
-                patientName: patient.name,
-                doctorName: slot.doctor.user.name,
-                startTime: slot.startTime,
-                endTime: slot.endTime,
-                meetLink,
-            }),
-            attachments: [
-                {
-                    filename: "invite.ics",
-                    content: generateICS(data),
-                    contentType: "text/calendar; method=REQUEST",
-                },
-            ],
+            html: appointmentEmailTemplate({ patientName: patient.name, doctorName: slot.doctor.user.name, startTime: slot.startTime, endTime: slot.endTime, meetLink }),
+            attachments: [{ filename: "invite.ics", content: generateICS(emailData), contentType: "text/calendar; method=REQUEST" }],
         });
-    } catch (err) {
-        console.error("Patient email failed:", err);
-    }
+    } catch (err) { console.error("Patient email failed:", err); }
 
     try {
         await sendMail({
             title: `${slot.doctor.user.name} Online Consultation`,
             to: ["prathumjirai@gmail.com"],
             subject: "Appointment Confirmed",
-            html: appointmentEmailTemplate({
-                patientName: patient.name,
-                doctorName: slot.doctor.user.name,
-                startTime: slot.startTime,
-                endTime: slot.endTime,
-                meetLink,
-                reason: context?.reason,
-                symptoms: context?.symptoms ?? undefined,
-                notes: context?.notes ?? undefined,
-                documents: emailDocuments,
-            }),
-            attachments: [
-                {
-                    filename: "invite.ics",
-                    content: generateICS(data),
-                    contentType: "text/calendar; method=REQUEST",
-                },
-            ],
+            html: appointmentEmailTemplate({ patientName: patient.name, doctorName: slot.doctor.user.name, startTime: slot.startTime, endTime: slot.endTime, meetLink, reason: context?.reason, symptoms: context?.symptoms ?? undefined, notes: context?.notes ?? undefined, documents: emailDocuments }),
+            attachments: [{ filename: "invite.ics", content: generateICS(emailData), contentType: "text/calendar; method=REQUEST" }],
         });
-    } catch (err) {
-        console.error("Email failed:", err);
-    }
+    } catch (err) { console.error("Doctor email failed:", err); }
 }
