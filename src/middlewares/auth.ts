@@ -10,11 +10,11 @@ const PUBLIC_ROUTES = [
     "/reset-password",
 ];
 const ROUTE_PERMISSIONS: Record<string, Role[]> = {
-    "/doctor/dashboard": ["DOCTOR"],
+    "/doctor/appointments": ["DOCTOR"],
     "/user/dashboard": ["PATIENT"],
 };
 const ROLE_DASHBOARD: Record<Role, string> = {
-    DOCTOR: "/doctor/dashboard",
+    DOCTOR: "/doctor/appointments",
     PATIENT: "/user/dashboard"
 
 };
@@ -57,7 +57,7 @@ export async function authMiddleware(req: NextRequest) {
     if (pathname === "/login") {
         if (decoded.role === "DOCTOR") {
             return NextResponse.redirect(
-                new URL("/doctor/dashboard", req.url)
+                new URL("/doctor/appointments", req.url)
             );
         }
         return NextResponse.redirect(
