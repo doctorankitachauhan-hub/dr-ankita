@@ -125,7 +125,7 @@ export async function POST(req: NextRequest) {
             });
         }
 
-        const amount = 1;
+        const amount = 899;
         const orderId = `appt_${slotId}_${Date.now()}`;
 
         const cfResponse = await cashfree.PGCreateOrder({
