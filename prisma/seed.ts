@@ -6,8 +6,8 @@
 //     try {
 //         console.log("Seeding Data to db!!");
 
-//         const docEmail = "drankita@email.com";
-//         const docPass = "Priyeshray1@";
+//         const docEmail = "doctorankitachauhan@gmail.com";
+//         const docPass = "AnkitaChauhan1@";
 
 //         const hashedPassword = await bcrypt.hash(docPass, 10);
 
@@ -16,7 +16,6 @@
 //                 name: "Dr Ankita Chauhan",
 //                 email: docEmail,
 //                 phone: "+91 1234567890",
-//                 dob: "09/06/1980",
 //                 password: hashedPassword,
 //                 role: Role.DOCTOR,
 

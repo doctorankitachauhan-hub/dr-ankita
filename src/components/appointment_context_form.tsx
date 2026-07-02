@@ -248,9 +248,7 @@ export default function AppointmentContextForm({ slot, date, changeStep }: { slo
                 const { orderId, paymentSessionId, name, email } = val;
 
                 const cashfree = await load({
-                    mode: process.env.CASHFREE_ENV === "PRODUCTION"
-                        ? "production"
-                        : "sandbox",
+                    mode: "production",
                 });
 
                 const result = await cashfree.checkout({

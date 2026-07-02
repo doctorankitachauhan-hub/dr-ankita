@@ -8,7 +8,7 @@ import { Cashfree, CFEnvironment } from "cashfree-pg";
 
 
 const cashfree = new Cashfree(
-    CFEnvironment.SANDBOX,
+    CFEnvironment.PRODUCTION,
     process.env.CASHFREE_APP_ID,
     process.env.CASHFREE_SECRET_KEY
 );
@@ -125,7 +125,7 @@ export async function POST(req: NextRequest) {
             });
         }
 
-        const amount = 500;
+        const amount = 1;
         const orderId = `appt_${slotId}_${Date.now()}`;
 
         const cfResponse = await cashfree.PGCreateOrder({
