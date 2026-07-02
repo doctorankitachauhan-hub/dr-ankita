@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
         }
 
         const records = await prisma.appointmentContext.findMany({
-            where: { userId: user.id },
+            where: { userId: user.id, appointmentId: { not: "null" } },
             orderBy: { createdAt: "desc" },
             include: {
                 appointment: {
