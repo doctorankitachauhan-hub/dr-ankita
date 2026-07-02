@@ -13,6 +13,8 @@ const cashfree = new Cashfree(
     process.env.CASHFREE_SECRET_KEY
 );
 
+const PENDING_PAYMENT_TTL_MS = 15 * 60 * 1000;
+
 const DocumentType = z.enum([
     "PRESCRIPTION",
     "LAB_REPORT",
@@ -73,26 +75,54 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Slot not available" }, { status: 400 });
         }
 
-        const existingPayment = await prisma.payment.findFirst({
-            where: {
-                slotId,
-                userId: user.id,
-                status: { in: ["PENDING", "SUCCESS"] },
-            },
-            include: { context: true },
+        const activePayments = await prisma.payment.findMany({
+            where: { slotId, status: { in: ["PENDING", "SUCCESS"] } },
         });
 
-        if (existingPayment?.status === "SUCCESS") {
+        const successPayment = activePayments.find((p) => p.status === "SUCCESS");
+        if (successPayment) {
             return NextResponse.json(
-                { error: "You have already booked this slot" },
+                {
+                    error:
+                        successPayment.userId === user.id
+                            ? "You have already booked this slot"
+                            : "Slot not available",
+                },
                 { status: 409 }
             );
         }
 
-        if (existingPayment?.status === "PENDING") {
-            if (existingPayment.contextId) {
+        const now = Date.now();
+        const isExpired = (p: { createdAt: Date }) =>
+            now - p.createdAt.getTime() > PENDING_PAYMENT_TTL_MS;
+
+        const pending = activePayments.filter((p) => p.status === "PENDING");
+        const expiredPending = pending.filter(isExpired);
+        const livePending = pending.filter((p) => !isExpired(p));
+
+        // Auto-expire stale pending payments instead of leaving them stuck forever.
+        if (expiredPending.length > 0) {
+            await prisma.payment.updateMany({
+                where: { id: { in: expiredPending.map((p) => p.id) } },
+                data: { status: "FAILED" }, // use your enum's "expired/failed" value
+            });
+        }
+
+        const myLivePending = livePending.find((p) => p.userId === user.id);
+        const othersLivePending = livePending.find((p) => p.userId !== user.id);
+
+        if (othersLivePending) {
+            return NextResponse.json(
+                { error: "This slot is currently being booked by someone else. Please try again shortly." },
+                { status: 409 }
+            );
+        }
+
+        if (myLivePending) {
+            if (myLivePending.contextId) {
+
                 await prisma.appointmentContext.update({
-                    where: { id: existingPayment.contextId },
+                    where: { id: myLivePending.contextId },
                     data: {
                         reason,
                         symptoms,
@@ -113,15 +143,15 @@ export async function POST(req: NextRequest) {
             }
 
             const cfOrder = await cashfree.PGFetchOrder(
-                existingPayment.gatewayOrderId
+                myLivePending.gatewayOrderId
             );
 
             return NextResponse.json({
                 name: user.name,
                 email: user.email,
-                orderId: existingPayment.gatewayOrderId,
+                orderId: myLivePending.gatewayOrderId,
                 paymentSessionId: cfOrder.data.payment_session_id,
-                amount: existingPayment.amount,
+                amount: myLivePending.amount,
             });
         }
 
