@@ -153,7 +153,7 @@ async function handlePaymentCaptured(data: any) {
         } catch (err: any) {
             console.error("Appointment create failed:", err);
             await prisma.payment.updateMany({
-                where: { gatewayOrderId: orderId, status: { not: "SUCCESS" } }, // ✅ was razorpayOrderId
+                where: { gatewayOrderId: orderId, status: { not: "SUCCESS" } },
                 data: { status: "FAILED" },
             });
             throw err;
@@ -194,11 +194,13 @@ async function handlePaymentCaptured(data: any) {
         if (existingMeeting) {
             meetLink = existingMeeting.meetingLink;
         } else {
+            const doctorEmail = slot.doctor.user.email;
+
             const meet = await createGoogleMeet({
                 startTime: slot.startTime.toISOString(),
                 endTime: slot.endTime.toISOString(),
                 patientEmail: patient.email,
-                doctorEmail: "prathumjirai@gmail.com",
+                doctorEmail,
             });
 
             meetLink = meet.meetLink!;
@@ -235,10 +237,12 @@ async function handlePaymentCaptured(data: any) {
         });
     } catch (err) { console.error("Patient email failed:", err); }
 
+    const doctorEmail = slot.doctor.user.email;
+
     try {
         await sendMail({
             title: `${slot.doctor.user.name} Online Consultation`,
-            to: ["prathumjirai@gmail.com"],
+            to: [doctorEmail],
             subject: "Appointment Confirmed",
             html: appointmentEmailTemplate({ patientName: patient.name, doctorName: slot.doctor.user.name, startTime: slot.startTime, endTime: slot.endTime, meetLink, reason: context?.reason, symptoms: context?.symptoms ?? undefined, notes: context?.notes ?? undefined, documents: emailDocuments }),
             attachments: [{ filename: "invite.ics", content: generateICS(emailData), contentType: "text/calendar; method=REQUEST" }],

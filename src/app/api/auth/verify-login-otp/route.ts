@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
             where: { email }
         })
 
-        response.cookies.set("auth_token", token, {
+        response.cookies.set("app_uid", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
