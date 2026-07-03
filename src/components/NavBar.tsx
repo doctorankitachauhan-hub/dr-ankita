@@ -318,10 +318,12 @@ export default function NavBar() {
                         }
                         className='flex items-center gap-1 cursor-pointer px-3 py-2.5 bg-white text-primary-color rounded-lg transition-colors duration-200 ease-in-out hover:bg-gray-100 text-sm font-medium'
                     >
-                        <User size={15} fill='#827fc6' />
-                        <span>
-                            {getFirstName(user?.name!)}
-                        </span>
+                        {!isAuthenticated ? "Book Appointment" : <>
+                            <User size={15} fill='#827fc6' />
+                            <span>
+                                {getFirstName(user?.name!)}
+                            </span>
+                        </>}
                     </button>
 
                     <AnimatePresence>
