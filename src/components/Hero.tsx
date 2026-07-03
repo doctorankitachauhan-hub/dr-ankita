@@ -1,28 +1,22 @@
-'use client'
 import { ButtonPrimary, Section, Subheading, Wrapper } from '@/utils/Section'
-import { Calendar } from 'lucide-react'
+import { Calendar, ShieldCheck } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
-import BookAppointment from './BookAppointment'
-import { useLenisControl } from '@/utils/SmoothScroll'
 
 export default function Hero() {
-    const { stopScroll, startScroll } = useLenisControl();
-    const [openForm, setOpenForm] = useState<boolean>(false);
-    useEffect(() => {
-        if (openForm) {
-            stopScroll();
-        } else {
-            startScroll();
-        }
-        return () => startScroll();
-    }, [stopScroll, startScroll, openForm]);
     return (
         <Section className='bg-gradient-to-t from-primary-color/20 via-white to-transparent'>
             <Wrapper className='pb-0!'>
                 <div className='relative w-full grid md:grid-cols-2 grid-cols-1 gap-5'>
+
                     <div className="w-full h-full relative flex flex-col justify-center md:items-start items-center">
+                        <div className='flex items-center gap-2 mb-4 px-3 py-1.5 rounded-full border border-secondry-color/10 bg-secondry-color/[0.03]'>
+                            <ShieldCheck size={14} className='text-primary-color' strokeWidth={2} />
+                            <span className='font-montserrat text-[11px] font-semibold uppercase tracking-[0.08em] text-secondry-color'>
+                                MBBS, MS &middot; Board Certified
+                            </span>
+                        </div>
+
                         <h1 className='font-bold lg:text-5xl md:text-4xl text-3xl text-secondry-color 
                         md:text-left text-center leading-[1.3]'>
                             Consultant<span className='!font-open-sans text-primary-color'> Gynecologist & Obstetrician</span>
@@ -35,10 +29,10 @@ export default function Hero() {
                         </Subheading>
 
                         <div className='relative mt-8 flex items-center md:flex-row flex-col gap-4'>
-                            <ButtonPrimary className='flex items-center gap-3' onClick={() => setOpenForm(true)}>
+                            <Link href={"/login"} className='flex items-center gap-3 text-white bg-primary-color text-base font-semibold px-5 py-2.5 outline-none cursor-pointer transition-all duration-300 ease-linear hover:bg-primary-hover rounded-md'>
                                 Schedule Consultation
                                 <Calendar size={16} />
-                            </ButtonPrimary>
+                            </Link>
                             <Link href='/services' className='!font-montserrat text-base text-primary-color font-semibold px-5 py-2.5 rounded-md border border-primary-color'>
                                 Learn More
                             </Link>
@@ -80,11 +74,12 @@ export default function Hero() {
                             <div className="absolute inset-0 rounded-full bg-gradient-to-t from-primary-color/20 to-transparent blur-2xl" />
 
                             <Image
-                                src="/images/hero/hero-1.png"
+                                src="/images/hero/dr-ankita.png"
                                 width={1920}
                                 height={1080}
                                 alt="Hero Image"
-                                className="relative z-10 w-[440px]"
+                                className="relative z-10 h-170 w-auto"
+                                priority
                             />
 
                             {/* Floating Card */}
@@ -108,7 +103,6 @@ export default function Hero() {
                     </div>
                 </div>
             </Wrapper>
-            <BookAppointment openForm={openForm} closeForm={setOpenForm} />
         </Section>
     )
 }
