@@ -440,7 +440,7 @@ export default function Signup({ openLoginModal, closeLoginModal }: Props) {
                                     </AnimatePresence>
                                 </div>
 
-                                {!changeForm && <div className="py-5 flex items-center justify-center gap-1">
+                                {/* {!changeForm && <div className="py-5 flex items-center justify-center gap-1">
                                     <span className="text-sm font-medium text-gray-600">
                                         {isLoginMode ? "New User?" : "Already have an account?"}
                                     </span>
@@ -448,14 +448,13 @@ export default function Signup({ openLoginModal, closeLoginModal }: Props) {
                                         onClick={() => setIsLoginMode(!isLoginMode)}>
                                         {isLoginMode ? "Create Account" : "Login"}
                                     </button>
-                                </div>}
+                                </div>} */}
                             </motion.div>
 
                         </div>
                     </motion.div>
                 )
             }
-            <Toaster />
         </AnimatePresence>
     )
 }

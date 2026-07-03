@@ -5,6 +5,7 @@ import Providers from "@/lib/providers";
 import AuthBoundary from "@/context/auth_boundry";
 import Script from "next/script";
 import { GoogleAnalytics } from "@next/third-parties/google"
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "Dr. Ankita Chauhan",
@@ -37,6 +38,20 @@ export default function RootLayout({
         </Providers>
         <Script src="https://checkout.razorpay.com/v1/checkout.js"></Script>
         <GoogleAnalytics gaId="G-G963FVQ89C" />
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            style: {
+              borderRadius: '10px',
+              background: '#111827',
+              color: '#f8fafc',
+              fontSize: '13px',
+            },
+            success: {
+              iconTheme: { primary: '#827fc6', secondary: '#f2f1fa' },
+            },
+          }}
+        />
       </body>
     </html>
   );
