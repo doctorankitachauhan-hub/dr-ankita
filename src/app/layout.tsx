@@ -52,6 +52,7 @@ export default function RootLayout({
             },
           }}
         />
+        <Script src="https://elfsightcdn.com/platform.js" async></Script>
       </body>
     </html>
   );
