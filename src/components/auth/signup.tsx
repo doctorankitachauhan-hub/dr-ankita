@@ -455,7 +455,6 @@ export default function Signup({ openLoginModal, closeLoginModal }: Props) {
                     </motion.div>
                 )
             }
-            <Toaster />
         </AnimatePresence>
     )
 }

@@ -20,8 +20,6 @@ export default function UserLayout({ children }: Readonly<{ children: ReactNode 
                 <DashboardTopbar onMenuToggle={() => setSidebarOpen(prev => !prev)} />
                 {children}
             </section>
-
-            <Toaster />
         </main>
     );
 }

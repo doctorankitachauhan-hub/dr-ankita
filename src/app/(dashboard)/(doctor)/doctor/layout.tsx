@@ -16,7 +16,6 @@ export default function DoctorLayout({ children }: Readonly<{ children: ReactNod
                 <DashboardTopbar onMenuToggle={() => setSidebarOpen(prev => !prev)} />
                 {children}
             </section>
-            <Toaster />
         </main>
     )
 }
