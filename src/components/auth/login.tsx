@@ -3,7 +3,7 @@ import LoginForm from './login_form';
 
 export default function Login() {
     return (
-        <div className="w-full min-h-screen bg-slate-50 flex items-center justify-center p-4">
+        <div className="w-full min-h-screen flex items-center justify-center p-4">
             <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 rounded-2xl overflow-hidden shadow-lg border border-slate-200">
 
                 {/* ── Left: brand panel ── */}

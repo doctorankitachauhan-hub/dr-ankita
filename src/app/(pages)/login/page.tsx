@@ -8,7 +8,7 @@ export default function LoginPage() {
     return (
         <>
             <NavBar />
-            <Section>
+            <Section className="bg-slate-50">
                 <Wrapper>
                     <Login />
                 </Wrapper>
