@@ -219,8 +219,12 @@ async function handlePaymentCaptured(data: any) {
         console.error("Meet creation failed:", err);
     }
 
-    const emailData = { doctorName: slot.doctor.user.name, startTime: slot.startTime, endTime: slot.endTime, meetLink };
     const context = dbPayment.context;
+
+    const patientTimeZone = context?.patientTimeZone || "Asia/Kolkata";
+    const doctorTimeZone = "Asia/Kolkata";
+
+    const emailData = { doctorName: slot.doctor.user.name, startTime: slot.startTime, endTime: slot.endTime, meetLink };
     const emailDocuments = (context?.contextDocuments ?? []).map((d) => ({
         fileName: d.fileName,
         fileUrl: d.fileUrl,
@@ -232,7 +236,14 @@ async function handlePaymentCaptured(data: any) {
             title: `${slot.doctor.user.name} Online Consultation`,
             to: [patient.email],
             subject: "Appointment Confirmed",
-            html: appointmentEmailTemplate({ patientName: patient.name, doctorName: slot.doctor.user.name, startTime: slot.startTime, endTime: slot.endTime, meetLink }),
+            html: appointmentEmailTemplate({
+                patientName: patient.name,
+                doctorName: slot.doctor.user.name,
+                startTime: slot.startTime,
+                endTime: slot.endTime,
+                meetLink,
+                timeZone: patientTimeZone,
+            }),
             attachments: [{ filename: "invite.ics", content: generateICS(emailData), contentType: "text/calendar; method=REQUEST" }],
         });
     } catch (err) { console.error("Patient email failed:", err); }
@@ -244,7 +255,18 @@ async function handlePaymentCaptured(data: any) {
             title: `${slot.doctor.user.name} Online Consultation`,
             to: [doctorEmail],
             subject: "Appointment Confirmed",
-            html: appointmentEmailTemplate({ patientName: patient.name, doctorName: slot.doctor.user.name, startTime: slot.startTime, endTime: slot.endTime, meetLink, reason: context?.reason, symptoms: context?.symptoms ?? undefined, notes: context?.notes ?? undefined, documents: emailDocuments }),
+            html: appointmentEmailTemplate({
+                patientName: patient.name,
+                doctorName: slot.doctor.user.name,
+                startTime: slot.startTime,
+                endTime: slot.endTime,
+                meetLink,
+                timeZone: doctorTimeZone, 
+                reason: context?.reason,
+                symptoms: context?.symptoms ?? undefined,
+                notes: context?.notes ?? undefined,
+                documents: emailDocuments,
+            }),
             attachments: [{ filename: "invite.ics", content: generateICS(emailData), contentType: "text/calendar; method=REQUEST" }],
         });
     } catch (err) { console.error("Doctor email failed:", err); }

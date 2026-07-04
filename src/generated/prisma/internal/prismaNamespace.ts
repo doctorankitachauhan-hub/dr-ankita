@@ -1384,6 +1384,7 @@ export const AppointmentContextScalarFieldEnum = {
   reason: 'reason',
   symptoms: 'symptoms',
   notes: 'notes',
+  patientTimeZone: 'patientTimeZone',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

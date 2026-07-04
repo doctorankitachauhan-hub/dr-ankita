@@ -37,6 +37,7 @@ const CreateOrderSchema = z.object({
     symptoms: z.string().max(1000).trim().optional(),
     notes: z.string().max(1000).trim().optional(),
     files: z.array(ContextFileSchema).max(10).optional().default([]),
+    timeZone: z.string().max(100).optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -65,7 +66,7 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const { slotId, reason, symptoms, notes, files } = parsed.data;
+        const { slotId, reason, symptoms, notes, files, timeZone  } = parsed.data;
 
         const slot = await prisma.timeSlot.findUnique({
             where: { id: slotId },
@@ -120,13 +121,13 @@ export async function POST(req: NextRequest) {
 
         if (myLivePending) {
             if (myLivePending.contextId) {
-
                 await prisma.appointmentContext.update({
                     where: { id: myLivePending.contextId },
                     data: {
                         reason,
                         symptoms,
                         notes,
+                        patientTimeZone: timeZone,
                         contextDocuments: {
                             deleteMany: {},
                             create: files.map((f) => ({
@@ -178,6 +179,7 @@ export async function POST(req: NextRequest) {
                     reason,
                     symptoms,
                     notes,
+                    patientTimeZone: timeZone,
                     contextDocuments: {
                         create: files.map((f) => ({
                             uploadedById: user.id!,

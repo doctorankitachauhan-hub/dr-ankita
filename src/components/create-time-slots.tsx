@@ -1,11 +1,11 @@
 'use client';
 import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
-import { fromZonedTime } from "date-fns-tz";
 import toast from "react-hot-toast";
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import Spinner from "./ui/spinner";
+import { createISTDate, getISTDateString } from "@/lib/ist-time";
 
 type SlotsType = {
     date: string;
@@ -45,6 +45,8 @@ export default function CreateSlots() {
         { date: "", startTime: "", endTime: "" },
     ]);
 
+    const todayISO = getISTDateString();
+
     function handleAddSlots() {
         setSlots((prev) => [...prev, { date: "", startTime: "", endTime: "" }]);
     }
@@ -62,21 +64,19 @@ export default function CreateSlots() {
     }
 
     function convertISTToUTC(date: string, time: string) {
-        const dateTimeString = `${date} ${time}`;
-        return fromZonedTime(dateTimeString, "Asia/Kolkata");
+        const [year, month, day] = date.split("-").map(Number);
+        return createISTDate(year, month, day, time);
     }
 
     function validateSlots() {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
         for (const slot of slots) {
             if (!slot.date || !slot.startTime || !slot.endTime) {
                 toast.error("Please fill in all fields");
                 return false;
             }
-            const selectedDate = new Date(slot.date);
-            if (selectedDate < today) {
+            // Plain YYYY-MM-DD strings compare correctly lexicographically —
+            // avoids any Date parsing / host-timezone ambiguity entirely.
+            if (slot.date < todayISO) {
                 toast.error("Past dates are not allowed");
                 return false;
             }
@@ -114,8 +114,6 @@ export default function CreateSlots() {
     });
 
     const { mutate, isPending } = createSlots;
-
-    const todayISO = new Date().toISOString().split("T")[0];
 
     return (
         <div className="w-full min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">

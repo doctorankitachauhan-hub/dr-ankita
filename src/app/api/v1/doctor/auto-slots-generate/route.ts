@@ -6,9 +6,7 @@ import { getUser } from "@/lib/get-user";
 import { authorize } from "@/lib/authorize";
 import { autoSlotSchema } from "@/types/slots";
 import { generateFromAvailability } from "@/lib/generate-recurring-slots";
-import { fromZonedTime, toZonedTime } from "date-fns-tz";
-
-const IST = "Asia/Kolkata";
+import { getZonedParts, createISTDate, IST } from "@/lib/ist-time";
 
 export async function POST(req: NextRequest) {
     try {
@@ -49,16 +47,14 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "No availability is set." }, { status: 404 });
         }
 
+        // Midnight IST, as a true UTC instant — host-timezone-independent.
         const now = new Date();
-
-        const todayIST = toZonedTime(now, IST);
-        todayIST.setHours(0, 0, 0, 0);
-
-        const today = fromZonedTime(todayIST, IST);
+        const { year, month, day } = getZonedParts(now, IST);
+        const today = createISTDate(year, month, day, "00:00");
 
         const totalDays = parsed.data.days ?? 15;
 
-        const generatedSlots = generateFromAvailability(availability, totalDays, todayIST);
+        const generatedSlots = generateFromAvailability(availability, totalDays, today);
 
         if (!generatedSlots.length) {
             return NextResponse.json({ error: "No slots generated" }, { status: 400 });

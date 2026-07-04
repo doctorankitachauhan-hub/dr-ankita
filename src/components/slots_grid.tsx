@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { useState } from "react";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formatTimeInZone, getHourInZone, getZoneAbbreviation } from "@/lib/timezone";
 
 type Slot = {
     id: string;
@@ -18,26 +19,14 @@ type SelectedSlot = {
     endTime: string;
 };
 
-function formatTime(start: string, end: string) {
-    const startTime = new Date(start).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-    });
-    const endTime = new Date(end).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-    });
-    return `${startTime} - ${endTime}`;
-}
-
-function groupSlots(slots: Slot[]) {
+function groupSlots(slots: Slot[], timeZone: string) {
     const groups = {
         Morning: [] as Slot[],
         Afternoon: [] as Slot[],
         Evening: [] as Slot[],
     };
     slots.forEach((slot) => {
-        const hour = new Date(slot.startTime).getHours();
+        const hour = getHourInZone(slot.startTime, timeZone);
         if (hour < 12) groups.Morning.push(slot);
         else if (hour < 17) groups.Afternoon.push(slot);
         else groups.Evening.push(slot);
@@ -48,18 +37,25 @@ function groupSlots(slots: Slot[]) {
 export default function PremiumSlots({
     slots,
     date,
+    timeZone,
     onSlotConfirm,
 }: {
     slots: Slot[];
     date: string;
+    timeZone: string;
     onSlotConfirm: (slot: SelectedSlot) => void;
 }) {
     const [selected, setSelected] = useState<Slot | null>(null);
     const now = new Date();
-    const grouped = groupSlots(slots);
+    const grouped = groupSlots(slots, timeZone);
+    const zoneAbbr = getZoneAbbreviation(timeZone);
 
     return (
         <div className="p-5 space-y-8">
+            <p className="text-xs text-slate-400 -mt-2 mb-1">
+                Times shown in {zoneAbbr}
+            </p>
+
             {Object.entries(grouped).map(([label, group]) => {
                 if (!group.length) return null;
                 return (
@@ -91,10 +87,12 @@ export default function PremiumSlots({
                                         {isBooked ? (
                                             <div className="flex flex-col items-center">
                                                 <span className="text-xs font-semibold">Booked</span>
-                                                <span className="text-[11px] opacity-70">{formatTime(slot.startTime, slot.endTime)}</span>
+                                                <span className="text-[11px] opacity-70">
+                                                    {formatTimeInZone(slot.startTime, slot.endTime, timeZone)}
+                                                </span>
                                             </div>
                                         ) : (
-                                            formatTime(slot.startTime, slot.endTime)
+                                            formatTimeInZone(slot.startTime, slot.endTime, timeZone)
                                         )}
                                     </motion.button>
                                 );
@@ -113,9 +111,9 @@ export default function PremiumSlots({
                         className="mt-6 p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-between gap-4"
                     >
                         <div className="flex flex-col">
-                            <span className="text-xs text-slate-500">Selected Slot</span>
+                            <span className="text-xs text-slate-500">Selected Slot ({zoneAbbr})</span>
                             <span className="text-lg font-semibold text-slate-800">
-                                {formatTime(selected.startTime, selected.endTime)}
+                                {formatTimeInZone(selected.startTime, selected.endTime, timeZone)}
                             </span>
                         </div>
 
