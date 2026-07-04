@@ -4,6 +4,7 @@ type EmailProps = {
   startTime: string | Date;
   endTime: string | Date;
   meetLink: string;
+  timeZone?: string;
   reason?: string;
   symptoms?: string;
   notes?: string;
@@ -14,12 +15,18 @@ type EmailProps = {
   }[];
 };
 
+function getZoneAbbreviation(date: Date, timeZone: string): string {
+  const parts = new Intl.DateTimeFormat("en-US", { timeZone, timeZoneName: "short" }).formatToParts(date);
+  return parts.find((p) => p.type === "timeZoneName")?.value ?? timeZone;
+}
+
 export function appointmentEmailTemplate({
   patientName,
   doctorName,
   startTime,
   endTime,
   meetLink,
+  timeZone = "Asia/Kolkata",
   reason,
   symptoms,
   notes,
@@ -29,23 +36,25 @@ export function appointmentEmailTemplate({
   const start = new Date(startTime);
   const end = new Date(endTime);
 
-  const date = start.toLocaleDateString("en-IN", {
+  const date = start.toLocaleDateString("en-US", {
     weekday: "long",
     day: "numeric",
     month: "long",
     year: "numeric",
-    timeZone: "Asia/Kolkata",
+    timeZone,
   });
 
-  const time = `${start.toLocaleTimeString("en-IN", {
+  const zoneAbbr = getZoneAbbreviation(start, timeZone);
+
+  const time = `${start.toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
-    timeZone: "Asia/Kolkata",
-  })} – ${end.toLocaleTimeString("en-IN", {
+    timeZone,
+  })} – ${end.toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
-    timeZone: "Asia/Kolkata",
-  })}`;
+    timeZone,
+  })} ${zoneAbbr}`;
 
   const dashboardUrl = `${process.env.NEXT_PUBLIC_APP_URL}/login`;
 

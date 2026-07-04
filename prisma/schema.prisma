@@ -123,13 +123,13 @@ model Appointment {
 }
 
 model Payment {
-  id              String        @id @default(cuid())
-  appointmentId   String?
-  contextId       String?
-  amount          Float
-  status          PaymentStatus
-  transactionId   String?
-  gatewayOrderId String   @unique
+  id             String        @id @default(cuid())
+  appointmentId  String?
+  contextId      String?
+  amount         Float
+  status         PaymentStatus
+  transactionId  String?
+  gatewayOrderId String        @unique
 
   slotId String
   userId String
@@ -202,9 +202,10 @@ model AppointmentContext {
   userId        String
   appointmentId String? @unique
 
-  reason   String
-  symptoms String?
-  notes    String?
+  reason          String
+  symptoms        String?
+  notes           String?
+  patientTimeZone String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
