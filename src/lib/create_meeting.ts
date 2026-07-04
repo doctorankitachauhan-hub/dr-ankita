@@ -7,18 +7,23 @@ type Props = {
     doctorEmail: string,
 }
 
+const DOCTOR_TIMEZONE = "Asia/Kolkata";
+
 export async function createGoogleMeet({ startTime, endTime, patientEmail, doctorEmail }: Props) {
     const event = await calendar.events.insert({
         calendarId: "primary",
         conferenceDataVersion: 1,
+        sendUpdates: "none",
         requestBody: {
             summary: "Doctor Ankita Chauhan Consultation",
             description: "Ankita Chauhan Online consultation",
             start: {
-                dateTime: startTime
+                dateTime: startTime,
+                timeZone: DOCTOR_TIMEZONE, 
             },
             end: {
-                dateTime: endTime
+                dateTime: endTime,
+                timeZone: DOCTOR_TIMEZONE,
             },
             attendees: [
                 { email: patientEmail },
