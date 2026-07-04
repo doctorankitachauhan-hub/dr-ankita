@@ -249,7 +249,7 @@
                     const { orderId, paymentSessionId, name, email } = val;
 
                     const cashfree = await load({
-                        mode: "sandbox",
+                        mode: "production",
                     });
 
                     const result = await cashfree.checkout({
