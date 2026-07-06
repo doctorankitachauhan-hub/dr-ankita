@@ -251,6 +251,7 @@ model Prescription {
   type    PrescriptionType @default(FINAL)
   content String
   pdfUrl  String?
+  diagnosis String @default("")
 
   issuedAt  DateTime @default(now())
   updatedAt DateTime @updatedAt

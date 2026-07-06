@@ -1,4 +1,4 @@
-import { PrescriptionType, Role } from "@/generated/prisma/enums";
+import { Gender, PrescriptionType, Role } from "@/generated/prisma/enums";
 import { authorize } from "@/lib/authorize";
 import { getUser } from "@/lib/get-user";
 import prisma from "@/lib/prisma";
@@ -17,6 +17,10 @@ interface AppointmentWithRelations {
     patient: {
         name: string;
         email: string;
+        age: string;
+        gender: Gender;
+        weight?: string;
+        address: string;
     };
     appointmentContexts: unknown[];
     slot: {
@@ -36,7 +40,6 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY!,
     api_secret: process.env.CLOUDINARY_API_SECRET!,
 });
-
 
 export async function POST(req: NextRequest) {
     try {
@@ -59,11 +62,11 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const { appointmentId, prescription, userId, type } = parsed.data;
+        const { appointmentId, prescription, diagnosis, userId, type } = parsed.data;
 
-        if (!appointmentId || !userId || !prescription) {
+        if (!appointmentId || !userId || !prescription || !diagnosis) {
             return NextResponse.json(
-                { error: "appointmentId, userId, and prescription are required" },
+                { error: "appointmentId, userId, prescription, and diagnosis are required" },
                 { status: 400 }
             );
         }
@@ -76,13 +79,26 @@ export async function POST(req: NextRequest) {
             );
         }
 
+        const trimmedDiagnosis = diagnosis.trim();
+        if (trimmedDiagnosis.length < 3) {
+            return NextResponse.json(
+                { error: "Diagnosis must be at least 3 characters" },
+                { status: 400 }
+            );
+        }
+
         const prescriptionType = (type ?? PrescriptionType.FINAL) as PrescriptionType;
 
         const appointment = await prisma.appointment.findUnique({
             where: { id: appointmentId },
             include: {
                 patient: {
-                    select: { name: true, email: true },
+                    select: {
+                        name: true, email: true, address: true,
+                        age: true,
+                        gender: true,
+                        weight: true,
+                    },
                 },
                 appointmentContexts: true,
                 slot: {
@@ -90,7 +106,10 @@ export async function POST(req: NextRequest) {
                         doctor: {
                             include: {
                                 user: {
-                                    select: { name: true, email: true },
+                                    select: {
+                                        name: true,
+                                        email: true,
+                                    },
                                 },
                             },
                         },
@@ -151,6 +170,7 @@ export async function POST(req: NextRequest) {
         try {
             pdfBuffer = await generatePrescriptionPDF(
                 trimmedPrescription,
+                trimmedDiagnosis,
                 appointment
             );
         } catch (err) {
@@ -180,6 +200,7 @@ export async function POST(req: NextRequest) {
                     patientId: userId,
                     type: prescriptionType,
                     content: trimmedPrescription,
+                    diagnosis: trimmedDiagnosis,
                     pdfUrl,
                 },
             });
@@ -202,6 +223,7 @@ export async function POST(req: NextRequest) {
                     patientName: appointment.patient.name,
                     doctorName: appointment.slot.doctor.user.name,
                     prescription: trimmedPrescription,
+                    // diagnosis: trimmedDiagnosis,
                 }),
                 attachments: [
                     {
@@ -219,7 +241,7 @@ export async function POST(req: NextRequest) {
         }
         const typeLabel = prescriptionType === PrescriptionType.INTERIM ? "Interim" : "Final";
         return NextResponse.json(
-            { success: true, message: `${typeLabel} prescription sent successfully`, },
+            { success: true, message: `${typeLabel} prescription sent successfully` },
             { status: 200 }
         );
     } catch (error) {
@@ -231,9 +253,7 @@ export async function POST(req: NextRequest) {
     }
 }
 
-
 async function uploadPDFToCloudinary(pdfBuffer: Buffer, appointmentId: string, type: PrescriptionType): Promise<string> {
-
     return new Promise((resolve, reject) => {
         const publicId = `prescriptions/${appointmentId}_${type.toLowerCase()}`;
 

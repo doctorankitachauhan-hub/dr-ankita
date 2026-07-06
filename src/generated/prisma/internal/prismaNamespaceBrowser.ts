@@ -232,6 +232,7 @@ export const PrescriptionScalarFieldEnum = {
   type: 'type',
   content: 'content',
   pdfUrl: 'pdfUrl',
+  diagnosis: 'diagnosis',
   issuedAt: 'issuedAt',
   updatedAt: 'updatedAt'
 } as const
