@@ -1,4 +1,4 @@
-import { Role } from '@/generated/prisma/enums'
+import { Gender, Role } from '@/generated/prisma/enums'
 import z from 'zod'
 
 export const userSchema = z.object({
@@ -17,6 +17,20 @@ export const userSchema = z.object({
         .trim()
         .regex(/^[0-9]{10,15}$/, { error: "Invalid phone number" })
         .optional(),
+    age: z
+        .string({ error: "Age is required", })
+        .trim(),
+    gender: z.enum(Gender, {
+        error: "Gender is required",
+    }),
+    address: z
+        .string()
+        .trim()
+        .min(5, "Address is required")
+        .max(255, "Address too long"),
+    weight: z
+        .string()
+        .optional(),
     password: z
         .string()
         .trim()
@@ -26,12 +40,6 @@ export const userSchema = z.object({
         .regex(/[a-z]/, { error: "Password must contain a lowercase letter" })
         .regex(/[0-9]/, { error: "Password must contain a number" })
         .optional(),
-    address: z
-        .string()
-        .trim()
-        .max(255, "Address too long")
-        .optional(),
-
     dob: z
         .iso.datetime()
         .optional(),

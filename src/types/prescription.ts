@@ -5,6 +5,10 @@ export const PrescriptionSchema = z.object({
     userId: z.cuid({ error: "Invalid User" }).trim(),
     appointmentId: z.cuid({ error: "Invalid Appointment" }),
     prescription: z.string({ error: "Prescription is required" }).min(2).trim(),
+    diagnosis: z
+        .string()
+        .trim()
+        .min(3, "Diagnosis must be at least 3 characters"),
     type: z.string().default(PrescriptionType.FINAL)
 })
 
@@ -18,6 +22,7 @@ export type PrescriptionsInterface = {
     patientId: string,
     type: PrescriptionType,
     content: string,
+    diagnosis: string,
     pdfUrl: string,
     issuedAt: string,
     updatedAt: string

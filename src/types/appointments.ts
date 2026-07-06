@@ -58,5 +58,6 @@ export type Prescriptions = {
     issuedAt: string,
     type: PrescriptionType,
     pdfUrl: string,
-    content: string
+    content: string,
+    diagnosis:string
 }

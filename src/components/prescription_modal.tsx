@@ -19,6 +19,9 @@ import {
     ChevronDown,
     ChevronUp,
     CheckCircle2,
+    Plus,
+    Trash2,
+    Pill,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useState } from "react";
@@ -82,6 +85,8 @@ const PRESCRIPTION_TYPES: {
         },
     ];
 
+// NOTE: your Prescriptions type (in @/types/appointments) needs a
+// `diagnosis: string` field added alongside `content` for this to compile.
 function ExistingPrescriptionCard({ rx }: { rx: Prescriptions }) {
     const [expanded, setExpanded] = useState(false);
     const isInterim = rx.type === PrescriptionType.INTERIM;
@@ -151,10 +156,21 @@ function ExistingPrescriptionCard({ rx }: { rx: Prescriptions }) {
                         transition={{ duration: 0.2, ease: "easeInOut" }}
                         className="overflow-hidden"
                     >
-                        <div className="px-4 pb-4 pt-1">
+                        <div className="px-4 pb-4 pt-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div className="bg-white rounded-lg border border-slate-200 px-4 py-3">
+                                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                                    Medications
+                                </p>
                                 <pre className="text-sm text-slate-700 whitespace-pre-wrap font-sans leading-relaxed">
                                     {rx.content}
+                                </pre>
+                            </div>
+                            <div className="bg-white rounded-lg border border-slate-200 px-4 py-3">
+                                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                                    Diagnosis & Instructions
+                                </p>
+                                <pre className="text-sm text-slate-700 whitespace-pre-wrap font-sans leading-relaxed">
+                                    {rx.diagnosis}
                                 </pre>
                             </div>
                         </div>
@@ -165,8 +181,32 @@ function ExistingPrescriptionCard({ rx }: { rx: Prescriptions }) {
     );
 }
 
+type MedicationRow = {
+    id: string;
+    name: string;
+    dosage: string;
+};
+
+function makeEmptyMedication(): MedicationRow {
+    return {
+        id: typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2),
+        name: "",
+        dosage: "",
+    };
+}
+
+// Serializes structured rows into the same "Name\nDosage: ..." plain-text
+// format the PDF generator already parses (isSubItem detects "Dosage:" lines).
+function serializeMedications(rows: MedicationRow[]): string {
+    return rows
+        .filter((r) => r.name.trim() || r.dosage.trim())
+        .map((r) => `${r.name.trim()}\nDosage: ${r.dosage.trim()}`)
+        .join("\n\n");
+}
+
 export default function PrescriptionModal({ appointment, onClose }: Props) {
-    const [prescription, setPrescription] = useState("");
+    const [medications, setMedications] = useState<MedicationRow[]>([makeEmptyMedication()]);
+    const [diagnosis, setDiagnosis] = useState("");
     const [prescriptionType, setPrescriptionType] = useState<PrescriptionType>(
         PrescriptionType.FINAL
     );
@@ -191,7 +231,8 @@ export default function PrescriptionModal({ appointment, onClose }: Props) {
                 {
                     appointmentId: appointment.id,
                     userId: appointment.patientId,
-                    prescription,
+                    prescription: serializeMedications(medications),
+                    diagnosis,
                     type: prescriptionType,
                 },
                 { withCredentials: true }
@@ -201,16 +242,43 @@ export default function PrescriptionModal({ appointment, onClose }: Props) {
         onSuccess: (val) => {
             toast.success(val?.message ?? "Prescription sent successfully");
             onClose();
-            setPrescription("");
+            setMedications([makeEmptyMedication()]);
+            setDiagnosis("");
         },
         onError: (err: AxiosError<{ error: string }>) => {
             toast.error(err.response?.data?.error || "Something went wrong");
         },
     });
 
+    const addMedicationRow = () => {
+        setMedications((rows) => [...rows, makeEmptyMedication()]);
+    };
+
+    const removeMedicationRow = (id: string) => {
+        setMedications((rows) => (rows.length > 1 ? rows.filter((r) => r.id !== id) : rows));
+    };
+
+    const updateMedicationRow = (id: string, field: "name" | "dosage", value: string) => {
+        setMedications((rows) => rows.map((r) => (r.id === id ? { ...r, [field]: value } : r)));
+    };
+
+    const filledMedications = medications.filter((r) => r.name.trim() || r.dosage.trim());
+    const hasIncompleteRow = filledMedications.some((r) => !r.name.trim() || !r.dosage.trim());
+    const hasAtLeastOneMedication = filledMedications.length > 0;
+
     const handleSubmit = () => {
-        if (!prescription.trim()) {
-            toast.error("Please write a prescription");
+        if (!hasAtLeastOneMedication) {
+            toast.error("Please add at least one medication");
+            return;
+        }
+
+        if (hasIncompleteRow) {
+            toast.error("Each medication needs both a name and a dosage");
+            return;
+        }
+
+        if (!diagnosis.trim()) {
+            toast.error("Please write the diagnosis & instructions");
             return;
         }
 
@@ -492,28 +560,78 @@ export default function PrescriptionModal({ appointment, onClose }: Props) {
                                             </AnimatePresence>
                                         </div>
 
-                                        {/* Textarea */}
+                                        {/* Medications: structured add/remove rows */}
+                                        <div>
+                                            <div className="flex items-center justify-between mb-2.5">
+                                                <label className="block">
+                                                    <span className="text-sm font-semibold text-slate-700">
+                                                        Prescribed Medications *
+                                                    </span>
+                                                </label>
+                                                <button
+                                                    type="button"
+                                                    onClick={addMedicationRow}
+                                                    className="flex items-center gap-1 text-xs font-medium text-teal-600 hover:text-teal-700 px-2 py-1 rounded-lg hover:bg-teal-50 transition"
+                                                >
+                                                    <Plus size={14} />
+                                                    Add medication
+                                                </button>
+                                            </div>
+
+                                            <div className="space-y-2.5">
+                                                {medications.map((row, idx) => (
+                                                    <div
+                                                        key={row.id}
+                                                        className="flex items-start gap-2 rounded-xl border border-slate-200 bg-white p-3"
+                                                    >
+                                                        <div className="w-6 h-9 flex items-center justify-center text-slate-300 shrink-0">
+                                                            <Pill size={14} />
+                                                        </div>
+                                                        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                                            <input
+                                                                type="text"
+                                                                value={row.name}
+                                                                onChange={(e) => updateMedicationRow(row.id, "name", e.target.value)}
+                                                                placeholder="e.g. T. Cabegolin 0.25mg"
+                                                                className="w-full px-3 py-2 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 outline-none text-sm text-slate-700 placeholder:text-slate-400 transition"
+                                                            />
+                                                            <input
+                                                                type="text"
+                                                                value={row.dosage}
+                                                                onChange={(e) => updateMedicationRow(row.id, "dosage", e.target.value)}
+                                                                placeholder="e.g. weekly once for 6 weeks"
+                                                                className="w-full px-3 py-2 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 outline-none text-sm text-slate-700 placeholder:text-slate-400 transition"
+                                                            />
+                                                        </div>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => removeMedicationRow(row.id)}
+                                                            disabled={medications.length === 1}
+                                                            className="w-9 h-9 shrink-0 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-slate-400"
+                                                            title={medications.length === 1 ? "At least one medication row is required" : `Remove medication ${idx + 1}`}
+                                                        >
+                                                            <Trash2 size={15} />
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Diagnosis & Instructions */}
                                         <div>
                                             <label className="block mb-2">
                                                 <span className="text-sm font-semibold text-slate-700">
-                                                    Write Prescription *
-                                                </span>
-                                                <span className="text-xs text-slate-400 ml-2">
-                                                    Include medication, dosage, and instructions
+                                                    Diagnosis & Instructions *
                                                 </span>
                                             </label>
                                             <textarea
-                                                value={prescription}
-                                                onChange={(e) => setPrescription(e.target.value)}
-                                                placeholder={
-                                                    prescriptionType === PrescriptionType.INTERIM
-                                                        ? "Example:\n\nFor immediate relief:\nParacetamol 500mg — 1 tablet every 6 hours\nORS sachets — 1 sachet dissolved in 1L water\n\nRest and avoid solid food until consultation."
-                                                        : "Example:\n\nMedication: Amoxicillin 500mg\nDosage: 1 tablet, 3 times daily\nDuration: 7 days\nInstructions: Take with food. Complete the full course.\n\nMedication: Ibuprofen 400mg\nDosage: 1 tablet as needed\nInstructions: Do not exceed 3 tablets per day..."
-                                                }
-                                                className="w-full h-60 px-4 py-3 rounded-xl border border-slate-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 outline-none resize-none text-sm text-slate-700 placeholder:text-slate-400 transition"
+                                                value={diagnosis}
+                                                onChange={(e) => setDiagnosis(e.target.value)}
+                                                placeholder={"Hyperprolactinemia\nVaginitis\n\nAvoid solid food until follow-up."}
+                                                className="w-full h-32 px-4 py-3 rounded-xl border border-slate-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 outline-none resize-none text-sm text-slate-700 placeholder:text-slate-400 transition"
                                             />
                                             <p className="text-xs text-slate-400 mt-1.5">
-                                                {prescription.length} characters
+                                                {diagnosis.length} characters
                                             </p>
                                         </div>
                                     </>
@@ -556,7 +674,7 @@ export default function PrescriptionModal({ appointment, onClose }: Props) {
                                 {!allIssued && (
                                     <button
                                         onClick={handleSubmit}
-                                        disabled={isPending || !prescription.trim()}
+                                        disabled={isPending || !hasAtLeastOneMedication || hasIncompleteRow || !diagnosis.trim()}
                                         className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm shadow-teal-100"
                                     >
                                         {isPending ? (

@@ -48,6 +48,10 @@ model User {
   name     String
   email    String  @unique
   phone    String?
+  age      String  @default("18")
+  gender   Gender  @default(OTHER)
+  weight   String?
+  address  String  @default("")
   password String?
   role     Role    @default(PATIENT)
 
@@ -247,6 +251,7 @@ model Prescription {
   type    PrescriptionType @default(FINAL)
   content String
   pdfUrl  String?
+  diagnosis String @default("")
 
   issuedAt  DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -85,6 +85,10 @@ export const UserScalarFieldEnum = {
   name: 'name',
   email: 'email',
   phone: 'phone',
+  age: 'age',
+  gender: 'gender',
+  weight: 'weight',
+  address: 'address',
   password: 'password',
   role: 'role',
   createdAt: 'createdAt',
@@ -228,6 +232,7 @@ export const PrescriptionScalarFieldEnum = {
   type: 'type',
   content: 'content',
   pdfUrl: 'pdfUrl',
+  diagnosis: 'diagnosis',
   issuedAt: 'issuedAt',
   updatedAt: 'updatedAt'
 } as const
