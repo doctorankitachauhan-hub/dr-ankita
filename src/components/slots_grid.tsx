@@ -67,8 +67,9 @@ export default function PremiumSlots({
                             {group.map((slot) => {
                                 const isActive = selected?.id === slot.id;
                                 const isPast = new Date(slot.startTime) < now;
-                                const isBooked = slot.status !== "AVAILABLE";
-                                const disabled = isPast || isBooked;
+                                const isBooked = slot.status === "BOOKED";
+                                const isBlocked = slot.status === "BLOCKED" || slot.status === "CANCELLED"
+                                const disabled = isPast || isBlocked;
 
                                 return (
                                     <motion.button
@@ -91,9 +92,25 @@ export default function PremiumSlots({
                                                     {formatTimeInZone(slot.startTime, slot.endTime, timeZone)}
                                                 </span>
                                             </div>
-                                        ) : (
-                                            formatTimeInZone(slot.startTime, slot.endTime, timeZone)
-                                        )}
+                                        ) : isPast ? (
+                                            <div className="flex flex-col items-center">
+                                                <span className="text-xs font-semibold">
+                                                    {isBlocked ? slot.status : "Expired"}
+                                                </span>
+                                                <span className="text-[11px] opacity-70">
+                                                    {formatTimeInZone(slot.startTime, slot.endTime, timeZone)}
+                                                </span>
+                                            </div>
+                                        ) :
+                                            <div className="flex flex-col items-center">
+                                                <span className="text-xs font-semibold">
+                                                    {slot.status}
+                                                </span>
+                                                <span className="text-[11px] opacity-70">
+                                                    {formatTimeInZone(slot.startTime, slot.endTime, timeZone)}
+                                                </span>
+                                            </div>
+                                        }
                                     </motion.button>
                                 );
                             })}
