@@ -48,6 +48,10 @@ model User {
   name     String
   email    String  @unique
   phone    String?
+  age      Int     @default(18)
+  gender   String  @default("OTHER")
+  weight   Float?
+  address  String  @default("")
   password String?
   role     Role    @default(PATIENT)
 
