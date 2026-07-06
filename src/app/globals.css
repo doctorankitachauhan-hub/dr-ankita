@@ -101,8 +101,17 @@ input:not(:placeholder-shown) ~ .labels {
   color: var(--primary-hover);
   transform: translateY(0);
 }
-textarea:focus ~ .label,
-textarea:not(:placeholder-shown) ~ .label {
+textarea:focus ~ .labels,
+textarea:not(:placeholder-shown) ~ .labels {
+  top: -10px;
+  left: 6px;
+  font-size: 0.85rem;
+  color: var(--primary-hover);
+  transform: translateY(0);
+}
+
+select:focus ~ .labels,
+select:not(:placeholder-shown) ~ .labels {
   top: -10px;
   left: 6px;
   font-size: 0.85rem;

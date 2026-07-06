@@ -48,9 +48,9 @@ model User {
   name     String
   email    String  @unique
   phone    String?
-  age      Int     @default(18)
-  gender   String  @default("OTHER")
-  weight   Float?
+  age      String  @default("18")
+  gender   Gender  @default(OTHER)
+  weight   String?
   address  String  @default("")
   password String?
   role     Role    @default(PATIENT)

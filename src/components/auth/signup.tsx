@@ -11,6 +11,7 @@ import axios, { AxiosError } from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
 import Spinner from "../ui/spinner";
 import { useAuth } from "@/hooks/useAuth";
+import { Gender } from "@/generated/prisma/enums";
 
 
 type Props = {
@@ -22,6 +23,10 @@ type Info = {
     name: string;
     email: string;
     phone: string;
+    age: string;
+    gender: Gender
+    weight: string;
+    address: string;
 }
 
 export default function Signup({ openLoginModal, closeLoginModal }: Props) {
@@ -34,6 +39,10 @@ export default function Signup({ openLoginModal, closeLoginModal }: Props) {
         name: '',
         email: '',
         phone: '',
+        age: '',
+        gender: 'FEMALE',
+        weight: '',
+        address: ''
     })
     const [otp, setOtp] = useState<string>("")
     const [loginOtp, setLoginOtp] = useState<string>("");
@@ -46,13 +55,31 @@ export default function Signup({ openLoginModal, closeLoginModal }: Props) {
         return () => clearInterval(timer);
     }, [cooldown]);
 
-    function handleChange(e: ChangeEvent<HTMLInputElement>) {
+    function handleChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
         const { name, value } = e.target
 
         setUserData(prev => ({
             ...prev,
             [name]: value
         }))
+    }
+
+    function ValidateInputs() {
+        if (userData.name.trim() === "") {
+            return toast.error("Name is required")
+        };
+        if (userData.email.trim() === "") {
+            return toast.error("Email address is required")
+        }
+        if (userData.age.trim() === "" || parseInt(userData.age) <= 0) {
+            return toast.error("Invaid age.")
+        }
+        if (userData.gender.trim() === "") {
+            return toast.error("Gender is required.")
+        }
+        if (userData.address.trim() === "") {
+            return toast.error("Address is required.")
+        }
     }
 
     const signUpMutation = useMutation({
@@ -72,8 +99,10 @@ export default function Signup({ openLoginModal, closeLoginModal }: Props) {
         }
     });
     const { mutate: signUpMutate, isPending: signUpPending } = signUpMutation;
+
     function handleSignUp(e: FormEvent) {
         e.preventDefault();
+        ValidateInputs();
         signUpMutate(userData);
     }
 
@@ -163,7 +192,7 @@ export default function Signup({ openLoginModal, closeLoginModal }: Props) {
         setLoginSuccess(false);
         setOtp("");
         setLoginOtp("");
-        setUserData({ name: "", email: "", phone: "" });
+        setUserData({ name: "", email: "", phone: "", age: "", gender: "FEMALE", weight: "", address: "" });
     }
 
     return (
@@ -204,7 +233,7 @@ export default function Signup({ openLoginModal, closeLoginModal }: Props) {
                                     </button>
                                 </div>
 
-                                <div className="w-full bg-white overflow-hidden relative">
+                                <div className="w-full bg-white overflow-hidden relative max-h-[80vh] overflow-y-auto">
 
                                     <AnimatePresence mode="wait">
                                         {
@@ -428,6 +457,58 @@ export default function Signup({ openLoginModal, closeLoginModal }: Props) {
                                                                 className='w-full bg-transparent outline-none'
                                                             />
                                                             <label className='labels'>Contact No</label>
+                                                        </div>
+
+                                                        <div className="flex gap-4">
+                                                            <div className='relative w-1/2 px-2 py-3 border border-primary-hover rounded-md'>
+                                                                <input
+                                                                    type="text"
+                                                                    inputMode="numeric"
+                                                                    pattern="[0-9]*"
+                                                                    name="age"
+                                                                    value={userData.age}
+                                                                    onChange={handleChange}
+                                                                    className='w-full bg-transparent outline-none'
+                                                                />
+                                                                <label className='labels'>Age</label>
+                                                            </div>
+
+                                                            <div className='relative w-1/2 px-2 py-3 border border-primary-hover rounded-md'>
+                                                                <input
+                                                                    type="text"
+                                                                    inputMode="decimal"
+                                                                    name="weight"
+                                                                    value={userData.weight}
+                                                                    onChange={handleChange}
+                                                                    className='w-full bg-transparent outline-none'
+                                                                />
+                                                                <label className='labels'>Weight (kg)</label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className='relative w-full px-2 py-3 border border-primary-hover rounded-md'>
+                                                            <select
+                                                                name="gender"
+                                                                value={userData.gender}
+                                                                onChange={handleChange}
+                                                                className='w-full bg-transparent outline-none'
+                                                            >
+                                                                <option value="FEMALE">Female</option>
+                                                                <option value="MALE">Male</option>
+                                                                <option value="OTHER">Other</option>
+                                                            </select>
+                                                            <label className='labels'>Gender</label>
+                                                        </div>
+
+                                                        <div className='relative w-full px-2 py-3 border border-primary-hover rounded-md'>
+                                                            <textarea
+                                                                name="address"
+                                                                rows={2}
+                                                                value={userData.address}
+                                                                onChange={handleChange}
+                                                                className='w-full bg-transparent outline-none resize-none'
+                                                            />
+                                                            <label className='labels'>Address</label>
                                                         </div>
 
                                                         <ButtonPrimary type="submit" className='py-4 uppercase'>
