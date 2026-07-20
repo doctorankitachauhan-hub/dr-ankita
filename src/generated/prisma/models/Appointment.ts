@@ -31,6 +31,7 @@ export type AppointmentMinAggregateOutputType = {
   status: $Enums.AppointmentStatus | null
   reminder1Sent: boolean | null
   reminder2Sent: boolean | null
+  reminderMessageId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -42,6 +43,7 @@ export type AppointmentMaxAggregateOutputType = {
   status: $Enums.AppointmentStatus | null
   reminder1Sent: boolean | null
   reminder2Sent: boolean | null
+  reminderMessageId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -53,6 +55,7 @@ export type AppointmentCountAggregateOutputType = {
   status: number
   reminder1Sent: number
   reminder2Sent: number
+  reminderMessageId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -66,6 +69,7 @@ export type AppointmentMinAggregateInputType = {
   status?: true
   reminder1Sent?: true
   reminder2Sent?: true
+  reminderMessageId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -77,6 +81,7 @@ export type AppointmentMaxAggregateInputType = {
   status?: true
   reminder1Sent?: true
   reminder2Sent?: true
+  reminderMessageId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -88,6 +93,7 @@ export type AppointmentCountAggregateInputType = {
   status?: true
   reminder1Sent?: true
   reminder2Sent?: true
+  reminderMessageId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -172,6 +178,7 @@ export type AppointmentGroupByOutputType = {
   status: $Enums.AppointmentStatus
   reminder1Sent: boolean
   reminder2Sent: boolean
+  reminderMessageId: string | null
   createdAt: Date
   updatedAt: Date
   _count: AppointmentCountAggregateOutputType | null
@@ -204,6 +211,7 @@ export type AppointmentWhereInput = {
   status?: Prisma.EnumAppointmentStatusFilter<"Appointment"> | $Enums.AppointmentStatus
   reminder1Sent?: Prisma.BoolFilter<"Appointment"> | boolean
   reminder2Sent?: Prisma.BoolFilter<"Appointment"> | boolean
+  reminderMessageId?: Prisma.StringNullableFilter<"Appointment"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Appointment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Appointment"> | Date | string
   patient?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -221,6 +229,7 @@ export type AppointmentOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   reminder1Sent?: Prisma.SortOrder
   reminder2Sent?: Prisma.SortOrder
+  reminderMessageId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   patient?: Prisma.UserOrderByWithRelationInput
@@ -241,6 +250,7 @@ export type AppointmentWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumAppointmentStatusFilter<"Appointment"> | $Enums.AppointmentStatus
   reminder1Sent?: Prisma.BoolFilter<"Appointment"> | boolean
   reminder2Sent?: Prisma.BoolFilter<"Appointment"> | boolean
+  reminderMessageId?: Prisma.StringNullableFilter<"Appointment"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Appointment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Appointment"> | Date | string
   patient?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -258,6 +268,7 @@ export type AppointmentOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   reminder1Sent?: Prisma.SortOrder
   reminder2Sent?: Prisma.SortOrder
+  reminderMessageId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.AppointmentCountOrderByAggregateInput
@@ -275,6 +286,7 @@ export type AppointmentScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumAppointmentStatusWithAggregatesFilter<"Appointment"> | $Enums.AppointmentStatus
   reminder1Sent?: Prisma.BoolWithAggregatesFilter<"Appointment"> | boolean
   reminder2Sent?: Prisma.BoolWithAggregatesFilter<"Appointment"> | boolean
+  reminderMessageId?: Prisma.StringNullableWithAggregatesFilter<"Appointment"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Appointment"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Appointment"> | Date | string
 }
@@ -284,6 +296,7 @@ export type AppointmentCreateInput = {
   status?: $Enums.AppointmentStatus
   reminder1Sent?: boolean
   reminder2Sent?: boolean
+  reminderMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   patient: Prisma.UserCreateNestedOneWithoutAppointmentsInput
@@ -301,6 +314,7 @@ export type AppointmentUncheckedCreateInput = {
   status?: $Enums.AppointmentStatus
   reminder1Sent?: boolean
   reminder2Sent?: boolean
+  reminderMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   payment?: Prisma.PaymentUncheckedCreateNestedManyWithoutAppointmentInput
@@ -314,6 +328,7 @@ export type AppointmentUpdateInput = {
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
   reminder1Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminder2Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   patient?: Prisma.UserUpdateOneRequiredWithoutAppointmentsNestedInput
@@ -331,6 +346,7 @@ export type AppointmentUncheckedUpdateInput = {
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
   reminder1Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminder2Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payment?: Prisma.PaymentUncheckedUpdateManyWithoutAppointmentNestedInput
@@ -346,6 +362,7 @@ export type AppointmentCreateManyInput = {
   status?: $Enums.AppointmentStatus
   reminder1Sent?: boolean
   reminder2Sent?: boolean
+  reminderMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -355,6 +372,7 @@ export type AppointmentUpdateManyMutationInput = {
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
   reminder1Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminder2Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -366,6 +384,7 @@ export type AppointmentUncheckedUpdateManyInput = {
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
   reminder1Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminder2Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -387,6 +406,7 @@ export type AppointmentCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   reminder1Sent?: Prisma.SortOrder
   reminder2Sent?: Prisma.SortOrder
+  reminderMessageId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -398,6 +418,7 @@ export type AppointmentMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   reminder1Sent?: Prisma.SortOrder
   reminder2Sent?: Prisma.SortOrder
+  reminderMessageId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -409,6 +430,7 @@ export type AppointmentMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   reminder1Sent?: Prisma.SortOrder
   reminder2Sent?: Prisma.SortOrder
+  reminderMessageId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -580,6 +602,7 @@ export type AppointmentCreateWithoutPatientInput = {
   status?: $Enums.AppointmentStatus
   reminder1Sent?: boolean
   reminder2Sent?: boolean
+  reminderMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   slot: Prisma.TimeSlotCreateNestedOneWithoutAppointmentInput
@@ -595,6 +618,7 @@ export type AppointmentUncheckedCreateWithoutPatientInput = {
   status?: $Enums.AppointmentStatus
   reminder1Sent?: boolean
   reminder2Sent?: boolean
+  reminderMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   payment?: Prisma.PaymentUncheckedCreateNestedManyWithoutAppointmentInput
@@ -639,6 +663,7 @@ export type AppointmentScalarWhereInput = {
   status?: Prisma.EnumAppointmentStatusFilter<"Appointment"> | $Enums.AppointmentStatus
   reminder1Sent?: Prisma.BoolFilter<"Appointment"> | boolean
   reminder2Sent?: Prisma.BoolFilter<"Appointment"> | boolean
+  reminderMessageId?: Prisma.StringNullableFilter<"Appointment"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Appointment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Appointment"> | Date | string
 }
@@ -648,6 +673,7 @@ export type AppointmentCreateWithoutSlotInput = {
   status?: $Enums.AppointmentStatus
   reminder1Sent?: boolean
   reminder2Sent?: boolean
+  reminderMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   patient: Prisma.UserCreateNestedOneWithoutAppointmentsInput
@@ -663,6 +689,7 @@ export type AppointmentUncheckedCreateWithoutSlotInput = {
   status?: $Enums.AppointmentStatus
   reminder1Sent?: boolean
   reminder2Sent?: boolean
+  reminderMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   payment?: Prisma.PaymentUncheckedCreateNestedManyWithoutAppointmentInput
@@ -702,6 +729,7 @@ export type AppointmentCreateWithoutPaymentInput = {
   status?: $Enums.AppointmentStatus
   reminder1Sent?: boolean
   reminder2Sent?: boolean
+  reminderMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   patient: Prisma.UserCreateNestedOneWithoutAppointmentsInput
@@ -718,6 +746,7 @@ export type AppointmentUncheckedCreateWithoutPaymentInput = {
   status?: $Enums.AppointmentStatus
   reminder1Sent?: boolean
   reminder2Sent?: boolean
+  reminderMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   meeting?: Prisma.MeetingUncheckedCreateNestedOneWithoutAppointmentInput
@@ -746,6 +775,7 @@ export type AppointmentUpdateWithoutPaymentInput = {
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
   reminder1Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminder2Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   patient?: Prisma.UserUpdateOneRequiredWithoutAppointmentsNestedInput
@@ -762,6 +792,7 @@ export type AppointmentUncheckedUpdateWithoutPaymentInput = {
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
   reminder1Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminder2Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meeting?: Prisma.MeetingUncheckedUpdateOneWithoutAppointmentNestedInput
@@ -774,6 +805,7 @@ export type AppointmentCreateWithoutMeetingInput = {
   status?: $Enums.AppointmentStatus
   reminder1Sent?: boolean
   reminder2Sent?: boolean
+  reminderMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   patient: Prisma.UserCreateNestedOneWithoutAppointmentsInput
@@ -790,6 +822,7 @@ export type AppointmentUncheckedCreateWithoutMeetingInput = {
   status?: $Enums.AppointmentStatus
   reminder1Sent?: boolean
   reminder2Sent?: boolean
+  reminderMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   payment?: Prisma.PaymentUncheckedCreateNestedManyWithoutAppointmentInput
@@ -818,6 +851,7 @@ export type AppointmentUpdateWithoutMeetingInput = {
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
   reminder1Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminder2Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   patient?: Prisma.UserUpdateOneRequiredWithoutAppointmentsNestedInput
@@ -834,6 +868,7 @@ export type AppointmentUncheckedUpdateWithoutMeetingInput = {
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
   reminder1Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminder2Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payment?: Prisma.PaymentUncheckedUpdateManyWithoutAppointmentNestedInput
@@ -846,6 +881,7 @@ export type AppointmentCreateWithoutAppointmentContextsInput = {
   status?: $Enums.AppointmentStatus
   reminder1Sent?: boolean
   reminder2Sent?: boolean
+  reminderMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   patient: Prisma.UserCreateNestedOneWithoutAppointmentsInput
@@ -862,6 +898,7 @@ export type AppointmentUncheckedCreateWithoutAppointmentContextsInput = {
   status?: $Enums.AppointmentStatus
   reminder1Sent?: boolean
   reminder2Sent?: boolean
+  reminderMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   payment?: Prisma.PaymentUncheckedCreateNestedManyWithoutAppointmentInput
@@ -890,6 +927,7 @@ export type AppointmentUpdateWithoutAppointmentContextsInput = {
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
   reminder1Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminder2Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   patient?: Prisma.UserUpdateOneRequiredWithoutAppointmentsNestedInput
@@ -906,6 +944,7 @@ export type AppointmentUncheckedUpdateWithoutAppointmentContextsInput = {
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
   reminder1Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminder2Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payment?: Prisma.PaymentUncheckedUpdateManyWithoutAppointmentNestedInput
@@ -918,6 +957,7 @@ export type AppointmentCreateWithoutPrescriptionsInput = {
   status?: $Enums.AppointmentStatus
   reminder1Sent?: boolean
   reminder2Sent?: boolean
+  reminderMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   patient: Prisma.UserCreateNestedOneWithoutAppointmentsInput
@@ -934,6 +974,7 @@ export type AppointmentUncheckedCreateWithoutPrescriptionsInput = {
   status?: $Enums.AppointmentStatus
   reminder1Sent?: boolean
   reminder2Sent?: boolean
+  reminderMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   payment?: Prisma.PaymentUncheckedCreateNestedManyWithoutAppointmentInput
@@ -962,6 +1003,7 @@ export type AppointmentUpdateWithoutPrescriptionsInput = {
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
   reminder1Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminder2Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   patient?: Prisma.UserUpdateOneRequiredWithoutAppointmentsNestedInput
@@ -978,6 +1020,7 @@ export type AppointmentUncheckedUpdateWithoutPrescriptionsInput = {
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
   reminder1Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminder2Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payment?: Prisma.PaymentUncheckedUpdateManyWithoutAppointmentNestedInput
@@ -991,6 +1034,7 @@ export type AppointmentCreateManyPatientInput = {
   status?: $Enums.AppointmentStatus
   reminder1Sent?: boolean
   reminder2Sent?: boolean
+  reminderMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1000,6 +1044,7 @@ export type AppointmentUpdateWithoutPatientInput = {
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
   reminder1Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminder2Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   slot?: Prisma.TimeSlotUpdateOneRequiredWithoutAppointmentNestedInput
@@ -1015,6 +1060,7 @@ export type AppointmentUncheckedUpdateWithoutPatientInput = {
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
   reminder1Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminder2Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payment?: Prisma.PaymentUncheckedUpdateManyWithoutAppointmentNestedInput
@@ -1029,6 +1075,7 @@ export type AppointmentUncheckedUpdateManyWithoutPatientInput = {
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
   reminder1Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminder2Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1039,6 +1086,7 @@ export type AppointmentCreateManySlotInput = {
   status?: $Enums.AppointmentStatus
   reminder1Sent?: boolean
   reminder2Sent?: boolean
+  reminderMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1048,6 +1096,7 @@ export type AppointmentUpdateWithoutSlotInput = {
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
   reminder1Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminder2Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   patient?: Prisma.UserUpdateOneRequiredWithoutAppointmentsNestedInput
@@ -1063,6 +1112,7 @@ export type AppointmentUncheckedUpdateWithoutSlotInput = {
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
   reminder1Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminder2Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payment?: Prisma.PaymentUncheckedUpdateManyWithoutAppointmentNestedInput
@@ -1077,6 +1127,7 @@ export type AppointmentUncheckedUpdateManyWithoutSlotInput = {
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
   reminder1Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminder2Sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1128,6 +1179,7 @@ export type AppointmentSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   status?: boolean
   reminder1Sent?: boolean
   reminder2Sent?: boolean
+  reminderMessageId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   patient?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1146,6 +1198,7 @@ export type AppointmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   status?: boolean
   reminder1Sent?: boolean
   reminder2Sent?: boolean
+  reminderMessageId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   patient?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1159,6 +1212,7 @@ export type AppointmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   status?: boolean
   reminder1Sent?: boolean
   reminder2Sent?: boolean
+  reminderMessageId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   patient?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1172,11 +1226,12 @@ export type AppointmentSelectScalar = {
   status?: boolean
   reminder1Sent?: boolean
   reminder2Sent?: boolean
+  reminderMessageId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type AppointmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "patientId" | "slotId" | "status" | "reminder1Sent" | "reminder2Sent" | "createdAt" | "updatedAt", ExtArgs["result"]["appointment"]>
+export type AppointmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "patientId" | "slotId" | "status" | "reminder1Sent" | "reminder2Sent" | "reminderMessageId" | "createdAt" | "updatedAt", ExtArgs["result"]["appointment"]>
 export type AppointmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   patient?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   slot?: boolean | Prisma.TimeSlotDefaultArgs<ExtArgs>
@@ -1212,6 +1267,7 @@ export type $AppointmentPayload<ExtArgs extends runtime.Types.Extensions.Interna
     status: $Enums.AppointmentStatus
     reminder1Sent: boolean
     reminder2Sent: boolean
+    reminderMessageId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["appointment"]>
@@ -1649,6 +1705,7 @@ export interface AppointmentFieldRefs {
   readonly status: Prisma.FieldRef<"Appointment", 'AppointmentStatus'>
   readonly reminder1Sent: Prisma.FieldRef<"Appointment", 'Boolean'>
   readonly reminder2Sent: Prisma.FieldRef<"Appointment", 'Boolean'>
+  readonly reminderMessageId: Prisma.FieldRef<"Appointment", 'String'>
   readonly createdAt: Prisma.FieldRef<"Appointment", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Appointment", 'DateTime'>
 }

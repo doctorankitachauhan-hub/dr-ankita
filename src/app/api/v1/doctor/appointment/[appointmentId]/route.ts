@@ -1,6 +1,7 @@
 import { Role } from "@/generated/prisma/enums";
 import { authorize } from "@/lib/authorize";
 import { getUser } from "@/lib/get-user";
+import { cancelReminder } from "@/lib/meeting_reminder";
 import prisma from "@/lib/prisma";
 import { Cashfree, CFEnvironment } from "cashfree-pg";
 import { NextRequest, NextResponse } from "next/server";
@@ -89,12 +90,14 @@ export async function POST(
                 where: { id: appointmentId },
                 data: { status: "COMPLETED" },
             });
-
+            await cancelReminder(appointment.reminderMessageId);
             return NextResponse.json(
                 { success: true, message: "Appointment marked as completed" },
                 { status: 200 }
             );
         }
+
+        await cancelReminder(appointment.reminderMessageId);
 
         const payment = appointment.payment[0] ?? null;
 
@@ -158,10 +161,9 @@ export async function POST(
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }
-
 export async function GET(
     req: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
+    { params }: { params: Promise<{ appointmentId: string }> }
 ) {
     try {
         const user = getUser(req);
@@ -178,9 +180,9 @@ export async function GET(
             return NextResponse.json({ error: message }, { status });
         }
 
-        const { id } = await params;
+        const { appointmentId } = await params;
 
-        if (!id) {
+        if (!appointmentId) {
             return NextResponse.json(
                 { error: "Appointment id is required" },
                 { status: 400 }
@@ -188,7 +190,7 @@ export async function GET(
         }
 
         const appointment = await prisma.appointment.findUnique({
-            where: { id },
+            where: { id: appointmentId },
             include: {
                 meeting: true,
                 patient: {

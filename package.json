@@ -23,6 +23,7 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/pdfkit": "^0.17.5",
+    "@upstash/qstash": "^2.11.2",
     "axios": "^1.13.6",
     "bcryptjs": "^3.0.3",
     "cashfree-pg": "^6.0.4",
