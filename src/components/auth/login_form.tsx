@@ -4,12 +4,24 @@ import axios, { AxiosError } from 'axios';
 import { AnimatePresence, motion } from 'motion/react';
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import Signup from './signup';
+import { useRouter, useSearchParams } from 'next/navigation';
+
+const ROLE_DASHBOARD: Record<string, string> = {
+  DOCTOR: '/doctor/appointments',
+  PATIENT: '/user/dashboard',
+};
+
+function getSafeCallbackUrl(raw: string | null): string | null {
+  if (!raw) return null;
+  if (!raw.startsWith('/') || raw.startsWith('//')) return null;
+  return raw;
+}
 
 export default function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { setUser } = useAuth();
 
   const [email, setEmail] = useState('');
@@ -48,7 +60,11 @@ export default function LoginForm() {
       toast.success(val?.message ?? 'Login successful');
       setUser(val?.user);
       setStep('success');
-      setTimeout(() => router.push('/user/dashboard'), 2500);
+
+      const callbackUrl = getSafeCallbackUrl(searchParams.get('callbackUrl'));
+      const destination = callbackUrl ?? ROLE_DASHBOARD[val?.user?.role] ?? '/user/dashboard';
+
+      setTimeout(() => router.push(destination), 2500);
     },
     onError: (err: AxiosError<{ error: string }>) =>
       toast.error(err.response?.data?.error ?? 'Invalid OTP'),

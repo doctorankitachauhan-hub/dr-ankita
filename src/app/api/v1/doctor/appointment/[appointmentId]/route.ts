@@ -1,6 +1,7 @@
 import { Role } from "@/generated/prisma/enums";
 import { authorize } from "@/lib/authorize";
 import { getUser } from "@/lib/get-user";
+import { cancelReminder } from "@/lib/meeting_reminder";
 import prisma from "@/lib/prisma";
 import { Cashfree, CFEnvironment } from "cashfree-pg";
 import { NextRequest, NextResponse } from "next/server";
@@ -89,12 +90,14 @@ export async function POST(
                 where: { id: appointmentId },
                 data: { status: "COMPLETED" },
             });
-
+            await cancelReminder(appointment.reminderMessageId);
             return NextResponse.json(
                 { success: true, message: "Appointment marked as completed" },
                 { status: 200 }
             );
         }
+
+        await cancelReminder(appointment.reminderMessageId);
 
         const payment = appointment.payment[0] ?? null;
 
@@ -155,6 +158,89 @@ export async function POST(
 
     } catch (error) {
         console.error("Error while changing appointment status:", error);
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    }
+}
+export async function GET(
+    req: NextRequest,
+    { params }: { params: Promise<{ appointmentId: string }> }
+) {
+    try {
+        const user = getUser(req);
+
+        if (!user?.id) {
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            );
+        }
+
+        const { success, message, status } = authorize(req, [Role.DOCTOR]);
+        if (!success) {
+            return NextResponse.json({ error: message }, { status });
+        }
+
+        const { appointmentId } = await params;
+
+        if (!appointmentId) {
+            return NextResponse.json(
+                { error: "Appointment id is required" },
+                { status: 400 }
+            );
+        }
+
+        const appointment = await prisma.appointment.findUnique({
+            where: { id: appointmentId },
+            include: {
+                meeting: true,
+                patient: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        phone: true,
+                    }
+                },
+                appointmentContexts: {
+                    select: {
+                        id: true,
+                        reason: true,
+                        symptoms: true,
+                        notes: true,
+                        contextDocuments: {
+                            select: {
+                                id: true,
+                                fileName: true,
+                                documentType: true,
+                                fileUrl: true,
+                                fileType: true,
+                            }
+                        }
+                    },
+                },
+                prescriptions: {
+                    select: {
+                        id: true,
+                        issuedAt: true,
+                        type: true,
+                        pdfUrl: true,
+                        content: true,
+                        diagnosis: true,
+                    }
+                }
+            }
+        });
+
+        if (!appointment) {
+            return NextResponse.json(
+                { error: "Appointment not found" },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json(appointment);
+    } catch (error) {
+        console.log("Error while getting the appointment", error);
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }

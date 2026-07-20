@@ -1317,6 +1317,7 @@ export const AppointmentScalarFieldEnum = {
   status: 'status',
   reminder1Sent: 'reminder1Sent',
   reminder2Sent: 'reminder2Sent',
+  reminderMessageId: 'reminderMessageId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

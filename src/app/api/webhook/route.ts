@@ -5,6 +5,7 @@ import { createGoogleMeet } from "@/lib/create_meeting";
 import { sendMail } from "@/lib/sendMail";
 import { appointmentEmailTemplate } from "@/lib/appointmentEmailTemplate";
 import { generateICS } from "@/lib/generateICS";
+import { scheduleReminder } from "@/lib/meeting_reminder";
 
 function verifyWebhookSignature(rawBody: string, signature: string, timestamp: string): boolean {
 
@@ -231,8 +232,48 @@ async function handlePaymentCaptured(data: any) {
         documentType: d.documentType as any,
     }));
 
-    try {
-        await sendMail({
+    // try {
+    //     await sendMail({
+    //         title: `${slot.doctor.user.name} Online Consultation`,
+    //         to: [patient.email],
+    //         subject: "Appointment Confirmed",
+    //         html: appointmentEmailTemplate({
+    //             patientName: patient.name,
+    //             doctorName: slot.doctor.user.name,
+    //             startTime: slot.startTime,
+    //             endTime: slot.endTime,
+    //             meetLink,
+    //             timeZone: patientTimeZone,
+    //         }),
+    //         attachments: [{ filename: "invite.ics", content: generateICS(emailData), contentType: "text/calendar; method=REQUEST" }],
+    //     });
+    // } catch (err) { console.error("Patient email failed:", err); }
+
+    const doctorEmail = slot.doctor.user.email;
+
+    // try {
+    //     await sendMail({
+    //         title: `${slot.doctor.user.name} Online Consultation`,
+    //         to: [doctorEmail],
+    //         subject: "Appointment Confirmed",
+    //         html: appointmentEmailTemplate({
+    //             patientName: patient.name,
+    //             doctorName: slot.doctor.user.name,
+    //             startTime: slot.startTime,
+    //             endTime: slot.endTime,
+    //             meetLink,
+    //             timeZone: doctorTimeZone,
+    //             reason: context?.reason,
+    //             symptoms: context?.symptoms ?? undefined,
+    //             notes: context?.notes ?? undefined,
+    //             documents: emailDocuments,
+    //         }),
+    //         attachments: [{ filename: "invite.ics", content: generateICS(emailData), contentType: "text/calendar; method=REQUEST" }],
+    //     });
+    // } catch (err) { console.error("Doctor email failed:", err); }
+
+    const results = await Promise.allSettled([
+        sendMail({
             title: `${slot.doctor.user.name} Online Consultation`,
             to: [patient.email],
             subject: "Appointment Confirmed",
@@ -245,13 +286,8 @@ async function handlePaymentCaptured(data: any) {
                 timeZone: patientTimeZone,
             }),
             attachments: [{ filename: "invite.ics", content: generateICS(emailData), contentType: "text/calendar; method=REQUEST" }],
-        });
-    } catch (err) { console.error("Patient email failed:", err); }
-
-    const doctorEmail = slot.doctor.user.email;
-
-    try {
-        await sendMail({
+        }),
+        sendMail({
             title: `${slot.doctor.user.name} Online Consultation`,
             to: [doctorEmail],
             subject: "Appointment Confirmed",
@@ -261,13 +297,21 @@ async function handlePaymentCaptured(data: any) {
                 startTime: slot.startTime,
                 endTime: slot.endTime,
                 meetLink,
-                timeZone: doctorTimeZone, 
+                timeZone: doctorTimeZone,
                 reason: context?.reason,
                 symptoms: context?.symptoms ?? undefined,
                 notes: context?.notes ?? undefined,
                 documents: emailDocuments,
             }),
             attachments: [{ filename: "invite.ics", content: generateICS(emailData), contentType: "text/calendar; method=REQUEST" }],
-        });
-    } catch (err) { console.error("Doctor email failed:", err); }
+        }),
+        scheduleReminder(appointment.id, slot.startTime),
+    ])
+
+    results.forEach((result, i) => {
+        if (result.status === "rejected") {
+            const labels = ["patient email", "doctor email", "reminder scheduling"];
+            console.error(`${labels[i]} failed for appointment ${appointment.id}:`, result.reason);
+        }
+    });
 }

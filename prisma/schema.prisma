@@ -108,8 +108,9 @@ model Appointment {
   slotId    String
   status    AppointmentStatus @default(PENDING)
 
-  reminder1Sent Boolean @default(false)
-  reminder2Sent Boolean @default(false)
+  reminder1Sent     Boolean @default(false)
+  reminder2Sent     Boolean @default(false)
+  reminderMessageId String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -248,10 +249,10 @@ model Prescription {
   doctorId      String
   patientId     String
 
-  type    PrescriptionType @default(FINAL)
-  content String
-  pdfUrl  String?
-  diagnosis String @default("")
+  type      PrescriptionType @default(FINAL)
+  content   String
+  pdfUrl    String?
+  diagnosis String           @default("")
 
   issuedAt  DateTime @default(now())
   updatedAt DateTime @updatedAt
