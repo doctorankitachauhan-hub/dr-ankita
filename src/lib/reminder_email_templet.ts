@@ -1,72 +1,74 @@
 type ReminderEmailProps = {
-    patientName: string;
-    doctorName: string;
-    startTime: string | Date;
-    endTime: string | Date;
-    meetLink: string;
-    timeZone?: string;
-    recipientRole: "patient" | "doctor";
-    reason?: string;
-    symptoms?: string;
-    notes?: string;
-    documents?: {
-        fileName?: string;
-        fileUrl: string;
-        documentType: string;
-    }[];
+  patientName: string;
+  doctorName: string;
+  startTime: string | Date;
+  endTime: string | Date;
+  meetLink: string;
+  timeZone?: string;
+  recipientRole: "patient" | "doctor";
+  prescriptionLink?: string;
+  reason?: string;
+  symptoms?: string;
+  notes?: string;
+  documents?: {
+    fileName?: string;
+    fileUrl: string;
+    documentType: string;
+  }[];
 };
 
 function escapeHtml(str: string) {
-    return str
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 function getZoneAbbreviation(date: Date, timeZone: string): string {
-    const parts = new Intl.DateTimeFormat("en-US", { timeZone, timeZoneName: "short" }).formatToParts(date);
-    return parts.find((p) => p.type === "timeZoneName")?.value ?? timeZone;
+  const parts = new Intl.DateTimeFormat("en-US", { timeZone, timeZoneName: "short" }).formatToParts(date);
+  return parts.find((p) => p.type === "timeZoneName")?.value ?? timeZone;
 }
 
 export function reminderEmailTemplate({
-    patientName,
-    doctorName,
-    startTime,
-    endTime,
-    meetLink,
-    timeZone = "Asia/Kolkata",
-    recipientRole,
-    reason,
-    symptoms,
-    notes,
-    documents,
+  patientName,
+  doctorName,
+  startTime,
+  endTime,
+  meetLink,
+  timeZone = "Asia/Kolkata",
+  recipientRole,
+  prescriptionLink,
+  reason,
+  symptoms,
+  notes,
+  documents,
 }: ReminderEmailProps) {
-    const start = new Date(startTime);
-    const end = new Date(endTime);
-    const zoneAbbr = getZoneAbbreviation(start, timeZone);
+  const start = new Date(startTime);
+  const end = new Date(endTime);
+  const zoneAbbr = getZoneAbbreviation(start, timeZone);
 
-    const time = `${start.toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        timeZone,
-    })} – ${end.toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        timeZone,
-    })} ${zoneAbbr}`;
+  const time = `${start.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone,
+  })} – ${end.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone,
+  })} ${zoneAbbr}`;
 
-    const greetingName = recipientRole === "doctor" ? `Dr. ${escapeHtml(doctorName)}` : escapeHtml(patientName);
+  const greetingName = recipientRole === "doctor" ? `Dr. ${escapeHtml(doctorName)}` : escapeHtml(patientName);
 
-    const otherPartyLine =
-        recipientRole === "doctor"
-            ? `<p style="margin:0;font-size:14px;color:#374151;">Patient: <strong>${escapeHtml(patientName)}</strong></p>`
-            : `<p style="margin:0;font-size:14px;color:#374151;">Doctor: <strong>Dr. ${escapeHtml(doctorName)}</strong></p>`;
+  const otherPartyLine =
+    recipientRole === "doctor"
+      ? `<p style="margin:0;font-size:14px;color:#374151;">Patient: <strong>${escapeHtml(patientName)}</strong></p>`
+      : `<p style="margin:0;font-size:14px;color:#374151;">Doctor: <strong>Dr. ${escapeHtml(doctorName)}</strong></p>`;
 
-    // Only the doctor's reminder needs patient context to prep for the call
-    const contextSection =
-        recipientRole === "doctor" && (reason || symptoms || notes || documents?.length)
-            ? `
+  // Only the doctor's reminder needs patient context to prep for the call
+  const contextSection =
+    recipientRole === "doctor" && (reason || symptoms || notes || documents?.length)
+      ? `
     <tr>
       <td style="padding:24px 32px;">
         <div style="background:#fafafa;border-radius:12px;padding:16px;">
@@ -77,12 +79,12 @@ export function reminderEmailTemplate({
           ${symptoms ? `<p style="margin:0 0 8px;font-size:13px;color:#374151;"><strong>Symptoms:</strong> ${escapeHtml(symptoms)}</p>` : ""}
           ${notes ? `<p style="margin:0 0 12px;font-size:13px;color:#374151;"><strong>Notes:</strong> ${escapeHtml(notes)}</p>` : ""}
           ${documents?.length
-                ? `
+        ? `
             <div style="margin-top:12px;">
               <p style="margin:0 0 8px;font-size:12px;color:#6b7280;">Documents (${documents.length})</p>
               ${documents
-                    .map(
-                        (doc) => `
+          .map(
+            (doc) => `
                 <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:8px;background:#ffffff;border:1px solid #e5e7eb;margin-bottom:6px;">
                   <div style="max-width:70%;">
                     <p style="margin:0;font-size:12px;color:#9ca3af;">${escapeHtml(doc.documentType.replace(/_/g, " "))}</p>
@@ -91,19 +93,19 @@ export function reminderEmailTemplate({
                   <a href="${doc.fileUrl}" style="font-size:12px;font-weight:600;color:#111827;text-decoration:none;border:1px solid #e5e7eb;padding:6px 10px;border-radius:6px;">View</a>
                 </div>
               `
-                    )
-                    .join("")}
+          )
+          .join("")}
             </div>
           `
-                : ""
-            }
+        : ""
+      }
         </div>
       </td>
     </tr>
   `
-            : "";
+      : "";
 
-    return `
+  return `
 <!DOCTYPE html>
 <html>
 <body style="margin:0;background:#f5f5f5;font-family:Inter,Arial,sans-serif;">
@@ -159,6 +161,18 @@ export function reminderEmailTemplate({
   </a>
 </td>
 </tr>
+
+${recipientRole === "doctor" && prescriptionLink ? `
+  <tr>
+    <td style="padding:0 32px 16px;">
+      <a href="${prescriptionLink}" style="display:block;text-align:center;background:#0f766e;color:#fff;padding:12px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">
+        Open Patient Chart
+      </a>
+    </td>
+  </tr>
+` : ""}
+
+${contextSection}
 
 ${contextSection}
 

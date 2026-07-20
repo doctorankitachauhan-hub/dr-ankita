@@ -25,8 +25,10 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import Spinner from "./ui/spinner";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import PrescriptionModal from "./prescription_modal";
+import Link from "next/link";
 
 function formatTime(start: string, end: string) {
     return `${format(new Date(start), "hh:mm a")} – ${format(new Date(end), "hh:mm a")}`;
@@ -46,9 +48,49 @@ type Props = {
     selectedDate: string;
 };
 
-export default function AppointmentList({ selectedFilter, selectedDate }: Props) {
+export default function AppointmentList({
+    selectedFilter,
+    selectedDate,
+}: Props) {
+    const router = useRouter();
+    const searchParams = useSearchParams();
     const queryClient = useQueryClient();
-    const [selectedAppointment, setSelectedAppointment] = useState<AppointmentResponse | null>(null)
+    const [selectedAppointment, setSelectedAppointment] =
+        useState<AppointmentResponse | null>(null);
+
+    const deepLinkId = searchParams.get("appointmentId");
+    const deepLinkAction = searchParams.get("action");
+
+    const { data: deepLinkAppt, isError: deepLinkFailed } =
+        useQuery<AppointmentResponse>({
+            queryKey: ["appointment-deep-link", deepLinkId],
+            queryFn: async () => {
+                const res = await axios.get(
+                    `/api/v1/doctor/appointment/${deepLinkId}`,
+                    {
+                        withCredentials: true,
+                    },
+                );
+                return res.data;
+            },
+            enabled: !!deepLinkId && deepLinkAction === "send-prescription",
+            retry: false,
+        });
+
+    useEffect(() => {
+        if (deepLinkAppt) {
+            setSelectedAppointment(deepLinkAppt);
+            router.replace("/appointments", { scroll: false });
+        }
+    }, [deepLinkAppt, router]);
+
+    useEffect(() => {
+        if (deepLinkFailed) {
+            toast.error("Couldn't load that appointment");
+            router.replace("/appointments", { scroll: false });
+        }
+    }, [deepLinkFailed, router]);
+
     const { data, isLoading, isFetching } = useQuery<AppointmentResponse[] | []>({
         queryKey: ["appointment", selectedDate, selectedFilter.value],
         queryFn: async () => {
@@ -65,7 +107,7 @@ export default function AppointmentList({ selectedFilter, selectedDate }: Props)
             const response = await axios.post(
                 `/api/v1/doctor/appointment/${id}`,
                 { status },
-                { withCredentials: true }
+                { withCredentials: true },
             );
             return response.data;
         },
@@ -106,15 +148,18 @@ export default function AppointmentList({ selectedFilter, selectedDate }: Props)
                 <div className="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center">
                     <Calendar size={24} className="text-slate-300" />
                 </div>
-                <p className="text-sm font-medium text-slate-500">No appointments found</p>
-                <p className="text-xs text-slate-400">Try changing the date or filter</p>
+                <p className="text-sm font-medium text-slate-500">
+                    No appointments found
+                </p>
+                <p className="text-xs text-slate-400">
+                    Try changing the date or filter
+                </p>
             </motion.div>
         );
     }
 
     return (
         <>
-
             <div className="w-full p-5 flex flex-col gap-3">
                 <AnimatePresence mode="popLayout">
                     {data.map((appt, index) => (
@@ -132,18 +177,18 @@ export default function AppointmentList({ selectedFilter, selectedDate }: Props)
                 </AnimatePresence>
             </div>
 
-            {selectedAppointment &&
+            {selectedAppointment && (
                 <PrescriptionModal
                     appointment={selectedAppointment}
                     onClose={() => setSelectedAppointment(null)}
                 />
-            }
+            )}
         </>
     );
 }
 
-
-const statusConfig: Record<string, { bg: string; text: string; dot: string }> = {
+const statusConfig: Record<string, { bg: string; text: string; dot: string }> =
+{
     CONFIRMED: {
         bg: "bg-emerald-50",
         text: "text-emerald-700",
@@ -195,7 +240,11 @@ function SkeletonCard({ index }: { index: number }) {
     );
 }
 
-function ContextSection({ ctx }: { ctx: NonNullable<AppointmentResponse["appointmentContexts"]> }) {
+function ContextSection({
+    ctx,
+}: {
+    ctx: NonNullable<AppointmentResponse["appointmentContexts"]>;
+}) {
     return (
         <motion.div
             initial={{ opacity: 0, height: 0 }}
@@ -212,9 +261,14 @@ function ContextSection({ ctx }: { ctx: NonNullable<AppointmentResponse["appoint
 
                     {ctx.reason && (
                         <div className="flex gap-2.5">
-                            <Stethoscope size={14} className="text-teal-500 mt-0.5 shrink-0" />
+                            <Stethoscope
+                                size={14}
+                                className="text-teal-500 mt-0.5 shrink-0"
+                            />
                             <div>
-                                <p className="text-[11px] text-slate-400 font-medium mb-0.5">Reason</p>
+                                <p className="text-[11px] text-slate-400 font-medium mb-0.5">
+                                    Reason
+                                </p>
                                 <p className="text-sm text-slate-700">{ctx.reason}</p>
                             </div>
                         </div>
@@ -222,9 +276,14 @@ function ContextSection({ ctx }: { ctx: NonNullable<AppointmentResponse["appoint
 
                     {ctx.symptoms && (
                         <div className="flex gap-2.5">
-                            <AlertCircle size={14} className="text-amber-500 mt-0.5 shrink-0" />
+                            <AlertCircle
+                                size={14}
+                                className="text-amber-500 mt-0.5 shrink-0"
+                            />
                             <div>
-                                <p className="text-[11px] text-slate-400 font-medium mb-0.5">Symptoms</p>
+                                <p className="text-[11px] text-slate-400 font-medium mb-0.5">
+                                    Symptoms
+                                </p>
                                 <p className="text-sm text-slate-700">{ctx.symptoms}</p>
                             </div>
                         </div>
@@ -232,9 +291,14 @@ function ContextSection({ ctx }: { ctx: NonNullable<AppointmentResponse["appoint
 
                     {ctx.notes && (
                         <div className="flex gap-2.5">
-                            <StickyNote size={14} className="text-violet-400 mt-0.5 shrink-0" />
+                            <StickyNote
+                                size={14}
+                                className="text-violet-400 mt-0.5 shrink-0"
+                            />
                             <div>
-                                <p className="text-[11px] text-slate-400 font-medium mb-0.5">Notes</p>
+                                <p className="text-[11px] text-slate-400 font-medium mb-0.5">
+                                    Notes
+                                </p>
                                 <p className="text-sm text-slate-700">{ctx.notes}</p>
                             </div>
                         </div>
@@ -244,10 +308,12 @@ function ContextSection({ ctx }: { ctx: NonNullable<AppointmentResponse["appoint
                         <div className="flex gap-2.5">
                             <Paperclip size={14} className="text-sky-500 mt-0.5 shrink-0" />
                             <div className="w-full">
-                                <p className="text-[11px] text-slate-400 font-medium mb-1.5">Documents</p>
+                                <p className="text-[11px] text-slate-400 font-medium mb-1.5">
+                                    Documents
+                                </p>
                                 <div className="flex flex-wrap gap-2">
                                     {ctx.contextDocuments.map((doc) => (
-                                        <a
+                                        <Link
                                             key={doc.id}
                                             href={doc.fileUrl}
                                             target="_blank"
@@ -255,10 +321,14 @@ function ContextSection({ ctx }: { ctx: NonNullable<AppointmentResponse["appoint
                                             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 text-xs text-slate-600 hover:border-sky-300 hover:text-sky-600 transition"
                                         >
                                             <FileText size={12} />
-                                            <span className="max-w-[160px] truncate">{doc.fileName}</span>
+                                            <span className="max-w-[160px] truncate">
+                                                {doc.fileName}
+                                            </span>
                                             <span className="text-slate-300">·</span>
-                                            <span className="text-slate-400 uppercase">{doc.documentType}</span>
-                                        </a>
+                                            <span className="text-slate-400 uppercase">
+                                                {doc.documentType}
+                                            </span>
+                                        </Link>
                                     ))}
                                 </div>
                             </div>
@@ -270,14 +340,22 @@ function ContextSection({ ctx }: { ctx: NonNullable<AppointmentResponse["appoint
     );
 }
 
-function AppointmentCard({ appt, index, onChangeStatus, isPending, pendingId, pendingStatus, setAppointment }: {
+function AppointmentCard({
+    appt,
+    index,
+    onChangeStatus,
+    isPending,
+    pendingId,
+    pendingStatus,
+    setAppointment,
+}: {
     appt: AppointmentResponse;
     index: number;
     onChangeStatus: (id: string, status: "COMPLETED" | "CANCELLED") => void;
     isPending: boolean;
     pendingId: string | undefined;
     pendingStatus: string | undefined;
-    setAppointment: Dispatch<SetStateAction<AppointmentResponse | null>>
+    setAppointment: Dispatch<SetStateAction<AppointmentResponse | null>>;
 }) {
     const [expanded, setExpanded] = useState(false);
 
@@ -287,24 +365,47 @@ function AppointmentCard({ appt, index, onChangeStatus, isPending, pendingId, pe
     const isCancelled = appt.status === "CANCELLED";
     const isFinished = isCompleted || isCancelled;
 
-    const isCompleting = isPending && pendingId === appt.id && pendingStatus === "COMPLETED";
-    const isCancelling = isPending && pendingId === appt.id && pendingStatus === "CANCELLED";
+    const isCompleting =
+        isPending && pendingId === appt.id && pendingStatus === "COMPLETED";
+    const isCancelling =
+        isPending && pendingId === appt.id && pendingStatus === "CANCELLED";
 
-    const badge = statusConfig[appt.status] ?? { bg: "bg-slate-50", text: "text-slate-600", dot: "bg-slate-400" };
-    const initials = appt.patient.name.split(" ").map((n) => n[0]).slice(0, 2).join("").toUpperCase();
+    const badge = statusConfig[appt.status] ?? {
+        bg: "bg-slate-50",
+        text: "text-slate-600",
+        dot: "bg-slate-400",
+    };
+    const initials = appt.patient.name
+        .split(" ")
+        .map((n) => n[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase();
 
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12, scale: 0.98 }}
-            transition={{ delay: index * 0.06, duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+            transition={{
+                delay: index * 0.06,
+                duration: 0.4,
+                ease: [0.4, 0, 0.2, 1],
+            }}
             layout
-            className={`w-full rounded-2xl border bg-white overflow-hidden transition-shadow duration-300 hover:shadow-md ${isCancelled ? "border-rose-100 opacity-75" : isCompleted ? "border-sky-100" : "border-slate-200"
+            className={`w-full rounded-2xl border bg-white overflow-hidden transition-shadow duration-300 hover:shadow-md ${isCancelled
+                    ? "border-rose-100 opacity-75"
+                    : isCompleted
+                        ? "border-sky-100"
+                        : "border-slate-200"
                 }`}
         >
             <div
-                className={`h-0.5 w-full ${isCompleted ? "bg-sky-400" : isCancelled ? "bg-rose-300" : "bg-emerald-400"
+                className={`h-0.5 w-full ${isCompleted
+                        ? "bg-sky-400"
+                        : isCancelled
+                            ? "bg-rose-300"
+                            : "bg-emerald-400"
                     }`}
             />
 
@@ -315,10 +416,10 @@ function AppointmentCard({ appt, index, onChangeStatus, isPending, pendingId, pe
                         {/* Avatar */}
                         <div
                             className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${isCancelled
-                                ? "bg-rose-50 text-rose-400"
-                                : isCompleted
-                                    ? "bg-sky-50 text-sky-600"
-                                    : "bg-teal-50 text-teal-600"
+                                    ? "bg-rose-50 text-rose-400"
+                                    : isCompleted
+                                        ? "bg-sky-50 text-sky-600"
+                                        : "bg-teal-50 text-teal-600"
                                 }`}
                         >
                             {initials}
@@ -328,7 +429,9 @@ function AppointmentCard({ appt, index, onChangeStatus, isPending, pendingId, pe
                             <p className="text-sm font-semibold text-slate-800 leading-tight">
                                 {appt.patient.name}
                             </p>
-                            <p className="text-xs text-slate-400 mt-0.5">{appt.patient.email}</p>
+                            <p className="text-xs text-slate-400 mt-0.5">
+                                {appt.patient.email}
+                            </p>
                         </div>
                     </div>
 
@@ -358,7 +461,9 @@ function AppointmentCard({ appt, index, onChangeStatus, isPending, pendingId, pe
                     {appt.patient.address && (
                         <span className="flex items-center gap-1.5 text-xs text-slate-500">
                             <MapPin size={12} className="text-slate-400" />
-                            <span className="max-w-[200px] truncate">{appt.patient.address}</span>
+                            <span className="max-w-[200px] truncate">
+                                {appt.patient.address}
+                            </span>
                         </span>
                     )}
                 </div>

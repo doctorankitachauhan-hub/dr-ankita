@@ -78,6 +78,7 @@ export async function GET(req: Request) {
                         endTime: slot.endTime,
                         meetLink: meeting!.meetingLink,
                         recipientRole: "doctor",
+                        prescriptionLink: `https://www.drankitachauhan.com/doctor/appointments?appointmentId=${appt.id}&action=send-prescription`,
                         reason: appointmentContexts?.reason,
                         symptoms: appointmentContexts?.symptoms ?? undefined,
                         notes: appointmentContexts?.notes ?? undefined,

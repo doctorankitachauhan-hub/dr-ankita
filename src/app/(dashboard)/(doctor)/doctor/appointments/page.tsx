@@ -1,9 +1,10 @@
 'use client'
 import AppointmentHeader from '@/components/appointment_header'
 import { AppointmentFilters, Filter } from '@/constant/appointment_filters';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { format } from "date-fns";
 import AppointmentList from '@/components/appointment_list';
+import Spinner from '@/components/ui/spinner';
 
 export default function AppointmentPage() {
   const today = new Date();
@@ -19,10 +20,12 @@ export default function AppointmentPage() {
         onFilterChange={setSelectedFilter}
         onDateChange={setSelectedDate}
       />
-      <AppointmentList
-        selectedFilter={selectedFilter}
-        selectedDate={selectedDate}
-      />
+      <Suspense fallback={<Spinner />}>
+        <AppointmentList
+          selectedFilter={selectedFilter}
+          selectedDate={selectedDate}
+        />
+      </Suspense>
     </div>
   )
 }

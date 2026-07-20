@@ -158,3 +158,87 @@ export async function POST(
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }
+
+export async function GET(
+    req: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    try {
+        const user = getUser(req);
+
+        if (!user?.id) {
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            );
+        }
+
+        const { success, message, status } = authorize(req, [Role.DOCTOR]);
+        if (!success) {
+            return NextResponse.json({ error: message }, { status });
+        }
+
+        const { id } = await params;
+
+        if (!id) {
+            return NextResponse.json(
+                { error: "Appointment id is required" },
+                { status: 400 }
+            );
+        }
+
+        const appointment = await prisma.appointment.findUnique({
+            where: { id },
+            include: {
+                meeting: true,
+                patient: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        phone: true,
+                    }
+                },
+                appointmentContexts: {
+                    select: {
+                        id: true,
+                        reason: true,
+                        symptoms: true,
+                        notes: true,
+                        contextDocuments: {
+                            select: {
+                                id: true,
+                                fileName: true,
+                                documentType: true,
+                                fileUrl: true,
+                                fileType: true,
+                            }
+                        }
+                    },
+                },
+                prescriptions: {
+                    select: {
+                        id: true,
+                        issuedAt: true,
+                        type: true,
+                        pdfUrl: true,
+                        content: true,
+                        diagnosis: true,
+                    }
+                }
+            }
+        });
+
+        if (!appointment) {
+            return NextResponse.json(
+                { error: "Appointment not found" },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json(appointment);
+    } catch (error) {
+        console.log("Error while getting the appointment", error);
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    }
+}
