@@ -9,7 +9,6 @@ async function handler(req: Request) {
     const appt = await prisma.appointment.findUnique({
         where: {
             id: appointmentId,
-            status: "CONFIRMED"
         },
         include: {
             patient: true,
@@ -53,7 +52,7 @@ async function handler(req: Request) {
             }),
             sendMail({
                 title: `Dr. ${docName}`,
-                to: docName,
+                to: appt.slot.doctor.user.email,
                 subject: `Appointment with ${patient.name} starts in 15 minutes`,
                 html: reminderEmailTemplate({
                     patientName: patient.name,
