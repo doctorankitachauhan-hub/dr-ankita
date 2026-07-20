@@ -16,7 +16,6 @@ const ROUTE_PERMISSIONS: Record<string, Role[]> = {
 const ROLE_DASHBOARD: Record<Role, string> = {
     DOCTOR: "/doctor/appointments",
     PATIENT: "/user/dashboard"
-
 };
 
 function safeVerifyToken(token: string | null) {
@@ -33,6 +32,13 @@ function safeVerifyToken(token: string | null) {
     }
 }
 
+// Guards against open-redirect attacks — only allow relative internal paths
+function safeCallbackUrl(raw: string | null): string | null {
+    if (!raw) return null;
+    if (!raw.startsWith("/") || raw.startsWith("//")) return null;
+    return raw;
+}
+
 export async function authMiddleware(req: NextRequest) {
     const pathname = req.nextUrl.pathname;
 
@@ -42,7 +48,10 @@ export async function authMiddleware(req: NextRequest) {
 
     if (!decoded) {
         if (!isPublic) {
-            return NextResponse.redirect(new URL("/login", req.url));
+            const loginUrl = new URL("/login", req.url);
+            // preserve where they were headed, including query params like ?appointmentId=...
+            loginUrl.searchParams.set("callbackUrl", pathname + req.nextUrl.search);
+            return NextResponse.redirect(loginUrl);
         }
         return NextResponse.next();
     }
@@ -53,16 +62,22 @@ export async function authMiddleware(req: NextRequest) {
     requestHeaders.set("x-user-email", decoded.email);
     requestHeaders.set("x-user-role", decoded.role);
 
-
     if (pathname === "/login") {
-        if (decoded.role === "DOCTOR") {
-            return NextResponse.redirect(
-                new URL("/doctor/appointments", req.url)
+        const callbackUrl = safeCallbackUrl(req.nextUrl.searchParams.get("callbackUrl"));
+
+        // Honor callbackUrl only if it matches a route this role is allowed on
+        if (callbackUrl) {
+            const matchedRoute = Object.keys(ROUTE_PERMISSIONS).find((route) =>
+                callbackUrl.startsWith(route)
             );
+            const roleAllowed = !matchedRoute || ROUTE_PERMISSIONS[matchedRoute].includes(decoded.role);
+
+            if (roleAllowed) {
+                return NextResponse.redirect(new URL(callbackUrl, req.url));
+            }
         }
-        return NextResponse.redirect(
-            new URL("/user/dashboard", req.url)
-        );
+
+        return NextResponse.redirect(new URL(ROLE_DASHBOARD[decoded.role], req.url));
     }
 
     for (const route in ROUTE_PERMISSIONS) {
