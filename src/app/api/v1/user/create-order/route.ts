@@ -14,6 +14,7 @@ const cashfree = new Cashfree(
 );
 
 const PENDING_PAYMENT_TTL_MS = 15 * 60 * 1000;
+const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
 
 const DocumentType = z.enum([
     "PRESCRIPTION",
@@ -39,6 +40,16 @@ const CreateOrderSchema = z.object({
     files: z.array(ContextFileSchema).max(10).optional().default([]),
     timeZone: z.string().max(100).optional(),
 });
+
+function isTodayOrEarlierIST(date: Date): boolean {
+    const nowIST = new Date(Date.now() + IST_OFFSET_MS);
+    const slotIST = new Date(date.getTime() + IST_OFFSET_MS);
+
+    const todayStr = nowIST.toISOString().slice(0, 10);   // "YYYY-MM-DD"
+    const slotStr = slotIST.toISOString().slice(0, 10);
+
+    return slotStr <= todayStr;
+}
 
 export async function POST(req: NextRequest) {
     try {
@@ -66,7 +77,7 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const { slotId, reason, symptoms, notes, files, timeZone  } = parsed.data;
+        const { slotId, reason, symptoms, notes, files, timeZone } = parsed.data;
 
         const slot = await prisma.timeSlot.findUnique({
             where: { id: slotId },
@@ -74,6 +85,13 @@ export async function POST(req: NextRequest) {
 
         if (!slot || slot.status !== "AVAILABLE") {
             return NextResponse.json({ error: "Slot not available" }, { status: 400 });
+        }
+
+        if (isTodayOrEarlierIST(slot.startTime)) {
+            return NextResponse.json(
+                { error: "Appointments must be booked at least a day in advance. Please choose a slot from tomorrow onwards." },
+                { status: 400 }
+            );
         }
 
         const activePayments = await prisma.payment.findMany({

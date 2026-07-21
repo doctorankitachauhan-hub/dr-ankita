@@ -8,16 +8,16 @@ const qstash = new Client({
 
 export async function scheduleReminder(appointmentId: string, startTime: Date) {
   const reminderTime = new Date(startTime.getTime() - 15 * 60_000);
-  const now = Date.now();
+  // const now = Date.now();
 
-  const notBefore = reminderTime.getTime() <= now
-    ? Math.floor((now + 5_000) / 1000)
-    : Math.floor(reminderTime.getTime() / 1000);
+  // const notBefore = reminderTime.getTime() <= now
+  //   ? Math.floor((now + 5_000) / 1000)  
+  //   : Math.floor(reminderTime.getTime() / 1000);
 
   const { messageId } = await qstash.publishJSON({
     url: `https://www.drankitachauhan.com/api/webhook/send-reminder`,
     body: { appointmentId },
-    notBefore,
+    notBefore: Math.floor(reminderTime.getTime() / 1000),
     deduplicationId: `reminder-${appointmentId}`,
   });
 
