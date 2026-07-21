@@ -1,7 +1,10 @@
 import { Client } from "@upstash/qstash";
 import prisma from "./prisma";
 
-const qstash = new Client({ token: process.env.QSTASH_TOKEN as string });
+const qstash = new Client({
+  token: process.env.QSTASH_TOKEN as string,
+  baseUrl: process.env.QSTASH_URL as string
+});
 
 export async function scheduleReminder(appointmentId: string, startTime: Date) {
   const reminderTime = new Date(startTime.getTime() - 15 * 60_000);
