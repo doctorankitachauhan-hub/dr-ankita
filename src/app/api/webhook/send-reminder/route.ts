@@ -2,8 +2,9 @@ import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
 import prisma from "@/lib/prisma";
 import { sendMail } from "@/lib/sendMail";
 import { reminderEmailTemplate } from "@/lib/reminder_email_templet";
+import { NextRequest } from "next/server";
 
-async function handler(req: Request) {
+async function handler(req: NextRequest) {
     const { appointmentId } = await req.json();
 
     const appt = await prisma.appointment.findUnique({
