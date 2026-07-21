@@ -80,14 +80,14 @@ export default function AppointmentList({
     useEffect(() => {
         if (deepLinkAppt) {
             setSelectedAppointment(deepLinkAppt);
-            router.replace("/appointments", { scroll: false });
+            router.replace("/doctor/appointments", { scroll: false });
         }
     }, [deepLinkAppt, router]);
 
     useEffect(() => {
         if (deepLinkFailed) {
             toast.error("Couldn't load that appointment");
-            router.replace("/appointments", { scroll: false });
+            router.replace("/doctor/appointments", { scroll: false });
         }
     }, [deepLinkFailed, router]);
 
