@@ -27,19 +27,23 @@ export default function Services() {
             treatment: [
                 {
                     name: "Preconception counselling & planning",
-                    path: "/pregnancy_&_obstetric_care/preconception_counselling_&_planning"
+                    path: "/pregnancy-and-obstetric-care/preconception-counselling-and-planning"
                 },
                 {
                     name: "Antenatal and postnatal care",
-                    path: "/pregnancy_&_obstetric_care/antenatal_and_postnatal_care"
+                    path: "/pregnancy-and-obstetric-care/antenatal-and-postnatal-care"
                 },
                 {
                     name: "Normal and caesarean delivery",
-                    path: "/pregnancy_&_obstetric_care/normal_and_caesarean_delivery"
+                    path: "/pregnancy-and-obstetric-care/normal-and-caesarean-delivery"
                 },
                 {
                     name: "High-risk pregnancy management",
-                    path: "/pregnancy_&_obstetric_care/high-risk_pregnancy_management"
+                    path: "/pregnancy-and-obstetric-care/high-risk-pregnancy-management"
+                },
+                {
+                    name: "Post-delivery rehabilitation",
+                    path: "/pregnancy-and-obstetric-care/post-delivery-rehabilitation"
                 },
             ]
         },
@@ -50,19 +54,23 @@ export default function Services() {
             treatment: [
                 {
                     name: "Menstrual problems & irregular periods",
-                    path: "/gynecology_care/menstrual_problems_&_irregular_periods"
+                    path: "/gynecology-care/menstrual-problems-and-irregular-periods"
                 },
                 {
                     name: "PCOS management",
-                    path: "/gynecology_care/PCOS-management"
+                    path: "/gynecology-care/pcos-management"
                 },
                 {
                     name: "Pelvic infections treatment",
-                    path: "/gynecology_care/pelvic_infections_treatment"
+                    path: "/gynecology-care/pelvic-infections-treatment"
                 },
                 {
                     name: "Menopause care & counselling",
-                    path: "/gynecology_care/menopause_care_&_counselling"
+                    path: "/gynecology-care/menopause-care-and-counselling"
+                },
+                {
+                    name: "Infertility treatment",
+                    path: "/gynecology-care/infertility-treatment"
                 },
             ]
         },
@@ -73,19 +81,27 @@ export default function Services() {
             treatment: [
                 {
                     name: "Operative hysteroscopy",
-                    path: "/advanced_procedures_&_surgeries/operative_hysteroscopy"
+                    path: "/advanced-procedures-and-surgeries/operative-hysteroscopy"
                 },
                 {
                     name: "Laparoscopic surgeries for fibroids, cysts & endometriosis",
-                    path: "/advanced_procedures_&_surgeries/laparoscopic_surgeries"
+                    path: "/advanced-procedures-and-surgeries/laparoscopic-surgeries"
                 },
                 {
                     name: "Laparoscopic & vaginal hysterectomy",
-                    path: "/advanced_procedures_&_surgeries/laparoscopic_&_vaginal_hysterectomy"
+                    path: "/advanced-procedures-and-surgeries/laparoscopic-and-vaginal-hysterectomy"
                 },
                 {
                     name: "Perineal repair",
-                    path: "/advanced_procedures_&_surgeries/perineal_repair"
+                    path: "/advanced-procedures-and-surgeries/perineal-repair"
+                },
+                {
+                    name: "Hymenoplasty",
+                    path: "/advanced-procedures-and-surgeries/hymenoplasty"
+                },
+                {
+                    name: "Vaginoplasty",
+                    path: "/advanced-procedures-and-surgeries/vaginoplasty"
                 },
             ]
         },
@@ -96,11 +112,19 @@ export default function Services() {
             treatment: [
                 {
                     name: "Laser treatment for stress urinary incontinence",
-                    path: "/laser_gynecology/laser_treatment_for_stress_urinary_incontinence"
+                    path: "/laser-gynecology/laser-treatment-for-stress-urinary-incontinence"
                 },
                 {
                     name: "Vaginal tightening procedures",
-                    path: "/laser_gynecology/vaginal_tightening_procedures"
+                    path: "/laser-gynecology/vaginal-tightening-procedures"
+                },
+                {
+                    name: "Vaginal dryness treatment",
+                    path: "/laser-gynecology/vaginal-dryness-treatment"
+                },
+                {
+                    name: "PRP therapy for vaginal dryness",
+                    path: "/laser-gynecology/prp-therapy-for-vaginal-dryness"
                 },
             ]
         },

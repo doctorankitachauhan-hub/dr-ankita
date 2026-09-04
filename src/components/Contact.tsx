@@ -23,9 +23,17 @@ export default function Contact() {
                     </div>
 
                     <div className='relative w-full grid md:grid-cols-2 grid-cols-1 gap-5'>
-                        <div className="w-full h-full relative md:p-5 p-3 bg-white rounded-2xl border border-neutral-200">
-                            <div className='w-full h-full overflow-hidden rounded-md border border-gray-300'>
-                                <iframe className='h-full' src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d30447.937337428022!2d78.353494!3d17.460089!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb938043dc2559%3A0xbea6678253f1d49d!2sWomen%20Care%20-%20Dr%20Ankita%20Chauhan!5e0!3m2!1sen!2sus!4v1768029609248!5m2!1sen!2sus" width="100%" height="100%" style={{ border: "0" }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+                        <div className="w-full h-full relative md:p-5 p-3 bg-white rounded-2xl border border-neutral-200 flex flex-col gap-4">
+                            <address className='not-italic font-open-sans text-sm text-zinc-600 leading-relaxed'>
+                                <strong className='block text-secondry-color font-montserrat text-base mb-1'>Dr. Ankita Chauhan &mdash; Women Care</strong>
+                                206 B, Botanical Garden Rd, Sri Ram Nagar, Gachibowli, Kondapur, Hyderabad, Telangana 500084
+                                <br />
+                                Phone: <a href="tel:+919881279493" className='text-primary-color hover:underline'>+91 98812 79493</a>
+                                <br />
+                                Email: <a href="mailto:doctorankitachauhan@gmail.com" className='text-primary-color hover:underline'>doctorankitachauhan@gmail.com</a>
+                            </address>
+                            <div className='w-full flex-1 min-h-[220px] overflow-hidden rounded-md border border-gray-300'>
+                                <iframe className='h-full' src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d30447.937337428022!2d78.353494!3d17.460089!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb938043dc2559%3A0xbea6678253f1d49d!2sWomen%20Care%20-%20Dr%20Ankita%20Chauhan!5e0!3m2!1sen!2sus!4v1768029609248!5m2!1sen!2sus" width="100%" height="100%" style={{ border: "0" }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="Dr. Ankita Chauhan clinic location map"></iframe>
                             </div>
                         </div>
 

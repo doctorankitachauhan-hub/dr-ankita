@@ -50,32 +50,42 @@ export default function Footer() {
         {
             key: "Preconception counselling & planning",
             name: "Preconception counselling & planning",
-            path: "/pregnancy_&_obstetric_care/preconception_counselling_&_planning"
+            path: "/pregnancy-and-obstetric-care/preconception-counselling-and-planning"
         },
         {
             key: "Antenatal_and_postnatal_care",
             name: "Antenatal and postnatal care",
-            path: "/pregnancy_&_obstetric_care/antenatal_and_postnatal_care"
+            path: "/pregnancy-and-obstetric-care/antenatal-and-postnatal-care"
         },
         {
             key: "Menstrual problems & irregular periods",
             name: "Menstrual problems & irregular periods",
-            path: "/gynecology_care/menstrual_problems_&_irregular_periods"
+            path: "/gynecology-care/menstrual-problems-and-irregular-periods"
         },
         {
             key: "PCOS management",
             name: "PCOS management",
-            path: "/gynecology_care/PCOS-management"
+            path: "/gynecology-care/pcos-management"
         },
         {
             key: "Operative hysteroscopy",
             name: "Operative hysteroscopy",
-            path: "/advanced_procedures_&_surgeries/operative_hysteroscopy"
+            path: "/advanced-procedures-and-surgeries/operative-hysteroscopy"
         },
         {
             key: "Laparoscopic surgeries for fibroids, cysts & endometriosis",
             name: "Laparoscopic surgeries for fibroids, cysts & endometriosis",
-            path: "/advanced_procedures_&_surgeries/laparoscopic_surgeries"
+            path: "/advanced-procedures-and-surgeries/laparoscopic-surgeries"
+        },
+        {
+            key: "Infertility treatment",
+            name: "Infertility treatment",
+            path: "/gynecology-care/infertility-treatment"
+        },
+        {
+            key: "Vaginal tightening procedures",
+            name: "Vaginal tightening procedures",
+            path: "/laser-gynecology/vaginal-tightening-procedures"
         },
     ]
     const contactInfo: Contact[] = [

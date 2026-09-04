@@ -19,7 +19,7 @@ export default function Hero() {
 
                         <h1 className='font-bold lg:text-5xl md:text-4xl text-3xl text-secondry-color 
                         md:text-left text-center leading-[1.3]'>
-                            Consultant<span className='!font-open-sans text-primary-color'> Gynecologist & Obstetrician</span>
+                            Consultant<span className='!font-open-sans text-primary-color'> Gynecologist & Obstetrician in Hyderabad</span>
                         </h1>
                         <Subheading className='mt-2 max-w-xl md:!text-lg !text-base text-center md:text-left'>
                             Compassionate care for women at every stage of life.

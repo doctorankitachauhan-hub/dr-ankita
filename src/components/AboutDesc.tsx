@@ -35,7 +35,7 @@ export default function AboutDesc() {
             <Wrapper>
                 <div className='relative w-full grid lg:grid-cols-[450px_1fr] md:grid-cols-[380px_1fr] grid-cols-1 gap-8'>
                     <div className='relative w-full h-full flex md:justify-start justify-center'>
-                        <Image src='/images/about/doc-img-2.png' width={450} height={400} alt='Dr. Ankita Chauhan'
+                        <Image src='/images/about/dr-ankita-chauhan.png' width={450} height={400} alt='Dr. Ankita Chauhan'
                             className='max-h-[500px] w-auto h-full' />
                     </div>
                     <div className='w-full h-full relative'>

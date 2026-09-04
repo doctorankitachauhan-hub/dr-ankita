@@ -27,17 +27,17 @@ export default function OtherFacilityes() {
         {
             name: "Vaginal Tightening",
             description: "Non-surgical treatment to improve vaginal tone and firmness. Helps enhance comfort and intimate well-being. Performed using safe and advanced techniques.",
-            img: "/images/others/img-1.png"
+            img: "/images/others/vaginal-tightening.png"
         },
         {
             name: "Stress Urinary Incontinence (Laser)",
             description: "Laser treatment to reduce urine leakage during activities like coughing or exercise. Strengthens vaginal tissues without surgery. Quick, safe, and minimally invasive.",
-            img: "/images/others/img-2.png"
+            img: "/images/others/stress-urinary-incontinence-laser.png"
         },
         {
             name: "Chronic Infection Treatment",
             description: "Advanced care for recurring vaginal infections. Focuses on identifying causes and preventing recurrence. Aims to restore comfort and intimate health.",
-            img: "/images/others/img-3.png"
+            img: "/images/others/chronic-infection-treatment.png"
         },
     ]
     return (
