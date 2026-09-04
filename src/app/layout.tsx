@@ -102,7 +102,7 @@ export default function RootLayout({
           </AuthBoundary>
         </Providers>
         <Script src="https://checkout.razorpay.com/v1/checkout.js"></Script>
-        <GoogleAnalytics gaId="G-G963FVQ89C" />
+        <GoogleAnalytics gaId="G-RX9H8TYKVV" />
         <Toaster
           position="top-center"
           toastOptions={{
