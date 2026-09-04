@@ -11,10 +11,7 @@ const SITE_URL = "https://www.drankitachauhan.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: {
-    default: "Best Gynecologist & Obstetrician in Hyderabad | Dr. Ankita Chauhan",
-    template: "%s | Dr. Ankita Chauhan",
-  },
+  title: "Best Gynecologist & Obstetrician in Hyderabad | Dr. Ankita Chauhan",
   description: "Consult Dr. Ankita Chauhan, an experienced gynecologist and obstetrician in Hyderabad for pregnancy care, infertility treatment, PCOS, and women's health.",
   openGraph: {
     type: "website",
