@@ -9,8 +9,25 @@ export const metadata: Metadata = {
     alternates: {
         canonical: "https://www.drankitachauhan.com/blogs/what-causes-period-pain",
     },
+    openGraph: {
+        type: "article",
+        title: "What Causes Period Pain? Symptoms & Treatment",
+        description: "Understand the causes of period pain, warning signs, and effective treatment options for menstrual cramps.",
+        url: "https://www.drankitachauhan.com/blogs/what-causes-period-pain",
+        publishedTime: "2025-06-15",
+    },
 }
 
+const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "MedicalWebPage",
+    "headline": "What Causes Period Pain — Understanding the Pain with Clarity",
+    "description": "Understand the causes of period pain, warning signs, and effective treatment options for menstrual cramps.",
+    "datePublished": "2025-06-15",
+    "author": { "@type": "Physician", "name": "Dr. Ankita Chauhan" },
+    "image": "https://www.drankitachauhan.com/images/blog/what-causes-period-pain-understanding-the-pain-with-clarity.jpg",
+    "mainEntityOfPage": "https://www.drankitachauhan.com/blogs/what-causes-period-pain",
+}
 
 export default function BlogOne() {
     const lstOne = [
@@ -57,6 +74,11 @@ export default function BlogOne() {
         'Hormonal treatments (like birth control pills) in some cases can reduce the intensity of periods and make bleeding lighter, which often reduces pain too.'
     ]
     return (
+        <>
+        <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        />
         <Section>
             <Wrapper>
                 <div className='w-full relative mx-auto max-w-4xl flex flex-col'>
@@ -78,7 +100,7 @@ export default function BlogOne() {
                     <Subheading className='mt-5 '>
                         Period pain, also called menstrual cramps or dysmenorrhea, is something many women experience every month. Sometimes the pain is mild and manageable. Other times it can be very strong and affect daily life. Dr. Ankita Chauhan, senior gynaecologist in Hyderabad, explains why period pain occurs, what might make it worse, and when to see a doctor.
                     </Subheading>
-                    <Image src='/images/blog/img-1.jpg' alt='What Causes Period Pain — Understanding the Pain with Clarity' width={800} height={500} className='w-full h-[400px] object-cover mt-5 rounded' />
+                    <Image src='/images/blog/what-causes-period-pain-understanding-the-pain-with-clarity.jpg' alt='What Causes Period Pain — Understanding the Pain with Clarity' width={800} height={500} className='w-full h-[400px] object-cover mt-5 rounded' />
 
                     <div className='mt-8 relative flex flex-col gap-8'>
                         <div>
@@ -177,5 +199,6 @@ export default function BlogOne() {
                 </div>
             </Wrapper>
         </Section>
+        </>
     )
 }

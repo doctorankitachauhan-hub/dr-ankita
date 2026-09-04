@@ -8,9 +8,14 @@ import { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: "About Dr. Ankita Chauhan | Gynecologist in Hyderabad",
-  description: "Learn about Dr. Ankita Chauhan, a trusted gynecologist in Varanasi dedicated to women's healthcare, pregnancy care, infertility, and advanced treatments.",
+  description: "Learn about Dr. Ankita Chauhan, a trusted gynecologist in Hyderabad dedicated to women's healthcare, pregnancy care, infertility, and advanced treatments.",
   alternates: {
     canonical: "https://www.drankitachauhan.com/about",
+  },
+  openGraph: {
+    title: "About Dr. Ankita Chauhan | Gynecologist in Hyderabad",
+    description: "Learn about Dr. Ankita Chauhan, a trusted gynecologist in Hyderabad dedicated to women's healthcare, pregnancy care, infertility, and advanced treatments.",
+    url: "https://www.drankitachauhan.com/about",
   },
 }
 

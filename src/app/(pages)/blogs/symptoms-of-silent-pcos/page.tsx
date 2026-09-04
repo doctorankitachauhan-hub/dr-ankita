@@ -10,6 +10,24 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://www.drankitachauhan.com/blogs/symptoms-of-silent-pcos",
   },
+  openGraph: {
+    type: "article",
+    title: "Silent PCOS Symptoms Every Woman Should Know",
+    description: "Learn the early signs, causes, diagnosis, and treatment options for silent PCOS from Dr. Ankita Chauhan.",
+    url: "https://www.drankitachauhan.com/blogs/symptoms-of-silent-pcos",
+    publishedTime: "2025-06-15",
+  },
+}
+
+const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "MedicalWebPage",
+    "headline": "Symptoms of Silent PCOS",
+    "description": "Learn the early signs, causes, diagnosis, and treatment options for silent PCOS from Dr. Ankita Chauhan.",
+    "datePublished": "2025-06-15",
+    "author": { "@type": "Physician", "name": "Dr. Ankita Chauhan" },
+    "image": "https://www.drankitachauhan.com/images/blog/symptoms-of-silent-pcos.jpg",
+    "mainEntityOfPage": "https://www.drankitachauhan.com/blogs/symptoms-of-silent-pcos",
 }
 
 export default function BlogThree() {
@@ -43,6 +61,11 @@ export default function BlogThree() {
         'Mental health issues like anxiety or depression.'
     ]
     return (
+        <>
+        <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        />
         <Section>
             <Wrapper>
                 <div className='w-full relative mx-auto max-w-4xl flex flex-col'>
@@ -66,7 +89,7 @@ export default function BlogThree() {
                         <br />
                         Dr. Ankita Chauhan, Senior Gynecologist in Hyderabad, explains that even when PCOS does not show visible symptoms, the body gives subtle signals. Recognizing these early can help in getting the right treatment and preventing complications.
                     </Subheading>
-                    <Image src='/images/blog/img-3.jpg' alt='Symptoms of Silent PCOS' width={800} height={500} className='w-full h-[400px] object-cover mt-5 rounded' />
+                    <Image src='/images/blog/symptoms-of-silent-pcos.jpg' alt='Symptoms of Silent PCOS' width={800} height={500} className='w-full h-[400px] object-cover mt-5 rounded' />
 
                     <div className='mt-8 relative flex flex-col gap-8'>
                         <div>
@@ -153,5 +176,6 @@ export default function BlogThree() {
                 </div>
             </Wrapper>
         </Section>
+        </>
     )
 }

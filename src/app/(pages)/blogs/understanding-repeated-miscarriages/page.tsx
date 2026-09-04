@@ -9,6 +9,24 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://www.drankitachauhan.com/blogs/understanding-repeated-miscarriages",
   },
+  openGraph: {
+    type: "article",
+    title: "Repeated Miscarriages: Causes & Treatment Guide",
+    description: "Learn the causes, diagnosis, and treatment options for recurrent miscarriages from Dr. Ankita Chauhan.",
+    url: "https://www.drankitachauhan.com/blogs/understanding-repeated-miscarriages",
+    publishedTime: "2025-06-15",
+  },
+}
+
+const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "MedicalWebPage",
+    "headline": "Understanding Repeated Miscarriages: Causes, Symptoms & Hope",
+    "description": "Learn the causes, diagnosis, and treatment options for recurrent miscarriages from Dr. Ankita Chauhan.",
+    "datePublished": "2025-06-15",
+    "author": { "@type": "Physician", "name": "Dr. Ankita Chauhan" },
+    "image": "https://www.drankitachauhan.com/images/blog/understanding-repeated-miscarriages-causes-symptoms-hope.jpg",
+    "mainEntityOfPage": "https://www.drankitachauhan.com/blogs/understanding-repeated-miscarriages",
 }
 
 export default function BlogTwo() {
@@ -60,6 +78,11 @@ export default function BlogTwo() {
         }
     ]
     return (
+        <>
+        <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        />
         <Section>
             <Wrapper>
                 <div className='w-full relative mx-auto max-w-4xl flex flex-col'>
@@ -81,7 +104,7 @@ export default function BlogTwo() {
                     <Subheading className='mt-5 '>
                         Repeated miscarriages, also called recurrent pregnancy loss, is when a woman has two or more miscarriages. This situation is painful emotionally and physically, and many couples want to understand why it&apos;s happening and what can be done. Dr. Ankita Chauhan, senior gynaecologist in Hyderabad, explains causes, what to look for, and how to move forward with hope.
                     </Subheading>
-                    <Image src='/images/blog/img-2.jpg' alt='Understanding Repeated Miscarriages: Causes, Symptoms & Hope' width={800} height={500} className='w-full h-[400px] object-cover mt-5 rounded' />
+                    <Image src='/images/blog/understanding-repeated-miscarriages-causes-symptoms-hope.jpg' alt='Understanding Repeated Miscarriages: Causes, Symptoms & Hope' width={800} height={500} className='w-full h-[400px] object-cover mt-5 rounded' />
 
                     <div className='mt-8 relative flex flex-col gap-8'>
                         <div>
@@ -170,5 +193,6 @@ export default function BlogTwo() {
                 </div>
             </Wrapper>
         </Section>
+        </>
     )
 }

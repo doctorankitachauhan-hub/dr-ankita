@@ -10,11 +10,34 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://www.drankitachauhan.com/blogs/understanding-postpartum-depression",
   },
+  openGraph: {
+    type: "article",
+    title: "Understanding Postpartum Depression After Pregnancy",
+    description: "Know the symptoms, causes, treatment, and support options for postpartum depression after childbirth.",
+    url: "https://www.drankitachauhan.com/blogs/understanding-postpartum-depression",
+    publishedTime: "2025-06-15",
+  },
+}
+
+const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "MedicalWebPage",
+    "headline": "Understanding Postpartum Depression: Signs, Causes & Hope",
+    "description": "Know the symptoms, causes, treatment, and support options for postpartum depression after childbirth.",
+    "datePublished": "2025-06-15",
+    "author": { "@type": "Physician", "name": "Dr. Ankita Chauhan" },
+    "image": "https://www.drankitachauhan.com/images/blog/understanding-postpartum-depression-signs-causes-hope.jpg",
+    "mainEntityOfPage": "https://www.drankitachauhan.com/blogs/understanding-postpartum-depression",
 }
 
 export default function BlogFour() {
 
     return (
+        <>
+        <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        />
         <Section>
             <Wrapper>
                 <div className='w-full relative mx-auto max-w-4xl flex flex-col'>
@@ -36,7 +59,7 @@ export default function BlogFour() {
                     <Subheading className='mt-5 '>
                         After giving birth, many new mothers feel overwhelmed, tired or emotional. These feelings are common. But when sadness, anxiety, or hopelessness lasts longer than it should, it might be postpartum depression. Dr. Ankita Chauhan, senior gynecologist in Hyderabad, shares what postpartum depression is, its signs, causes, and how to find help.
                     </Subheading>
-                    <Image src='/images/blog/img-4.jpg' alt='Understanding Postpartum Depression: Signs, Causes & Hope' width={800} height={500} className='w-full h-[400px] object-cover mt-5 rounded' />
+                    <Image src='/images/blog/understanding-postpartum-depression-signs-causes-hope.jpg' alt='Understanding Postpartum Depression: Signs, Causes & Hope' width={800} height={500} className='w-full h-[400px] object-cover mt-5 rounded' />
 
                     <div className='mt-8 relative flex flex-col gap-8'>
                         <div>
@@ -104,5 +127,6 @@ export default function BlogFour() {
                 </div>
             </Wrapper>
         </Section>
+        </>
     )
 }
