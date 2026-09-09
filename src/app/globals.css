@@ -8,8 +8,6 @@
   --primary-hover: #695fa3;
   --secondry-color: #111827;
   --secondry-hover: #253555;
-  --montserrat: "Montserrat", sans-serif;
-  --open-sans: "Open Sans", sans-serif;
 }
 
 @theme inline {
@@ -17,8 +15,8 @@
   --color-secondry-color: var(--secondry-color);
   --color-primary-hover: var(--primary-hover);
   --color-secondry-hover: var(--secondry-hover);
-  --font-montserrat: var(--montserrat);
-  --font-open-sans: var(--open-sans);
+  --font-montserrat: var(--font-montserrat);
+  --font-open-sans: var(--font-open-sans);
   --animate-marquee: marquee var(--duration) infinite linear;
   --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
   @keyframes marquee {
@@ -43,15 +41,14 @@
     }
   }
   @keyframes anim {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
   }
 }
-}
-
 
 a,
 h1,
