@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Render <title>, meta description and canonical inside <head> for ALL user agents.
+  // Disables streaming metadata, which otherwise places them in <body> for browsers.
+  htmlLimitedBots: /.*/,
   serverExternalPackages: ["pdfkit", "cloudinary"],
   images: {
     remotePatterns: [],
